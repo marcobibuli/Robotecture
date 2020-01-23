@@ -1,0 +1,146 @@
+// Mx Robotic Framework
+// Coded by Marco Bibuli
+// V1.0 - 28/07/2016
+
+
+#ifndef __DEFINE__
+#define __DEFINE__
+
+
+
+//#define CONFIGURATION_FILES_DIRECTORY "../config/"
+#define CONFIGURATION_FILES_DIRECTORY "../../../config/swamp/"
+#define CONFIGURATION_SIM_FILES_DIRECTORY "../../../config/swamp/sim/"
+#define CONFIGURATION_NETWORK_FILE "network.cfg"
+#define CONFIGURATION_IO_CHANNELS_FILE "IO_channels.cfg"
+#define CONFIGURATION_PINGER_FILE "Pinger.cfg"
+#define CONFIGURATION_FOG_FILE "FOG.cfg"
+#define CONFIGURATION_GPS_AHRS_FILE "GPS_AHRS.cfg"
+#define CONFIGURATION_USBL_FILE "USBL.cfg"
+#define CONFIGURATION_DVL_FILE "DVL.cfg"
+#define CONFIGURATION_CTD_FILE "CTD.cfg"
+#define CONFIGURATION_PA500_FILE "PA500.cfg"
+#define CONFIGURATION_ECHOLOGGER_FILE "Echologger.cfg"
+#define CONFIGURATION_ACTUATOR_FILE "Actuator.cfg"
+
+
+#define gps_ahrs_serial_name "/dev/ttyS0"
+#define ctd_serial_name "/dev/ttyS1"
+#define dvl_serial_name "/dev/ttyS6"
+#define pa500_serial_name "/dev/ttyS4"
+#define pinger_serial_name "/dev/ttyS3"
+
+
+#define nameLength 256
+
+#define CORE_SAMPLE_TIME_SEC 		0
+#define CORE_SAMPLE_TIME_NSEC 		100000000
+
+#define COMM_LINK_SLEEP_SEC 		0
+#define COMM_LINK_SLEEP_NSEC 		50000000
+
+#define IO_CHANNELS_SLEEP_SEC 		0
+#define IO_CHANNELS_SLEEP_NSEC 		100000000
+#define IO_CHANNELS_START_TICKS		10
+#define IO_CHANNELS_STOP_TICKS		1
+
+#define MOTORS_SLEEP_SEC 			0
+#define MOTORS_SLEEP_NSEC 			100000000
+
+#define GPS_SLEEP_SEC 				0
+#define GPS_SLEEP_NSEC 				100000000
+
+#define COMPASS_SLEEP_SEC 			0
+#define COMPASS_SLEEP_NSEC 			100000000
+
+#define FOG_SLEEP_SEC 				0
+#define FOG_SLEEP_NSEC 				100000000
+
+#define DVL_SLEEP_SEC 				0
+#define DVL_SLEEP_NSEC 				100000000
+
+#define CTD_SLEEP_SEC 				0
+#define CTD_SLEEP_NSEC 				100000000
+
+#define GPS_AHRS_SLEEP_SEC 			0
+#define GPS_AHRS_SLEEP_NSEC 		100000000
+
+#define PA500_SLEEP_SEC 			0
+#define PA500_SLEEP_NSEC 			100000000
+
+#define ECHOLOGGER_SLEEP_SEC 		0
+#define ECHOLOGGER_SLEEP_NSEC 		100000000
+
+#define PINGER_SLEEP_SEC 			0
+#define PINGER_SLEEP_NSEC 			50000000
+
+#define USBL_POS_SLEEP_SEC 			0
+#define USBL_POS_SLEEP_NSEC 		100000000
+
+#define ACTUATOR_SLEEP_SEC 			0
+#define ACTUATOR_SLEEP_NSEC 		100000000
+
+#define COMM_LINK_WAITING_LOOPS 	50  // loops for re-transmission in case of no-ack
+#define COMM_LINK_LOST_LOOPS 		3    // loops for LOST state triggering
+
+#define FOG_RECEIVE_WAIT_LOOPS_FOR_WARNING  10
+#define FOG_RECEIVE_WAIT_LOOPS_FOR_FAULT    50
+
+#define GPS_AHRS_RECEIVE_WAIT_LOOPS_FOR_WARNING  10
+#define GPS_AHRS_RECEIVE_WAIT_LOOPS_FOR_FAULT    50
+
+#define CTD_RECEIVE_WAIT_LOOPS_FOR_WARNING  10
+#define CTD_RECEIVE_WAIT_LOOPS_FOR_FAULT    50
+
+#define DVL_RECEIVE_WAIT_LOOPS_FOR_WARNING  10
+#define DVL_RECEIVE_WAIT_LOOPS_FOR_FAULT    50
+
+#define PA500_RECEIVE_WAIT_LOOPS_FOR_WARNING  10
+#define PA500_RECEIVE_WAIT_LOOPS_FOR_FAULT    50
+
+#define ECHOLOGGER_RECEIVE_WAIT_LOOPS_FOR_WARNING  10
+#define ECHOLOGGER_RECEIVE_WAIT_LOOPS_FOR_FAULT    50
+
+#define PINGER_RECEIVE_WAIT_LOOPS_FOR_WARNING  10
+#define PINGER_RECEIVE_WAIT_LOOPS_FOR_FAULT    50
+
+#define USBL_RECEIVE_WAIT_LOOPS_FOR_WARNING  10
+#define USBL_RECEIVE_WAIT_LOOPS_FOR_FAULT    50
+
+#define PINGER_THREAD_PRIORITY		80
+#define COMM_LINK_THREAD_PRIORITY	80
+#define STATUS_THREAD_PRIORITY 		70
+#define IO_CHANNELS_THREAD_PRIORITY 70
+#define MOTORS_THREAD_PRIORITY 		70
+#define GPS_AHRS_THREAD_PRIORITY 	70
+#define DVL_THREAD_PRIORITY 		70
+#define CTD_THREAD_PRIORITY 		70
+#define PA500_THREAD_PRIORITY 		70
+#define ECHOLOGGER_THREAD_PRIORITY 	70
+#define USBL_POS_THREAD_PRIORITY	70
+#define FOG_THREAD_PRIORITY 		70
+#define ACTUATOR_THREAD_PRIORITY 	70
+#define NGC_THREAD_PRIORITY 		60
+#define TASKS_THREAD_PRIORITY 		60
+#define PATHPLANNER_THREAD_PRIORITY 50
+
+
+
+
+
+
+
+
+#ifdef __MAIN__
+   #define PRE
+#else
+   #define PRE extern
+#endif // __MAIN__
+
+PRE char _debugString[256];
+PRE int endLoop;
+
+PRE char ROBOT_NAME[256];
+
+
+#endif
