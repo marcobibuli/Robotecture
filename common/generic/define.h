@@ -9,8 +9,8 @@
 
 
 //#define CONFIGURATION_FILES_DIRECTORY "../config/"
-#define CONFIGURATION_FILES_DIRECTORY "../../../config/swamp/"
-#define CONFIGURATION_SIM_FILES_DIRECTORY "../../../config/swamp/sim/"
+//#define CONFIGURATION_FILES_DIRECTORY "../config/"
+#define CONFIGURATION_SIM_FILES_DIRECTORY "../config/sim/"
 #define CONFIGURATION_NETWORK_FILE "network.cfg"
 #define CONFIGURATION_IO_CHANNELS_FILE "IO_channels.cfg"
 #define CONFIGURATION_PINGER_FILE "Pinger.cfg"
@@ -141,6 +141,6 @@ PRE char _debugString[256];
 PRE int endLoop;
 
 PRE char ROBOT_NAME[256];
-
+PRE char CONFIGURATION_FILES_DIRECTORY[256];
 
 #endif

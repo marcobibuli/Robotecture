@@ -107,14 +107,9 @@ struct Message
 		void resizePacket(ssize_t ns){ packetLength =ns; dataLength = packetLength -(sizeof(*pId) + sizeof(*pIp) + sizeof(*pPort));}
 		void resizeData(ssize_t ns) { dataLength = ns;  packetLength = dataLength +(sizeof(*pId) + sizeof(*pIp) + sizeof(*pPort)); }
 		
-		void header_ntohl(){int32 *ptr=(int32*)packet; for(int i=0;i<(dataPosition()>>2);i++,ptr++) *ptr=ntohl((*ptr));}
-		void header_htonl(){int32 *ptr=(int32*)packet; for(int i=0;i<(dataPosition()>>2);i++,ptr++) *ptr=htonl((*ptr));}
-
-		void data_ntohl(){int32 *ptr=(int32*)dataPointer(); for(int i=(dataPosition()>>2);i<(packetLength >>2);i++,ptr++) *ptr=ntohl((*ptr));}
-		void data_htonl(){int32 *ptr=(int32*)dataPointer(); for(int i=(dataPosition()>>2);i<(packetLength >>2);i++,ptr++) *ptr=htonl((*ptr));}
-
-		void packet_ntohl() { int32* ptr = (int32*)packet; for (int i = 0; i < (packetLength >> 2); i++, ptr++) *ptr = ntohl((*ptr)); }
-		void packet_htonl() { int32* ptr = (int32*)packet; for (int i = 0; i < (packetLength >> 2); i++, ptr++) *ptr = htonl((*ptr)); }
+		
+		void packet_ntohl() { uint32* ptr = (uint32*)packet; for (int i = 0; i < (packetLength / sizeof(uint32)); i++, ptr++) *ptr = ntohl(*ptr); }
+		void packet_htonl() { uint32* ptr = (uint32*)packet; for (int i = 0; i < (packetLength / sizeof(uint32)); i++, ptr++) *ptr = htonl(*ptr); }
 
 
 		void copyDataTo(char *dest)

@@ -79,6 +79,7 @@
     <LocalRemoteCopySources>true</LocalRemoteCopySources>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\data\Status.cpp" />
     <ClCompile Include="..\common\generic\matrix.cpp" />
     <ClCompile Include="..\common\generic\RobotMath.cpp" />
     <ClCompile Include="..\common\generic\RobotThread.cpp" />
@@ -88,6 +89,9 @@
     <ClCompile Include="main_europe.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\data\DataAccess.h" />
+    <ClInclude Include="..\common\data\Status.h" />
+    <ClInclude Include="..\common\data\Time_status.h" />
     <ClInclude Include="..\common\generic\custom_types.h" />
     <ClInclude Include="..\common\generic\define.h" />
     <ClInclude Include="..\common\generic\matrix.h" />
@@ -98,6 +102,23 @@
     <ClInclude Include="..\common\network\Message.h" />
     <ClInclude Include="..\common\network\MessageNumberGenerator.h" />
     <ClInclude Include="..\common\network\NetworkManager.h" />
+    <ClInclude Include="europe_status.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config\Actuator.cfg" />
+    <None Include="config\AngFilter.cfg" />
+    <None Include="config\AngPosControl.cfg" />
+    <None Include="config\AngVelControl.cfg" />
+    <None Include="config\Echologger.cfg" />
+    <None Include="config\GPS_AHRS - biograd.cfg" />
+    <None Include="config\GPS_AHRS.cfg" />
+    <None Include="config\HorPosControl.cfg" />
+    <None Include="config\HorPosFilter.cfg" />
+    <None Include="config\HorVelControl.cfg" />
+    <None Include="config\HorVelFilter.cfg" />
+    <None Include="config\network.cfg" />
+    <None Include="config\PathFollowing_FA.cfg" />
+    <None Include="config\PathFollowing_UA.cfg" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <ClCompile>

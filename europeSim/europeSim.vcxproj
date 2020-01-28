@@ -76,6 +76,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClCompile Include="..\common\data\Status.cpp" />
     <ClCompile Include="..\common\generic\matrix.cpp" />
     <ClCompile Include="..\common\generic\RobotMath.cpp" />
     <ClCompile Include="..\common\generic\RobotThread.cpp" />
@@ -85,6 +86,9 @@
     <ClCompile Include="main_europeSim.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\data\DataAccess.h" />
+    <ClInclude Include="..\common\data\Status.h" />
+    <ClInclude Include="..\common\data\Time_status.h" />
     <ClInclude Include="..\common\generic\custom_types.h" />
     <ClInclude Include="..\common\generic\define.h" />
     <ClInclude Include="..\common\generic\matrix.h" />

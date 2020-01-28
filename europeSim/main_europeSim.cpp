@@ -13,8 +13,10 @@ void ctrl_c_handler(int)
 int main()
 {
 	timespec loopSleep;
-	loopSleep.tv_sec = CORE_SAMPLE_TIME_SEC;
-	loopSleep.tv_nsec = CORE_SAMPLE_TIME_NSEC;
+	//loopSleep.tv_sec = CORE_SAMPLE_TIME_SEC;
+	//loopSleep.tv_nsec = CORE_SAMPLE_TIME_NSEC;
+	loopSleep.tv_sec = 1;
+	loopSleep.tv_nsec = 0;
 
 
 	char localIp[256] = "10.17.20.109";
@@ -22,7 +24,7 @@ int main()
 	uint16 localPort = (uint16)10001;
 	uint16 remotePort = (uint16)10000;
 
-	CommLink cl("europe", CommMode::HARD_ACK);
+	CommLink cl("europe", CommMode::OVERRIDE);
 
 	cl.open(localIp, localPort, remoteIp, remotePort);
 	cl.create();
@@ -45,11 +47,13 @@ int main()
 
 		
 		//if (flag == 1)
+		/*
 		{
 			sprintf(msg, "%ld", num--);
 			cl.send_message(msg, strlen(msg));
 			flag = 0;
 		}
+		*/
 		
 		nanosleep(&loopSleep, NULL);
 	}

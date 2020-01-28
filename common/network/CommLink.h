@@ -66,7 +66,7 @@ enum LinkProtocol
 struct LinkState
 {
 	LinkLevel linkLevel;
-	LinkProtocol linkProtocol,sendState,recvState;
+	LinkProtocol sendState,recvState;
 	Message lastMessageSent;
 	Message lastMessageReceived;
 };
@@ -102,8 +102,25 @@ class CommLink:public RobotThread
 
 		sem_t transmMutex,receiveMutex;
 
-		int close();
 
+		int close();
+		ssize_t push_message(char* buf, ssize_t bufLength);
+		bool set_sender(int64 id, int32 ip, int32 port);
+
+		int enable_blocking();
+		int disable_blocking();
+
+		ssize_t send(char* buf, int bufLen, int flags = 0);
+		ssize_t sendto(struct sockaddr_in addr, char* buf, int bufLen, int flags = 0);
+		ssize_t recv(char* buf, int bufLen, int flags = 0);
+
+		void execute_hard_ack();
+		void execute_override();
+		void execute_udp_pure();
+
+		
+
+		void flush_buffer();
 
 	public:
 		CommLink(const char *name, CommMode mode );
@@ -111,31 +128,18 @@ class CommLink:public RobotThread
 
 		int open( char *localIp , uint16 localPort , char *remoteIp=NULL , uint16 remotePort=-1 );
 		
-		int enable_blocking();
-		int disable_blocking();
-
-		ssize_t send(char *buf,int bufLen,int flags=0);
-		ssize_t sendto(struct sockaddr_in addr,char *buf,int bufLen,int flags=0);
-		ssize_t recv(char* buf,int bufLen,int flags=0);
+		
 
 		//int send_message(Message m);
-		ssize_t send_message(char *buf,ssize_t bufLength,bool htonl_conversion=false);
+		ssize_t send_message(char *buf,ssize_t bufLength,bool htonl_conversion=true);
 
-		ssize_t recv_message(char *buf,bool ntohl_conversion=false);
+		ssize_t recv_message(char *buf,bool ntohl_conversion=true);
 
-		ssize_t push_message(char *buf,ssize_t bufLength);
-
-		bool set_sender(int64 id,int32 ip,int32 port);
-
-		void execute();
-		void execute_hard_ack();
-		void execute_override();
-		void execute_udp_pure();
 
 		LinkLevel getLinkLevel()const{return linkState.linkLevel;}
 
-		void flush_buffer();
 
+		void execute();
 };
 
 void* start_comm_link(void *arg);

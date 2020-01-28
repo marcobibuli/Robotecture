@@ -168,6 +168,8 @@ int NetworkManager::init()
 {
 	char name_dir_file[256];
 
+	sprintf(CONFIGURATION_FILES_DIRECTORY,"../../../%s/config/",ROBOT_NAME);
+
 	sprintf(name_dir_file,"%s%s",CONFIGURATION_FILES_DIRECTORY,CONFIGURATION_NETWORK_FILE);
 
 	return init(name_dir_file);
