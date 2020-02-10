@@ -107,12 +107,11 @@ class CommLink:public RobotThread
 		ssize_t push_message(char* buf, ssize_t bufLength);
 		bool set_sender(int64 id, int32 ip, int32 port);
 
-		int enable_blocking();
-		int disable_blocking();
+		
 
-		ssize_t send(char* buf, int bufLen, int flags = 0);
+		
 		ssize_t sendto(struct sockaddr_in addr, char* buf, int bufLen, int flags = 0);
-		ssize_t recv(char* buf, int bufLen, int flags = 0);
+		
 
 		void execute_hard_ack();
 		void execute_override();
@@ -131,15 +130,21 @@ class CommLink:public RobotThread
 		
 
 		//int send_message(Message m);
-		ssize_t send_message(char *buf,ssize_t bufLength,bool htonl_conversion=true);
+		ssize_t send_message(char *buf,ssize_t bufLength,bool htonl_conversion=false);
 
-		ssize_t recv_message(char *buf,bool ntohl_conversion=true);
+		ssize_t recv_message(char *buf,bool ntohl_conversion=false);
 
 
 		LinkLevel getLinkLevel()const{return linkState.linkLevel;}
 
 
 		void execute();
+
+		int enable_blocking();
+		int disable_blocking();
+
+		ssize_t send(char* buf, int bufLen, int flags = 0);
+		ssize_t recv(char* buf, int bufLen, int flags = 0);
 };
 
 void* start_comm_link(void *arg);

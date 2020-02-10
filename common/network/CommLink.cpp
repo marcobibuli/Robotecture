@@ -334,7 +334,6 @@ void CommLink::execute_hard_ack()
 	int wait_loop_counter = 0;
 	int lost_loop_counter = 0;
 
-	flush_buffer();
 
 	while (running)
 	{
@@ -351,11 +350,6 @@ void CommLink::execute_hard_ack()
 				send_message_vector.erase(send_message_vector.begin());
 
 				Message m(linkState.lastMessageSent);
-
-				//printf("send - ip: %d   port: %d\n", m.ip(), m.port());
-				//printf("data sent: %s     id: %lli\n", m.dataPointer(),m.id());
-				
-				//m.header_htonl();
 
 				if (send(m.packet, m.size(), 0) <= 0)
 					printf("CommLink::execute_hard_ack() - send error\n");
@@ -375,30 +369,18 @@ void CommLink::execute_hard_ack()
 			{
 				m.resizePacket(byteReceived);
 
-				char mmm[1024];
-				for (int i = 0; i < byteReceived; i++)
-					mmm[i] = *(m.dataPointer() + i);
-				mmm[byteReceived] = NULL;
-				//printf("received:   %s\n", mmm);
-				mmm[0] = NULL;
-
-				//m.header_ntohl();
-
-				if (m.id() == linkState.lastMessageSent.id() && m.size()==16)  //ack message
+				if (m.id() == linkState.lastMessageSent.id() && m.dataLength==0)  //ack message
 				{
-					//printf("ack recevived: %lli    %d\n", m.id(),m.size());
 					linkState.sendState = IDLE;
 					linkState.linkLevel = NORMAL;
 					received = true;
 				}
 				else
 				{
-					//printf("data recevived: %s     id: %lli\n", m.dataPointer(),m.id());
 					recv_packets.push_back(new Message(m));
 					
 					bool to_be_stored = set_sender(m.id(), m.ip(), m.port());
-					//printf("to be stored: %d\n", to_be_stored);
-
+					
 					if (to_be_stored)
 					{
 						sem_wait(&receiveMutex);
@@ -426,8 +408,6 @@ void CommLink::execute_hard_ack()
 		if (linkState.sendState == RETRANSMIT)
 		{
 			Message m(linkState.lastMessageSent);
-			//m.header_htonl();
-			//printf("%s    Retransmit id: %lli\n",threadName,m.id());
 
 			if (send(m.packet, m.size(), 0) <= 0)
 				printf("CommLink::execute_hard_ack() - Retransmit error  size: %d   %s\n", m.size(), this->threadName);
@@ -472,6 +452,7 @@ void CommLink::execute_hard_ack()
 			}
 		}
 
+		//printf("sendState: %d     recvState: %d\n", linkState.sendState, linkState.recvState);
 
 		nanosleep(&tSleep, NULL);
 	}
@@ -495,7 +476,6 @@ void CommLink::execute_override()
 	int wait_loop_counter = 0;
 	int lost_loop_counter = 0;
 
-	flush_buffer();
 
 	while (running)
 	{
@@ -545,7 +525,7 @@ void CommLink::execute_override()
 
 				//m.header_ntohl();
 
-				if (m.id() == linkState.lastMessageSent.id() && m.size() == 16)  //ack message
+				if (m.id() == linkState.lastMessageSent.id() && m.dataLength == 0)  //ack message
 				{
 					//printf("ack recevived: %lli    %d\n", m.id(),m.size());
 					linkState.sendState = IDLE;
@@ -660,11 +640,11 @@ void CommLink::execute_udp_pure()
 			linkState.lastMessageSent=*(send_message_vector[0]);
 			send_message_vector.erase(send_message_vector.begin());
 			Message m(linkState.lastMessageSent);
-			
+
 			int zzz = send(m.dataPointer(), m.dataLength, 0);
+
 			if (zzz <= 0)
 				printf("CommLink::execute_udp_pure() - send error\n");
-			
 			
 		}
 		sem_post(&transmMutex);

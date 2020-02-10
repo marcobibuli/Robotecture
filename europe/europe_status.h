@@ -1,5 +1,5 @@
 /*
- * europe_status.h
+ * Europe_status.h
  *
  *  Created on: Jan 24, 2020
  *      Author: mx
@@ -14,18 +14,21 @@
 #include "../common/data/DataAccess.h"
 #include "../common/data/Status.h"
 
+#include "../common/data/GPS_AHRS_status.h"
+#include "../common/data/FOG_status.h"
 
 
-class europe_status :public Status
+class Europe_status :public Status
 {
 private:
 	
 
 public:
-	europe_status(const char* name):Status(name) {}
-	~europe_status() {}
+	Europe_status(const char* name):Status(name) {}
+	~Europe_status() {}
 
-	
+	DataAccess<GPS_AHRS_status> gps_ahrs_status;
+	DataAccess<FOG_status> fog_status;
 };
 
 

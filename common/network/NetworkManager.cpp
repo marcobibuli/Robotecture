@@ -60,25 +60,16 @@ NetworkManager::NetworkManager()
 	ACTUATOR_POW_EN_HMI_OUT = 0;
 
 	GPS_AHRS_ROBOT_PORT_IN=0;
-	GPS_AHRS_HMI_PORT_IN=0;
 	GPS_AHRS_ROBOT_PORT_OUT=0;
-	GPS_AHRS_HMI_PORT_OUT=0;
 	GPS_AHRS_SIM_PORT_IN=0;
 	GPS_AHRS_SIM_PORT_OUT=0;
-	GPS_AHRS_SIM_ROBOT_PORT_IN=0;
-	GPS_AHRS_SIM_ROBOT_PORT_OUT=0;
-	GPS_AHRS_PORT_IN = 0;
-	GPS_AHRS_PORT_OUT = 0;
-	GPS_AHRS_ROBOT_HMI_PORT_OUT = 0;
+	
 
 	FOG_ROBOT_PORT_IN=0;
-	FOG_HMI_PORT_IN=0;
 	FOG_ROBOT_PORT_OUT=0;
-	FOG_HMI_PORT_OUT=0;
 	FOG_SIM_PORT_IN=0;
 	FOG_SIM_PORT_OUT=0;
-	FOG_SIM_ROBOT_PORT_IN=0;
-	FOG_SIM_ROBOT_PORT_OUT=0;
+	
 
 	DVL_ROBOT_PORT_IN=0;
 	DVL_HMI_PORT_IN=0;
@@ -137,8 +128,8 @@ NetworkManager::NetworkManager()
 	CMD_SIM_PORT_OUT=0;
 	TLM_ROBOT_PORT_IN=0;
 	TLM_ROBOT_PORT_OUT=0;
-	TLM_SIM_PORT_IN=0;
-	TLM_SIM_PORT_OUT=0;
+	TLM_HMI_PORT_IN=0;
+	TLM_HMI_PORT_OUT=0;
 
 	PINGER_SIM_PORT_IN=0;
 	PINGER_SIM_PORT_OUT=0;
@@ -169,6 +160,7 @@ int NetworkManager::init()
 	char name_dir_file[256];
 
 	sprintf(CONFIGURATION_FILES_DIRECTORY,"../../../%s/config/",ROBOT_NAME);
+	sprintf(CONFIGURATION_SIM_FILES_DIRECTORY, "../../../%s/config/sim/", ROBOT_NAME);
 
 	sprintf(name_dir_file,"%s%s",CONFIGURATION_FILES_DIRECTORY,CONFIGURATION_NETWORK_FILE);
 
@@ -180,7 +172,7 @@ int NetworkManager::init(const char *name_dir_file)
 {
 	FILE *f;
 	char var[100],value[100];
-
+	
 
 	if((f=fopen(name_dir_file,"r"))!=NULL)
 	{
@@ -257,25 +249,16 @@ int NetworkManager::init(const char *name_dir_file)
 			
 
 			if (strcmp(var,"GPS_AHRS_ROBOT_PORT_IN")==0) GPS_AHRS_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"GPS_AHRS_HMI_PORT_IN")==0) GPS_AHRS_HMI_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"GPS_AHRS_SIM_PORT_IN")==0) GPS_AHRS_SIM_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"GPS_AHRS_SIM_ROBOT_PORT_IN")==0) GPS_AHRS_SIM_ROBOT_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"GPS_AHRS_ROBOT_PORT_OUT")==0) GPS_AHRS_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"GPS_AHRS_HMI_PORT_OUT")==0) GPS_AHRS_HMI_PORT_OUT= (uint16)atoi(value);
 			if (strcmp(var,"GPS_AHRS_SIM_PORT_OUT")==0) GPS_AHRS_SIM_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"GPS_AHRS_SIM_ROBOT_PORT_OUT")==0) GPS_AHRS_SIM_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var, "GPS_AHRS_PORT_IN") == 0) GPS_AHRS_PORT_IN = (uint16)atoi(value);
-			if (strcmp(var, "GPS_AHRS_PORT_OUT") == 0) GPS_AHRS_PORT_OUT = (uint16)atoi(value);
-			if (strcmp(var, "GPS_AHRS_ROBOT_HMI_PORT_OUT") == 0) GPS_AHRS_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
 
-			if (strcmp(var,"FOG_ROBOT_PORT_IN")==0) FOG_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"FOG_HMI_PORT_IN")==0) FOG_HMI_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"FOG_SIM_PORT_IN")==0) FOG_SIM_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"FOG_SIM_ROBOT_PORT_IN")==0) FOG_SIM_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"FOG_ROBOT_PORT_OUT")==0) FOG_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"FOG_HMI_PORT_OUT")==0) FOG_HMI_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"FOG_SIM_PORT_OUT")==0) FOG_SIM_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"FOG_SIM_ROBOT_PORT_OUT")==0) FOG_SIM_ROBOT_PORT_OUT= (uint16)atoi(value);
+			if (strcmp(var, "FOG_ROBOT_PORT_IN") == 0) FOG_ROBOT_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "FOG_SIM_PORT_IN") == 0) FOG_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "FOG_ROBOT_PORT_OUT") == 0) FOG_ROBOT_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "FOG_SIM_PORT_OUT") == 0) FOG_SIM_PORT_OUT = (uint16)atoi(value);
+			
+
 
 			if (strcmp(var,"DVL_ROBOT_PORT_IN")==0) DVL_ROBOT_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"DVL_HMI_PORT_IN")==0) DVL_HMI_PORT_IN= (uint16)atoi(value);
@@ -334,8 +317,8 @@ int NetworkManager::init(const char *name_dir_file)
 			if (strcmp(var,"CMD_SIM_PORT_OUT")==0) CMD_SIM_PORT_OUT= (uint16)atoi(value);
 			if (strcmp(var,"TLM_ROBOT_PORT_IN")==0) TLM_ROBOT_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"TLM_ROBOT_PORT_OUT")==0) TLM_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"TLM_SIM_PORT_IN")==0) TLM_SIM_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"TLM_SIM_PORT_OUT")==0) TLM_SIM_PORT_OUT= (uint16)atoi(value);
+			if (strcmp(var,"TLM_HMI_PORT_IN")==0) TLM_HMI_PORT_IN= (uint16)atoi(value);
+			if (strcmp(var,"TLM_HMI_PORT_OUT")==0) TLM_HMI_PORT_OUT= (uint16)atoi(value);
 
 			if (strcmp(var,"PINGER_SIM_PORT_IN")==0) PINGER_SIM_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"PINGER_SIM_PORT_OUT")==0) PINGER_SIM_PORT_OUT= (uint16)atoi(value);

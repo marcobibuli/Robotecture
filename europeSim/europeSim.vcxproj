@@ -77,28 +77,54 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClCompile Include="..\common\data\Status.cpp" />
+    <ClCompile Include="..\common\drivers\Device.cpp" />
+    <ClCompile Include="..\common\drivers\FOG.cpp" />
+    <ClCompile Include="..\common\drivers\GPS_AHRS.cpp" />
+    <ClCompile Include="..\common\drivers\sim\DeviceSim.cpp" />
+    <ClCompile Include="..\common\drivers\sim\FOG_Sim.cpp" />
+    <ClCompile Include="..\common\drivers\sim\GPS_AHRS_Sim.cpp" />
+    <ClCompile Include="..\common\drivers\sim\SimStatus.cpp" />
     <ClCompile Include="..\common\generic\matrix.cpp" />
     <ClCompile Include="..\common\generic\RobotMath.cpp" />
     <ClCompile Include="..\common\generic\RobotThread.cpp" />
     <ClCompile Include="..\common\generic\vector.cpp" />
     <ClCompile Include="..\common\network\CommLink.cpp" />
     <ClCompile Include="..\common\network\NetworkManager.cpp" />
+    <ClCompile Include="EuropeSim.cpp" />
     <ClCompile Include="main_europeSim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\data\DataAccess.h" />
+    <ClInclude Include="..\common\data\FOG_status.h" />
+    <ClInclude Include="..\common\data\GPS_AHRS_status.h" />
     <ClInclude Include="..\common\data\Status.h" />
     <ClInclude Include="..\common\data\Time_status.h" />
+    <ClInclude Include="..\common\drivers\Device.h" />
+    <ClInclude Include="..\common\drivers\FOG.h" />
+    <ClInclude Include="..\common\drivers\GPS_AHRS.h" />
+    <ClInclude Include="..\common\drivers\Int24.h" />
+    <ClInclude Include="..\common\drivers\sim\DeviceSim.h" />
+    <ClInclude Include="..\common\drivers\sim\FOG_Sim.h" />
+    <ClInclude Include="..\common\drivers\sim\GPS_AHRS_Sim.h" />
+    <ClInclude Include="..\common\drivers\sim\SimStatus.h" />
     <ClInclude Include="..\common\generic\custom_types.h" />
     <ClInclude Include="..\common\generic\define.h" />
     <ClInclude Include="..\common\generic\matrix.h" />
     <ClInclude Include="..\common\generic\RobotMath.h" />
     <ClInclude Include="..\common\generic\RobotThread.h" />
+    <ClInclude Include="..\common\generic\Variable.h" />
     <ClInclude Include="..\common\generic\vector.h" />
     <ClInclude Include="..\common\network\CommLink.h" />
     <ClInclude Include="..\common\network\Message.h" />
     <ClInclude Include="..\common\network\MessageNumberGenerator.h" />
     <ClInclude Include="..\common\network\NetworkManager.h" />
+    <ClInclude Include="EuropeSim.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\europe\config\GPS_AHRS.cfg" />
+    <None Include="..\europe\config\network.cfg" />
+    <None Include="..\europe\config\sim\FOG.cfg" />
+    <None Include="..\europe\config\sim\GPS_AHRS.cfg" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <Link>

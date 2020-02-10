@@ -61,7 +61,7 @@ struct Message
 		{
 			initMessage(id,ip,port,length);
 
-			for(ssize_t i=dataPosition();i< packetLength;i++)
+			for(ssize_t i=dataPosition();i<packetLength;i++)
 			{
 				packet[i] = buf[i-dataPosition()];
 			}
