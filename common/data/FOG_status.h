@@ -1,5 +1,5 @@
 /*
- * GPS_AHRS_status.h
+ * FOG_status.h
  *
  *  Created on: Jan 28, 2019
  *      Author: mx
@@ -12,7 +12,7 @@
 #include "../generic/custom_types.h"
 #include "../generic/Variable.h"
 
-
+# pragma pack (push, 1)
 struct FOG_tlm_packet
 {
 	int64 roll;
@@ -23,6 +23,7 @@ struct FOG_tlm_packet
 	int64 headingRate;
 	int64 device_status;
 };
+# pragma pack (pop)
 
 class FOG_status
 {

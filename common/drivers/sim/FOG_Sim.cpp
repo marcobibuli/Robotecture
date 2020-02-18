@@ -13,7 +13,7 @@ FOG_Sim::FOG_Sim(const char *name,NetworkManager &nm,SimStatus *s): DeviceSim(na
 {
 	tlm = new CommLink("FOGSim_tlm", UDP_PURE);
 	tlm->open(networkManager->SIM_IP, networkManager->FOG_SIM_PORT_OUT,
-		      networkManager->ROBOT_IP, networkManager->FOG_ROBOT_PORT_IN);
+		      networkManager->ROBOT_IP, networkManager->FOG_ROBOT_SIM_PORT_IN);
 	tlm->create();
 
 	orientation_noise_avg = 0.0;     orientation_noise_std = 0.0;

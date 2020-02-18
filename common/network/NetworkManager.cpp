@@ -14,14 +14,13 @@ NetworkManager::NetworkManager()
 	HEARTHBEAT_ROBOT_PORT_OUT=0;
 	HEARTHBEAT_HMI_PORT_OUT=0;
 
-	IO_CHANNELS_ROBOT_PORT_IN=0;
-	IO_CHANNELS_HMI_PORT_IN=0;
-	IO_CHANNELS_ROBOT_PORT_OUT=0;
-	IO_CHANNELS_HMI_PORT_OUT=0;
-	IO_CHANNELS_SIM_PORT_IN=0;
-	IO_CHANNELS_SIM_PORT_OUT=0;
-	IO_CHANNELS_SIM_ROBOT_PORT_IN=0;
-	IO_CHANNELS_SIM_ROBOT_PORT_OUT=0;
+	IO_ROBOT_SIM_PORT_IN=0;
+	IO_ROBOT_SIM_PORT_OUT=0;
+	IO_ROBOT_HMI_PORT_IN = 0;
+	IO_ROBOT_HMI_PORT_OUT = 0;
+	IO_SIM_PORT_IN=0;
+	IO_SIM_PORT_OUT=0;
+	
 
 	MOTORS_ROBOT_PORT_IN=0;
 	MOTORS_HMI_PORT_IN=0;
@@ -59,16 +58,28 @@ NetworkManager::NetworkManager()
 	ACTUATOR_POW_EN_ROBOT_IN = 0;
 	ACTUATOR_POW_EN_HMI_OUT = 0;
 
-	GPS_AHRS_ROBOT_PORT_IN=0;
-	GPS_AHRS_ROBOT_PORT_OUT=0;
+	GPS_AHRS_ROBOT_SIM_PORT_IN=0;
+	GPS_AHRS_ROBOT_SIM_PORT_OUT=0;
 	GPS_AHRS_SIM_PORT_IN=0;
 	GPS_AHRS_SIM_PORT_OUT=0;
 	
 
-	FOG_ROBOT_PORT_IN=0;
-	FOG_ROBOT_PORT_OUT=0;
+	FOG_ROBOT_SIM_PORT_IN=0;
+	FOG_ROBOT_SIM_PORT_OUT=0;
 	FOG_SIM_PORT_IN=0;
 	FOG_SIM_PORT_OUT=0;
+
+
+
+	NGC_ROBOT_HMI_PORT_IN = 0;
+	NGC_ROBOT_HMI_PORT_OUT = 0;
+	NGC_HMI_PORT_IN = 0;
+	NGC_HMI_PORT_OUT = 0;
+
+	TASKS_ROBOT_HMI_PORT_IN = 0;
+	TASKS_ROBOT_HMI_PORT_OUT = 0;
+	TASKS_HMI_PORT_IN = 0;
+	TASKS_HMI_PORT_OUT = 0;
 	
 
 	DVL_ROBOT_PORT_IN=0;
@@ -106,16 +117,10 @@ NetworkManager::NetworkManager()
 	PINGER_ROBOT_PORT_OUT=0;
 	PINGER_HMI_PORT_OUT=0;
 
-	NGC_ROBOT_PORT_IN=0;
-	NGC_HMI_PORT_IN=0;
-	NGC_ROBOT_PORT_OUT=0;
-	NGC_HMI_PORT_OUT=0;
-	NGC_TO_IO_PORT_OUT=0;
+	
+	
 
-	TASKS_ROBOT_PORT_IN=0;
-	TASKS_HMI_PORT_IN=0;
-	TASKS_ROBOT_PORT_OUT=0;
-	TASKS_HMI_PORT_OUT=0;
+	
 
 	PATHPLANNER_ROBOT_PORT_IN=0;
 	PATHPLANNER_HMI_PORT_IN=0;
@@ -200,14 +205,14 @@ int NetworkManager::init(const char *name_dir_file)
 			if (strcmp(var,"HEARTHBEAT_ROBOT_PORT_OUT")==0) HEARTHBEAT_ROBOT_PORT_OUT= (uint16)atoi(value);
 			if (strcmp(var,"HEARTHBEAT_HMI_PORT_OUT")==0) HEARTHBEAT_HMI_PORT_OUT= (uint16)atoi(value);
 
-			if (strcmp(var,"IO_CHANNELS_ROBOT_PORT_IN")==0) IO_CHANNELS_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"IO_CHANNELS_HMI_PORT_IN")==0) IO_CHANNELS_HMI_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"IO_CHANNELS_SIM_PORT_IN")==0) IO_CHANNELS_SIM_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"IO_CHANNELS_SIM_ROBOT_PORT_IN")==0) IO_CHANNELS_SIM_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"IO_CHANNELS_ROBOT_PORT_OUT")==0) IO_CHANNELS_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"IO_CHANNELS_HMI_PORT_OUT")==0) IO_CHANNELS_HMI_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"IO_CHANNELS_SIM_PORT_OUT")==0) IO_CHANNELS_SIM_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"IO_CHANNELS_SIM_ROBOT_PORT_OUT")==0) IO_CHANNELS_SIM_ROBOT_PORT_OUT= (uint16)atoi(value);
+			if (strcmp(var, "IO_ROBOT_SIM_PORT_IN")==0) IO_ROBOT_SIM_PORT_IN= (uint16)atoi(value);
+			if (strcmp(var, "IO_ROBOT_SIM_PORT_OUT") == 0) IO_ROBOT_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "IO_ROBOT_HMI_PORT_IN") == 0) IO_ROBOT_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "IO_ROBOT_HMI_PORT_OUT") == 0) IO_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "IO_SIM_PORT_IN")==0) IO_SIM_PORT_IN= (uint16)atoi(value);
+			if (strcmp(var, "IO_SIM_PORT_OUT")==0) IO_SIM_PORT_OUT= (uint16)atoi(value);
+			if (strcmp(var, "IO_HMI_PORT_IN") == 0) IO_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "IO_HMI_PORT_OUT") == 0) IO_HMI_PORT_OUT = (uint16)atoi(value);
 
 			if (strcmp(var,"MOTORS_ROBOT_PORT_IN")==0) MOTORS_ROBOT_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"MOTORS_HMI_PORT_IN")==0) MOTORS_HMI_PORT_IN= (uint16)atoi(value);
@@ -248,15 +253,23 @@ int NetworkManager::init(const char *name_dir_file)
 
 			
 
-			if (strcmp(var,"GPS_AHRS_ROBOT_PORT_IN")==0) GPS_AHRS_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"GPS_AHRS_SIM_PORT_IN")==0) GPS_AHRS_SIM_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"GPS_AHRS_ROBOT_PORT_OUT")==0) GPS_AHRS_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"GPS_AHRS_SIM_PORT_OUT")==0) GPS_AHRS_SIM_PORT_OUT= (uint16)atoi(value);
+			if (strcmp(var, "GPS_AHRS_ROBOT_SIM_PORT_IN")==0) GPS_AHRS_ROBOT_SIM_PORT_IN= (uint16)atoi(value);
+			if (strcmp(var, "GPS_AHRS_ROBOT_SIM_PORT_OUT") == 0) GPS_AHRS_ROBOT_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "GPS_AHRS_ROBOT_HMI_PORT_IN") == 0) GPS_AHRS_ROBOT_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "GPS_AHRS_ROBOT_HMI_PORT_OUT") == 0) GPS_AHRS_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "GPS_AHRS_SIM_PORT_IN")==0) GPS_AHRS_SIM_PORT_IN= (uint16)atoi(value);
+			if (strcmp(var, "GPS_AHRS_SIM_PORT_OUT")==0) GPS_AHRS_SIM_PORT_OUT= (uint16)atoi(value);
+			if (strcmp(var, "GPS_AHRS_HMI_PORT_IN") == 0) GPS_AHRS_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "GPS_AHRS_HMI_PORT_OUT") == 0) GPS_AHRS_HMI_PORT_OUT = (uint16)atoi(value);
 
-			if (strcmp(var, "FOG_ROBOT_PORT_IN") == 0) FOG_ROBOT_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "FOG_ROBOT_SIM_PORT_IN") == 0) FOG_ROBOT_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "FOG_ROBOT_SIM_PORT_OUT") == 0) FOG_ROBOT_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "FOG_ROBOT_HMI_PORT_IN") == 0) FOG_ROBOT_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "FOG_ROBOT_HMI_PORT_OUT") == 0) FOG_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
 			if (strcmp(var, "FOG_SIM_PORT_IN") == 0) FOG_SIM_PORT_IN = (uint16)atoi(value);
-			if (strcmp(var, "FOG_ROBOT_PORT_OUT") == 0) FOG_ROBOT_PORT_OUT = (uint16)atoi(value);
 			if (strcmp(var, "FOG_SIM_PORT_OUT") == 0) FOG_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "FOG_HMI_PORT_IN") == 0) FOG_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "FOG_HMI_PORT_OUT") == 0) FOG_HMI_PORT_OUT = (uint16)atoi(value);
 			
 
 
@@ -295,16 +308,17 @@ int NetworkManager::init(const char *name_dir_file)
 			if (strcmp(var,"ECHOLOGGER_ROBOT_PORT_IN")==0) ECHOLOGGER_ROBOT_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"ECHOLOGGER_PORT_OUT")==0) ECHOLOGGER_PORT_OUT = (uint16)atoi(value);
 
-			if (strcmp(var,"NGC_ROBOT_PORT_IN")==0) NGC_ROBOT_PORT_IN= (uint16)atoi(value);
+			if (strcmp(var,"NGC_ROBOT_HMI_PORT_IN")==0) NGC_ROBOT_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "NGC_ROBOT_HMI_PORT_OUT") == 0) NGC_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
 			if (strcmp(var,"NGC_HMI_PORT_IN")==0) NGC_HMI_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"NGC_TO_IO_PORT_OUT")==0) NGC_TO_IO_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"NGC_ROBOT_PORT_OUT")==0) NGC_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"NGC_HMI_PORT_OUT")==0) NGC_HMI_PORT_OUT= (uint16)atoi(value);
-
-			if (strcmp(var,"TASKS_ROBOT_PORT_IN")==0) TASKS_ROBOT_PORT_IN= (uint16)atoi(value);
+			if (strcmp(var, "NGC_HMI_PORT_OUT") == 0) NGC_HMI_PORT_OUT = (uint16)atoi(value);
+			
+			
+			if (strcmp(var,"TASKS_ROBOT_HMI_PORT_IN")==0) TASKS_ROBOT_HMI_PORT_IN= (uint16)atoi(value);
+			if (strcmp(var, "TASKS_ROBOT_HMI_PORT_OUT") == 0) TASKS_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
 			if (strcmp(var,"TASKS_HMI_PORT_IN")==0) TASKS_HMI_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"TASKS_ROBOT_PORT_OUT")==0) TASKS_ROBOT_PORT_OUT= (uint16)atoi(value);
 			if (strcmp(var,"TASKS_HMI_PORT_OUT")==0) TASKS_HMI_PORT_OUT= (uint16)atoi(value);
+
 
 			if (strcmp(var,"PATHPLANNER_ROBOT_PORT_IN")==0) PATHPLANNER_ROBOT_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"PATHPLANNER_HMI_PORT_IN")==0) PATHPLANNER_HMI_PORT_IN= (uint16)atoi(value);

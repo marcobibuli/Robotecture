@@ -14,7 +14,7 @@ GPS_AHRS_Sim::GPS_AHRS_Sim(const char *name,NetworkManager &nm,SimStatus* s): De
 	tlm=new CommLink( "GPSAHRSSim_tlm" , UDP_PURE );
 
 	tlm->open( networkManager->SIM_IP , networkManager->GPS_AHRS_SIM_PORT_OUT ,
-			   networkManager->ROBOT_IP , networkManager->GPS_AHRS_ROBOT_PORT_IN);
+			   networkManager->ROBOT_IP , networkManager->GPS_AHRS_ROBOT_SIM_PORT_IN);
 
 	tlm->create();
 

@@ -12,8 +12,13 @@
 #include "../common/network/CommLink.h"
 #include "../common/network/NetworkManager.h"
 
-#include "../common/drivers/GPS_AHRS.h"
+
+#include "../common/drivers/europe/IO_europe.h"
 #include "../common/drivers/FOG.h"
+#include "../common/drivers/europe/GPS_AHRS.h"
+
+#include "NGC.h"
+#include "Tasks.h"
 
 
 bool running = true;
@@ -24,8 +29,13 @@ Europe_commands* commands;
 
 NetworkManager networkManager;
 
-GPS_AHRS* gps_ahrs = NULL;
+IO_europe* io = NULL;
 FOG* fog = NULL;
+GPS_AHRS* gps_ahrs = NULL;
+
+NGC* ngc = NULL;
+Tasks* tasks = NULL;
+
 
 
 void ctrl_c_handler(int)
@@ -53,8 +63,6 @@ int main()
 
 	
 	
-
-
 	if (networkManager.init() == -1)
 	{
 		printf("NetworkManager init error\n");
@@ -69,6 +77,13 @@ int main()
 
 	commands = new Europe_commands("europeCommands");
 	commands->create();
+
+
+	ngc = new NGC("NGC",networkManager, status->ngc_status, status->time_status);
+	ngc->create();
+
+	tasks = new Tasks("Tasks", networkManager, status);
+	tasks->create();
 
 
 	CommLink* cl_in = new CommLink("HeartBeat_commLink_in", HARD_ACK);
@@ -111,12 +126,25 @@ int main()
 		nanosleep(&loopSleep, NULL);
 	}
 
+
 	terminate_hardware();
 
+
+
+	tasks->terminate();
+	delete tasks;
+
+	ngc->terminate();
+	delete ngc;
+
 	commands->terminate();
+	delete commands;
+
 	telemetry->terminate();
+	delete telemetry;
+
 	status->terminate();
-	
+	delete status;
 }
 
 
@@ -125,18 +153,20 @@ void init_hardware()
 {
 	int ret;
 
-	gps_ahrs = new GPS_AHRS("GPS_AHRS", networkManager, status->time_status, status->gps_ahrs_status);
-	ret = gps_ahrs->init();
+
+	io = new IO_europe("IO_europe", networkManager, status->time_status, status->io_status);
+	ret = io->init();
 	if (ret == 0)
 	{
-		printf("GPS_AHRS init ok\n");
-		gps_ahrs->create();
+		printf("IO_europe init ok\n");
+		io->create();
 	}
 	else
 	{
-		printf("*** GPS_AHRS init failed\n");
+		printf("*** IO_europe init failed\n");
 		exit(-1);
 	}
+
 
 
 	fog = new FOG("FOG", networkManager, status->time_status, status->fog_status);
@@ -151,15 +181,33 @@ void init_hardware()
 		printf("*** FOG init failed\n");
 		exit(-1);
 	}
+
+
+
+	gps_ahrs = new GPS_AHRS("GPS_AHRS", networkManager, status->time_status, status->gps_ahrs_status);
+	ret = gps_ahrs->init();
+	if (ret == 0)
+	{
+		printf("GPS_AHRS init ok\n");
+		gps_ahrs->create();
+	}
+	else
+	{
+		printf("*** GPS_AHRS init failed\n");
+		exit(-1);
+	}
 }
 
 
 
 void terminate_hardware()
 {
-	gps_ahrs->terminate();
-	delete gps_ahrs;
+	io->terminate();
+	delete io;
 
 	fog->terminate();
 	delete fog;
+
+	gps_ahrs->terminate();
+	delete gps_ahrs;
 }

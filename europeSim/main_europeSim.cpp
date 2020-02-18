@@ -5,8 +5,10 @@
 #include <time.h>
 #include "../common/network/NetworkManager.h"
 #include "EuropeSim.h"
-#include "../common/drivers/sim/GPS_AHRS_Sim.h"
+
+#include "../common/drivers/sim/europe/IO_europeSim.h"
 #include "../common/drivers/sim/FOG_Sim.h"
+#include "../common/drivers/sim/europe/GPS_AHRS_Sim.h"
 
 
 
@@ -15,8 +17,11 @@ bool running = true;
 
 NetworkManager networkManager;
 SimStatus* simStatus = NULL;
-GPS_AHRS_Sim* gps_ahrs_sim = NULL;
+
+IO_europeSim* io_sim = NULL;
 FOG_Sim* fog_sim = NULL;
+GPS_AHRS_Sim* gps_ahrs_sim = NULL;
+
 
 
 void ctrl_c_handler(int)
@@ -66,16 +71,15 @@ void init()
 {
 	int ret;
 
-	
-	gps_ahrs_sim = new GPS_AHRS_Sim("GPS_AHRS_Sim", networkManager,simStatus);
-	ret = gps_ahrs_sim->init();
+
+	io_sim = new IO_europeSim("IO_europeSim", networkManager, simStatus);
+	ret = io_sim->init();
 	if (ret == 0)
 	{
-		printf("GPS_AHRS_Sim init ok\n");
-		gps_ahrs_sim->create();
+		printf("IO_europeSim init ok\n");
+		io_sim->create();
 	}
-	else printf("*** GPS_AHRS_Sim init failed\n");
-
+	else printf("*** IO_europeSim init failed\n");
 
 
 	fog_sim = new FOG_Sim("FOG_Sim", networkManager, simStatus);
@@ -88,16 +92,26 @@ void init()
 	else printf("*** FOG_Sim init failed\n");
 	
 
+	gps_ahrs_sim = new GPS_AHRS_Sim("GPS_AHRS_Sim", networkManager,simStatus);
+	ret = gps_ahrs_sim->init();
+	if (ret == 0)
+	{
+		printf("GPS_AHRS_Sim init ok\n");
+		gps_ahrs_sim->create();
+	}
+	else printf("*** GPS_AHRS_Sim init failed\n");
 
 }
 
 
 void terminate()
 {
-	gps_ahrs_sim->terminate();
-	delete gps_ahrs_sim;
+	io_sim->terminate();
+	delete io_sim;
 
 	fog_sim->terminate();
 	delete fog_sim;
-	
+
+	gps_ahrs_sim->terminate();
+	delete gps_ahrs_sim;
 }

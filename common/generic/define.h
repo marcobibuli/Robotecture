@@ -12,7 +12,7 @@
 //#define CONFIGURATION_FILES_DIRECTORY "../config/"
 //#define CONFIGURATION_SIM_FILES_DIRECTORY "../config/sim/"
 #define CONFIGURATION_NETWORK_FILE "network.cfg"
-#define CONFIGURATION_IO_CHANNELS_FILE "IO_channels.cfg"
+#define CONFIGURATION_IO_FILE "IO.cfg"
 #define CONFIGURATION_PINGER_FILE "Pinger.cfg"
 #define CONFIGURATION_FOG_FILE "FOG.cfg"
 #define CONFIGURATION_GPS_AHRS_FILE "GPS_AHRS.cfg"
@@ -39,10 +39,10 @@
 #define COMM_LINK_SLEEP_SEC 		0
 #define COMM_LINK_SLEEP_NSEC 		50000000
 
-#define IO_CHANNELS_SLEEP_SEC 		0
-#define IO_CHANNELS_SLEEP_NSEC 		100000000
-#define IO_CHANNELS_START_TICKS		10
-#define IO_CHANNELS_STOP_TICKS		1
+#define IO_SLEEP_SEC 		0
+#define IO_SLEEP_NSEC 		100000000
+#define IO_START_TICKS		10
+#define IO_STOP_TICKS		1
 
 #define MOTORS_SLEEP_SEC 			0
 #define MOTORS_SLEEP_NSEC 			100000000
@@ -80,6 +80,9 @@
 #define ACTUATOR_SLEEP_SEC 			0
 #define ACTUATOR_SLEEP_NSEC 		100000000
 
+#define NGC_SLEEP_SEC 				0
+#define NGC_SLEEP_NSEC 				100000000
+
 #define COMM_LINK_WAITING_LOOPS 	50  // loops for re-transmission in case of no-ack
 #define COMM_LINK_LOST_LOOPS 		3    // loops for LOST state triggering
 
@@ -110,7 +113,7 @@
 #define PINGER_THREAD_PRIORITY		80
 #define COMM_LINK_THREAD_PRIORITY	80
 #define STATUS_THREAD_PRIORITY 		70
-#define IO_CHANNELS_THREAD_PRIORITY 70
+#define IO_THREAD_PRIORITY 70
 #define MOTORS_THREAD_PRIORITY 		70
 #define GPS_AHRS_THREAD_PRIORITY 	70
 #define DVL_THREAD_PRIORITY 		70
@@ -137,8 +140,7 @@
    #define PRE extern
 #endif // __MAIN__
 
-PRE char _debugString[256];
-PRE int endLoop;
+
 
 PRE char ROBOT_NAME[256];
 PRE char CONFIGURATION_FILES_DIRECTORY[256];

@@ -45,8 +45,9 @@ class Device:public RobotThread
 
 		CommLink *cmd=NULL;
 		CommLink *tlm=NULL;
-		CommLink *cmdSim=NULL;
-		CommLink *tlmSim=NULL;
+		CommLink* cmdSim = NULL;
+		CommLink* tlmSim = NULL;
+
 
 		bool running_sim;
 		bool running_act;

@@ -35,19 +35,43 @@ void Europe_telemetry::execute()
 	tSleep.tv_sec=CORE_SAMPLE_TIME_SEC;
 	tSleep.tv_nsec=CORE_SAMPLE_TIME_NSEC;
 
-
+	IO_europe_status io_status;
 	FOG_status fog_status;
 	GPS_AHRS_status gps_ahrs_status;
+
+	NGC_status ngc_status;
+
+
+	Task_status raw_Ang_From_FOG_status;
+	Task_status raw_Ang_From_AHRS_status;
+	Task_status actual_Ang_From_Raw_status;
+	Task_status actual_Ang_From_Filter_status;
+
+	Filter_Ang_status filter_Ang_status;
 
 
 	while(true)
 	{
+		io_status = status->io_status.get();
 		fog_status = status->fog_status.get();
 		gps_ahrs_status = status->gps_ahrs_status.get();
+		ngc_status = status->ngc_status.get();
+		raw_Ang_From_FOG_status = status->raw_Ang_From_FOG_status.get();
+		raw_Ang_From_AHRS_status = status->raw_Ang_From_AHRS_status.get();
+		actual_Ang_From_Raw_status = status->actual_Ang_From_Raw_status.get();
+		actual_Ang_From_Filter_status = status->actual_Ang_From_Filter_status.get();
+		filter_Ang_status = status->filter_Ang_status.get();
 
-
+		
+		io_status.compose_tlm_packet(msg.io);
 		fog_status.compose_tlm_packet(msg.fog);
 		gps_ahrs_status.compose_tlm_packet(msg.gps_ahrs);
+		ngc_status.compose_tlm_packet(msg.ngc);
+		raw_Ang_From_FOG_status.compose_tlm_packet(msg.raw_Ang_From_FOG);
+		raw_Ang_From_AHRS_status.compose_tlm_packet(msg.raw_Ang_From_AHRS);
+		actual_Ang_From_Raw_status.compose_tlm_packet(msg.actual_Ang_From_Raw);
+		actual_Ang_From_Filter_status.compose_tlm_packet(msg.actual_Ang_From_Filter);
+		filter_Ang_status.compose_tlm_packet(msg.filter_Ang);
 
 
 		tlm->send_message((char*)&msg, sizeof(msg));

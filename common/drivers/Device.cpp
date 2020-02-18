@@ -28,8 +28,33 @@ Device::Device(const char *name,int policy,int priority,void*(*threadRoutine)(vo
 
 Device::~Device()
 {
-	if (cmd!=NULL) delete cmd;
-	if (tlm!=NULL) delete tlm;
+	if (cmd != NULL)
+	{
+		cmd->terminate();
+		delete cmd;
+		cmd = NULL;
+	}
+
+	if (tlm != NULL)
+	{
+		tlm->terminate();
+		delete tlm;
+		tlm = NULL;
+	}
+
+	if (cmdSim != NULL)
+	{
+		cmdSim->terminate();
+		delete cmdSim;
+		cmdSim = NULL;
+	}
+
+	if (tlmSim != NULL)
+	{
+		tlmSim->terminate();
+		delete tlmSim;
+		tlmSim = NULL;
+	}
 }
 
 

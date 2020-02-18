@@ -26,10 +26,7 @@ GPS_AHRS::GPS_AHRS(const char *name,NetworkManager &nm, DataAccess<Time_status>&
 	*/
 	
 
-	tlmSim=new CommLink( "GPS_AHRS_tlmSim" , UDP_PURE);
-	tlmSim->open( networkManager->ROBOT_IP , networkManager->GPS_AHRS_ROBOT_PORT_IN,
-			      networkManager->SIM_IP   , networkManager->GPS_AHRS_SIM_PORT_OUT );
-	tlmSim->create();
+	
 
 	/*
 	tlmHMI = new CommLink("GPS_AHRS_tlmHMI", OVERRIDE);
@@ -49,8 +46,7 @@ GPS_AHRS::GPS_AHRS(const char *name,NetworkManager &nm, DataAccess<Time_status>&
 
 GPS_AHRS::~GPS_AHRS()
 {
-	tlmSim->terminate();
-	delete tlmSim;
+
 }
 
 
@@ -62,6 +58,13 @@ int GPS_AHRS::init_sim()
 	device_status=DEVICE_RUNNING;
 
 	int ret=init_pos();
+
+
+	tlm = new CommLink("GPS_AHRS_tlmSim", UDP_PURE);
+	tlm->open(networkManager->ROBOT_IP, networkManager->GPS_AHRS_ROBOT_SIM_PORT_IN,
+		      networkManager->SIM_IP, networkManager->GPS_AHRS_SIM_PORT_OUT);
+	tlm->create();
+
 
 	return ret;
 }
@@ -81,7 +84,7 @@ int GPS_AHRS::init_act()
 	sscanf(s_ip, "%d.%d.%d.%d", &a, &b, &c, &ip);
 
 	char msg[256];
-	sprintf(msg, "10001 %d %d",ip,networkManager->GPS_AHRS_ROBOT_PORT_IN);
+	sprintf(msg, "10001 %d %d",ip,networkManager->GPS_AHRS_ROBOT_SIM_PORT_IN);
 	cmd->send_message(msg, strlen(msg));
 
 	sleep(1);
@@ -163,7 +166,7 @@ void GPS_AHRS::read_sim_tlm()
 	int ret;
 
 	do{
-		ret=tlmSim->recv_message((char*)&tp);
+		ret=tlm->recv_message((char*)&tp);
 		if (ret>0)
 		{
 			/*

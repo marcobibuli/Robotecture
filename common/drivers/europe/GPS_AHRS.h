@@ -9,13 +9,13 @@
 #define DRIVERS_GPS_AHRS_H_
 
 
-#include "Device.h"
-#include "../generic/custom_types.h"
-#include "../generic/RobotMath.h"
-#include "../network/CommLink.h"
-#include "../data/GPS_AHRS_status.h"
-#include "../data/Time_status.h"
-#include "../data/DataAccess.h"
+#include "../Device.h"
+#include "../../generic/custom_types.h"
+#include "../../generic/RobotMath.h"
+#include "../../network/CommLink.h"
+#include "../../data/GPS_AHRS_status.h"
+#include "../../data/Time_status.h"
+#include "../../data/DataAccess.h"
 
 
 struct GPS_AHRS_Sim_Data

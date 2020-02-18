@@ -37,9 +37,6 @@ FOG::FOG(const char *name,NetworkManager &nm, DataAccess<Time_status>& Time_acce
 
 FOG::~FOG()
 {
-	tlmSim->terminate();
-	delete tlmSim;
-
 	delete NavData;
 	delete RobotNavData;
 }
@@ -53,7 +50,7 @@ int FOG::init_sim()
 	device_status = DEVICE_RUNNING;
 
 	mpADatagram = new CommLink("FOGSim_tlm", UDP_PURE);
-	mpADatagram->open( networkManager->ROBOT_IP, networkManager->FOG_ROBOT_PORT_IN,
+	mpADatagram->open( networkManager->ROBOT_IP, networkManager->FOG_ROBOT_SIM_PORT_IN,
 		               networkManager->SIM_IP, networkManager->FOG_SIM_PORT_OUT );
 	mpADatagram->create();
 

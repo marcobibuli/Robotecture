@@ -77,12 +77,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <LocalRemoteCopySources>true</LocalRemoteCopySources>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\common\data\Status.cpp" />
     <ClCompile Include="..\common\drivers\Device.cpp" />
+    <ClCompile Include="..\common\drivers\europe\GPS_AHRS.cpp" />
+    <ClCompile Include="..\common\drivers\europe\hardwareLib\e-URoPelib.cpp" />
+    <ClCompile Include="..\common\drivers\europe\IO_europe.cpp" />
     <ClCompile Include="..\common\drivers\FOG.cpp" />
-    <ClCompile Include="..\common\drivers\GPS_AHRS.cpp" />
     <ClCompile Include="..\common\generic\matrix.cpp" />
     <ClCompile Include="..\common\generic\RobotMath.cpp" />
     <ClCompile Include="..\common\generic\RobotThread.cpp" />
@@ -92,16 +97,26 @@
     <ClCompile Include="Europe_commands.cpp" />
     <ClCompile Include="Europe_telemetry.cpp" />
     <ClCompile Include="main_europe.cpp" />
+    <ClCompile Include="NGC.cpp" />
+    <ClCompile Include="Tasks.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\data\DataAccess.h" />
+    <ClInclude Include="..\common\data\Filter_Ang_status.h" />
     <ClInclude Include="..\common\data\FOG_status.h" />
     <ClInclude Include="..\common\data\GPS_AHRS_status.h" />
+    <ClInclude Include="..\common\data\IO_europe_status.h" />
+    <ClInclude Include="..\common\data\NGC_status.h" />
     <ClInclude Include="..\common\data\Status.h" />
+    <ClInclude Include="..\common\data\Task_status.h" />
     <ClInclude Include="..\common\data\Time_status.h" />
     <ClInclude Include="..\common\drivers\Device.h" />
+    <ClInclude Include="..\common\drivers\europe\GPS_AHRS.h" />
+    <ClInclude Include="..\common\drivers\europe\hardwareLib\definitions.h" />
+    <ClInclude Include="..\common\drivers\europe\hardwareLib\e-URoPelib.h" />
+    <ClInclude Include="..\common\drivers\europe\hardwareLib\globals.h" />
+    <ClInclude Include="..\common\drivers\europe\IO_europe.h" />
     <ClInclude Include="..\common\drivers\FOG.h" />
-    <ClInclude Include="..\common\drivers\GPS_AHRS.h" />
     <ClInclude Include="..\common\drivers\Int24.h" />
     <ClInclude Include="..\common\generic\custom_types.h" />
     <ClInclude Include="..\common\generic\define.h" />
@@ -114,9 +129,18 @@
     <ClInclude Include="..\common\network\Message.h" />
     <ClInclude Include="..\common\network\MessageNumberGenerator.h" />
     <ClInclude Include="..\common\network\NetworkManager.h" />
+    <ClInclude Include="..\common\tasks\ActualAngFromFilter.h" />
+    <ClInclude Include="..\common\tasks\ActualAngFromRaw.h" />
+    <ClInclude Include="..\common\tasks\ActualHorPosFromRaw.h" />
+    <ClInclude Include="..\common\tasks\AngFilter.h" />
+    <ClInclude Include="..\common\tasks\RawAngFromAHRS.h" />
+    <ClInclude Include="..\common\tasks\RawAngFromFOG.h" />
+    <ClInclude Include="..\common\tasks\RobotTask.h" />
     <ClInclude Include="Europe_commands.h" />
     <ClInclude Include="Europe_status.h" />
     <ClInclude Include="Europe_telemetry.h" />
+    <ClInclude Include="NGC.h" />
+    <ClInclude Include="Tasks.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config\Actuator.cfg" />
@@ -131,6 +155,7 @@
     <None Include="config\HorPosFilter.cfg" />
     <None Include="config\HorVelControl.cfg" />
     <None Include="config\HorVelFilter.cfg" />
+    <None Include="config\IO.cfg" />
     <None Include="config\network.cfg" />
     <None Include="config\PathFollowing_FA.cfg" />
     <None Include="config\PathFollowing_UA.cfg" />
@@ -138,9 +163,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <ClCompile>
       <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <LibraryDependencies>pthread;rt;m;%(LibraryDependencies)</LibraryDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

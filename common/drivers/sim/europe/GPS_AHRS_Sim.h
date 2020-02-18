@@ -10,12 +10,12 @@
 
 #include <unistd.h>
 #include <math.h>
-#include "DeviceSim.h"
-#include "SimStatus.h"
-#include "../../generic/custom_types.h"
-#include "../../network/CommLink.h"
-#include "../GPS_AHRS.h"
-#include "../../data/GPS_AHRS_status.h"
+#include "../DeviceSim.h"
+#include "../SimStatus.h"
+#include "../../../generic/custom_types.h"
+#include "../../../network/CommLink.h"
+#include "../../europe/GPS_AHRS.h"
+#include "../../../data/GPS_AHRS_status.h"
 
 
 

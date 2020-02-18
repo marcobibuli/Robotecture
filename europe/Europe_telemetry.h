@@ -16,19 +16,29 @@
 #include "../common/network/NetworkManager.h"
 #include "../common/network/CommLink.h"
 
+#include "../common/data/FOG_status.h"
 #include "../common/data/GPS_AHRS_status.h"
 
+#include "../common/data/NGC_status.h"
 
 
-
-
+# pragma pack (push, 1)
 struct TLM_packet
 {
+	IO_europe_tlm_packet io;
 	FOG_tlm_packet fog;
 	GPS_AHRS_tlm_packet gps_ahrs;
 
-};
+	NGC_tlm_packet ngc;
 
+	Task_tlm_packet raw_Ang_From_FOG;
+	Task_tlm_packet raw_Ang_From_AHRS;
+	Task_tlm_packet actual_Ang_From_Raw;
+	Task_tlm_packet actual_Ang_From_Filter;
+
+	Filter_Ang_tlm_packet filter_Ang;
+};
+# pragma pack (pop)
 
 
 class Europe_telemetry :public RobotThread

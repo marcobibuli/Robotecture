@@ -24,7 +24,7 @@ typedef unsigned long  ulong;
 
 // double <-> int convertion factors
 
-#define IO_channels_factor (100000.0)
+#define IO_factor (100000.0)
 #define Motors_factor (100000.0)
 #define FOG_factor (100000.0)
 #define GPS_factor (100000000.0)

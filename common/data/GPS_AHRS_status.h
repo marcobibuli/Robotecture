@@ -12,7 +12,7 @@
 #include "../generic/custom_types.h"
 #include "../generic/Variable.h"
 
-
+# pragma pack (push, 1)
 struct GPS_AHRS_tlm_packet
 {
 	int64 roll;
@@ -43,6 +43,7 @@ struct GPS_AHRS_tlm_packet
 	int64 ahrs_status;
 	int64 gps_status;
 };
+# pragma pack (pop)
 
 class GPS_AHRS_status
 {
