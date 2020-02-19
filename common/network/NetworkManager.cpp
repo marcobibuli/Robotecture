@@ -58,17 +58,70 @@ NetworkManager::NetworkManager()
 	ACTUATOR_POW_EN_ROBOT_IN = 0;
 	ACTUATOR_POW_EN_HMI_OUT = 0;
 
+
+
 	GPS_AHRS_ROBOT_SIM_PORT_IN=0;
 	GPS_AHRS_ROBOT_SIM_PORT_OUT=0;
 	GPS_AHRS_SIM_PORT_IN=0;
 	GPS_AHRS_SIM_PORT_OUT=0;
-	
+	GPS_AHRS_ROBOT_HMI_PORT_IN = 0;
+	GPS_AHRS_ROBOT_HMI_PORT_OUT = 0;
+	GPS_AHRS_HMI_PORT_IN = 0;
+	GPS_AHRS_HMI_PORT_OUT = 0;
 
 	FOG_ROBOT_SIM_PORT_IN=0;
 	FOG_ROBOT_SIM_PORT_OUT=0;
 	FOG_SIM_PORT_IN=0;
 	FOG_SIM_PORT_OUT=0;
+	FOG_ROBOT_HMI_PORT_IN = 0;
+	FOG_ROBOT_HMI_PORT_OUT = 0;
+	FOG_HMI_PORT_IN = 0;
+	FOG_HMI_PORT_OUT = 0;
 
+	DVL_ROBOT_SIM_PORT_IN = 0;
+	DVL_ROBOT_SIM_PORT_OUT = 0;
+	DVL_SIM_PORT_IN = 0;
+	DVL_SIM_PORT_OUT = 0;
+	DVL_ROBOT_HMI_PORT_IN = 0;
+	DVL_ROBOT_HMI_PORT_OUT = 0;
+	DVL_HMI_PORT_IN = 0;
+	DVL_HMI_PORT_OUT = 0;
+
+	CTD_ROBOT_SIM_PORT_IN = 0;
+	CTD_ROBOT_SIM_PORT_OUT = 0;
+	CTD_SIM_PORT_IN = 0;
+	CTD_SIM_PORT_OUT = 0;
+	CTD_ROBOT_HMI_PORT_IN = 0;
+	CTD_ROBOT_HMI_PORT_OUT = 0;
+	CTD_HMI_PORT_IN = 0;
+	CTD_HMI_PORT_OUT = 0;
+
+	PA500_ROBOT_SIM_PORT_IN = 0;
+	PA500_ROBOT_SIM_PORT_OUT = 0;
+	PA500_SIM_PORT_IN = 0;
+	PA500_SIM_PORT_OUT = 0;
+	PA500_ROBOT_HMI_PORT_IN = 0;
+	PA500_ROBOT_HMI_PORT_OUT = 0;
+	PA500_HMI_PORT_IN = 0;
+	PA500_HMI_PORT_OUT = 0;
+
+	ECHOLOGGER_ROBOT_SIM_PORT_IN = 0;
+	ECHOLOGGER_ROBOT_SIM_PORT_OUT = 0;
+	ECHOLOGGER_SIM_PORT_IN = 0;
+	ECHOLOGGER_SIM_PORT_OUT = 0;
+	ECHOLOGGER_ROBOT_HMI_PORT_IN = 0;
+	ECHOLOGGER_ROBOT_HMI_PORT_OUT = 0;
+	ECHOLOGGER_HMI_PORT_IN = 0;
+	ECHOLOGGER_HMI_PORT_OUT = 0;
+
+	PINGER_ROBOT_SIM_PORT_IN = 0;
+	PINGER_ROBOT_SIM_PORT_OUT = 0;
+	PINGER_SIM_PORT_IN = 0;
+	PINGER_SIM_PORT_OUT = 0;
+	PINGER_ROBOT_HMI_PORT_IN = 0;
+	PINGER_ROBOT_HMI_PORT_OUT = 0;
+	PINGER_HMI_PORT_IN = 0;
+	PINGER_HMI_PORT_OUT = 0;
 
 
 	NGC_ROBOT_HMI_PORT_IN = 0;
@@ -82,40 +135,7 @@ NetworkManager::NetworkManager()
 	TASKS_HMI_PORT_OUT = 0;
 	
 
-	DVL_ROBOT_PORT_IN=0;
-	DVL_HMI_PORT_IN=0;
-	DVL_ROBOT_PORT_OUT=0;
-	DVL_HMI_PORT_OUT=0;
-	DVL_SIM_PORT_IN=0;
-	DVL_SIM_PORT_OUT=0;
-	DVL_SIM_ROBOT_PORT_IN=0;
-	DVL_SIM_ROBOT_PORT_OUT=0;
 
-	CTD_ROBOT_PORT_IN=0;
-	CTD_HMI_PORT_IN=0;
-	CTD_ROBOT_PORT_OUT=0;
-	CTD_HMI_PORT_OUT=0;
-	CTD_SIM_PORT_IN=0;
-	CTD_SIM_PORT_OUT=0;
-	CTD_SIM_ROBOT_PORT_IN=0;
-	CTD_SIM_ROBOT_PORT_OUT=0;
-
-	PA500_ROBOT_PORT_IN=0;
-	PA500_HMI_PORT_IN=0;
-	PA500_ROBOT_PORT_OUT=0;
-	PA500_HMI_PORT_OUT=0;
-	PA500_SIM_PORT_IN=0;
-	PA500_SIM_PORT_OUT=0;
-	PA500_SIM_ROBOT_PORT_IN=0;
-	PA500_SIM_ROBOT_PORT_OUT=0;
-
-	ECHOLOGGER_ROBOT_PORT_IN=0;
-	ECHOLOGGER_PORT_OUT=0;
-
-	PINGER_ROBOT_PORT_IN=0;
-	PINGER_HMI_PORT_IN=0;
-	PINGER_ROBOT_PORT_OUT=0;
-	PINGER_HMI_PORT_OUT=0;
 
 	
 	
@@ -270,43 +290,53 @@ int NetworkManager::init(const char *name_dir_file)
 			if (strcmp(var, "FOG_SIM_PORT_OUT") == 0) FOG_SIM_PORT_OUT = (uint16)atoi(value);
 			if (strcmp(var, "FOG_HMI_PORT_IN") == 0) FOG_HMI_PORT_IN = (uint16)atoi(value);
 			if (strcmp(var, "FOG_HMI_PORT_OUT") == 0) FOG_HMI_PORT_OUT = (uint16)atoi(value);
+
+			if (strcmp(var, "DVL_ROBOT_SIM_PORT_IN") == 0) DVL_ROBOT_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "DVL_ROBOT_SIM_PORT_OUT") == 0) DVL_ROBOT_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "DVL_ROBOT_HMI_PORT_IN") == 0) DVL_ROBOT_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "DVL_ROBOT_HMI_PORT_OUT") == 0) DVL_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "DVL_SIM_PORT_IN") == 0) DVL_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "DVL_SIM_PORT_OUT") == 0) DVL_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "DVL_HMI_PORT_IN") == 0) DVL_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "DVL_HMI_PORT_OUT") == 0) DVL_HMI_PORT_OUT = (uint16)atoi(value);
+
+			if (strcmp(var, "CTD_ROBOT_SIM_PORT_IN") == 0) CTD_ROBOT_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "CTD_ROBOT_SIM_PORT_OUT") == 0) CTD_ROBOT_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "CTD_ROBOT_HMI_PORT_IN") == 0) CTD_ROBOT_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "CTD_ROBOT_HMI_PORT_OUT") == 0) CTD_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "CTD_SIM_PORT_IN") == 0) CTD_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "CTD_SIM_PORT_OUT") == 0) CTD_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "CTD_HMI_PORT_IN") == 0) CTD_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "CTD_HMI_PORT_OUT") == 0) CTD_HMI_PORT_OUT = (uint16)atoi(value);
+
+			if (strcmp(var, "PA500_ROBOT_SIM_PORT_IN") == 0) PA500_ROBOT_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "PA500_ROBOT_SIM_PORT_OUT") == 0) PA500_ROBOT_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "PA500_ROBOT_HMI_PORT_IN") == 0) PA500_ROBOT_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "PA500_ROBOT_HMI_PORT_OUT") == 0) PA500_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "PA500_SIM_PORT_IN") == 0) PA500_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "PA500_SIM_PORT_OUT") == 0) PA500_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "PA500_HMI_PORT_IN") == 0) PA500_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "PA500_HMI_PORT_OUT") == 0) PA500_HMI_PORT_OUT = (uint16)atoi(value);
 			
+			if (strcmp(var, "ECHOLOGGER_ROBOT_SIM_PORT_IN") == 0) ECHOLOGGER_ROBOT_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "ECHOLOGGER_ROBOT_SIM_PORT_OUT") == 0) ECHOLOGGER_ROBOT_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "ECHOLOGGER_ROBOT_HMI_PORT_IN") == 0) ECHOLOGGER_ROBOT_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "ECHOLOGGER_ROBOT_HMI_PORT_OUT") == 0) ECHOLOGGER_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "ECHOLOGGER_SIM_PORT_IN") == 0) ECHOLOGGER_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "ECHOLOGGER_SIM_PORT_OUT") == 0) ECHOLOGGER_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "ECHOLOGGER_HMI_PORT_IN") == 0) ECHOLOGGER_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "ECHOLOGGER_HMI_PORT_OUT") == 0) ECHOLOGGER_HMI_PORT_OUT = (uint16)atoi(value);
 
+			if (strcmp(var, "PINGER_ROBOT_SIM_PORT_IN") == 0) PINGER_ROBOT_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "PINGER_ROBOT_SIM_PORT_OUT") == 0) PINGER_ROBOT_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "PINGER_ROBOT_HMI_PORT_IN") == 0) PINGER_ROBOT_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "PINGER_ROBOT_HMI_PORT_OUT") == 0) PINGER_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "PINGER_SIM_PORT_IN") == 0) PINGER_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "PINGER_SIM_PORT_OUT") == 0) PINGER_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "PINGER_HMI_PORT_IN") == 0) PINGER_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "PINGER_HMI_PORT_OUT") == 0) PINGER_HMI_PORT_OUT = (uint16)atoi(value);
 
-			if (strcmp(var,"DVL_ROBOT_PORT_IN")==0) DVL_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"DVL_HMI_PORT_IN")==0) DVL_HMI_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"DVL_SIM_PORT_IN")==0) DVL_SIM_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"DVL_SIM_ROBOT_PORT_IN")==0) DVL_SIM_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"DVL_ROBOT_PORT_OUT")==0) DVL_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"DVL_HMI_PORT_OUT")==0) DVL_HMI_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"DVL_SIM_PORT_OUT")==0) DVL_SIM_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"DVL_SIM_ROBOT_PORT_OUT")==0) DVL_SIM_ROBOT_PORT_OUT= (uint16)atoi(value);
-
-			if (strcmp(var,"PINGER_ROBOT_PORT_IN")==0) PINGER_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"PINGER_HMI_PORT_IN")==0) PINGER_HMI_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"PINGER_ROBOT_PORT_OUT")==0) PINGER_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"PINGER_HMI_PORT_OUT")==0) PINGER_HMI_PORT_OUT= (uint16)atoi(value);
-
-			if (strcmp(var,"CTD_ROBOT_PORT_IN")==0) CTD_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"CTD_HMI_PORT_IN")==0) CTD_HMI_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"CTD_SIM_PORT_IN")==0) CTD_SIM_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"CTD_SIM_ROBOT_PORT_IN")==0) CTD_SIM_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"CTD_ROBOT_PORT_OUT")==0) CTD_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"CTD_HMI_PORT_OUT")==0) CTD_HMI_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"CTD_SIM_PORT_OUT")==0) CTD_SIM_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"CTD_SIM_ROBOT_PORT_OUT")==0) CTD_SIM_ROBOT_PORT_OUT= (uint16)atoi(value);
-
-			if (strcmp(var,"PA500_ROBOT_PORT_IN")==0) PA500_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"PA500_HMI_PORT_IN")==0) PA500_HMI_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"PA500_SIM_PORT_IN")==0) PA500_SIM_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"PA500_SIM_ROBOT_PORT_IN")==0) PA500_SIM_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"PA500_ROBOT_PORT_OUT")==0) PA500_ROBOT_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"PA500_HMI_PORT_OUT")==0) PA500_HMI_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"PA500_SIM_PORT_OUT")==0) PA500_SIM_PORT_OUT= (uint16)atoi(value);
-			if (strcmp(var,"PA500_SIM_ROBOT_PORT_OUT")==0) PA500_SIM_ROBOT_PORT_OUT= (uint16)atoi(value);
-
-			if (strcmp(var,"ECHOLOGGER_ROBOT_PORT_IN")==0) ECHOLOGGER_ROBOT_PORT_IN= (uint16)atoi(value);
-			if (strcmp(var,"ECHOLOGGER_PORT_OUT")==0) ECHOLOGGER_PORT_OUT = (uint16)atoi(value);
+		
 
 			if (strcmp(var,"NGC_ROBOT_HMI_PORT_IN")==0) NGC_ROBOT_HMI_PORT_IN = (uint16)atoi(value);
 			if (strcmp(var, "NGC_ROBOT_HMI_PORT_OUT") == 0) NGC_ROBOT_HMI_PORT_OUT = (uint16)atoi(value);

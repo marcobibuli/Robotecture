@@ -229,6 +229,20 @@ void IO_europeSim::setStatus()
 	s->Vhrl=analogOutput[EUROPE_DA_MOTOR_HRL_VREF];
 	s->Vhrr=analogOutput[EUROPE_DA_MOTOR_HRR_VREF];
 
+
+
+	if (digitalInput[EUROPE_DIO_DVL_POWER] == 1) s->status_dvl = DEVICE_RUNNING;
+	else s->status_dvl = DEVICE_OFF;
+
+	if (digitalInput[EUROPE_DIO_EVOLOGICS_MODEM_POWER] == 1) s->status_pinger = DEVICE_RUNNING;
+	else s->status_pinger = DEVICE_OFF;
+
+	if (digitalInput[EUROPE_DIO_PA500_1_POWER] == 1) s->status_pa500 = DEVICE_RUNNING;
+	else s->status_pa500 = DEVICE_OFF;
+
+	if (digitalInput[EUROPE_DIO_PA500_2_POWER] == 1) s->status_echo = DEVICE_RUNNING;
+	else s->status_echo = DEVICE_OFF;
+
 	//printf("vhfl: %lf\n",simStatus->Vhfl);
 }
 

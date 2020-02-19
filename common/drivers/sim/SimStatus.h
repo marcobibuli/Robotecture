@@ -53,7 +53,13 @@ class SimStatus:public RobotThread
 		double vx_sea_current,vy_sea_current;
 		double u_sea_current,v_sea_current;
 
-		double altitude;	
+		double altitude;
+
+
+		int status_dvl=0;
+		int status_pinger=0;
+		int status_pa500=0;
+		int status_echo=0;
 };
 
 

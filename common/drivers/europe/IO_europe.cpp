@@ -9,7 +9,7 @@
 #include "IO_europe.h"
 
 
-IO_europe::IO_europe(const char *name,NetworkManager &nm, DataAccess<Time_status>& Time_access, DataAccess<IO_europe_status>& IO_access): Device(name,SCHED_FIFO,IO_THREAD_PRIORITY,start_io_europe,nm)
+IO_europe::IO_europe(const char *name,NetworkManager &nm, DataAccess<IO_europe_status>& IO_access, DataAccess<Time_status>& Time_access): Device(name,SCHED_FIFO,IO_THREAD_PRIORITY,start_io_europe,nm)
 {
 	strcpy(configFileName,CONFIGURATION_IO_FILE);
 

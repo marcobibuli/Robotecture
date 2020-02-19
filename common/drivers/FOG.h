@@ -92,7 +92,7 @@ class FOG:public Device
 
 
 	public:
-		FOG(const char *name,NetworkManager &nm, DataAccess<Time_status>& Time_access, DataAccess<FOG_status>& Fog_access);
+		FOG(const char *name,NetworkManager &nm, DataAccess<FOG_status>& Fog_access,DataAccess<Time_status>& Time_access);
 		~FOG();
 
 		virtual int init_sim();

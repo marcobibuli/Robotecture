@@ -147,6 +147,7 @@ void EuropeSim::execute()
 		computeForceTorque(vref);
 
 		tr = 1.0;
+		fu = 10.0;
 
 		//printf("hfl: %lf   hfr: %lf   hrl: %lf   hrr: %lf\n",Vhfl,Vhfr,Vhrl,Vhrr);
 		//printf("fu: %lf   fv: %lf   fw: %lf   tx: %lf   ty: %lf   tz: %lf\n",fu,fv,fw,tx,ty,tz);
@@ -228,7 +229,7 @@ void EuropeSim::execute()
 
 		xDot = eta_dot(0, 0); yDot = eta_dot(1, 0); zDot = eta_dot(2, 0);
 
-		printf("x: %lf   y: %lf   z: %lf      phi: %lf   theta: %lf   psi: %lf\n", x, y, z, phi*180.0/M_PI, theta * 180.0 / M_PI, psi * 180.0 / M_PI);
+		//printf("x: %lf   y: %lf   z: %lf      phi: %lf   theta: %lf   psi: %lf\n", x, y, z, phi*180.0/M_PI, theta * 180.0 / M_PI, psi * 180.0 / M_PI);
 
 		nanosleep(&tSleep,NULL);
 	}

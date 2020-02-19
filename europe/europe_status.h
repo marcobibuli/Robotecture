@@ -18,11 +18,17 @@
 #include "../common/data/IO_europe_status.h"
 #include "../common/data/FOG_status.h"
 #include "../common/data/GPS_AHRS_status.h"
+#include "../common/data/DVL_status.h"
+#include "../common/data/CTD_status.h"
+#include "../common/data/PA500_status.h"
+#include "../common/data/Echologger_status.h"
+#include "../common/data/Pinger_status.h"
 
 #include "../common/data/NGC_status.h"
 #include "../common/data/Task_status.h"
 
 #include "../common/data/Filter_Ang_status.h"
+//#include "../common/data/Filter_HorVel_status.h"
 
 
 class Europe_status :public Status
@@ -38,6 +44,11 @@ class Europe_status :public Status
 		DataAccess<IO_europe_status> io_status;
 		DataAccess<FOG_status> fog_status;
 		DataAccess<GPS_AHRS_status> gps_ahrs_status;
+		DataAccess<DVL_status> dvl_status;
+		DataAccess<DVL_status> ctd_status;
+		DataAccess<DVL_status> pa500_status;
+		DataAccess<DVL_status> echologger_status;
+		DataAccess<DVL_status> pinger_status;
 		DataAccess<NGC_status> ngc_status;
 	
 		DataAccess<Task_status> raw_Ang_From_FOG_status;

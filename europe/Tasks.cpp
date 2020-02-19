@@ -49,11 +49,12 @@ Tasks::Tasks(const char *name,NetworkManager &nm, Europe_status* Status):RobotTh
 	
 	
 
-	/*
+	
 	
 
 
 	// Horizontal velocity tasks
+	/*
 	horVelFilter = new HorVelFilter("HorVelFilter", status);
 	tasks.push_back(horVelFilter);
 	taskMap[i][0] = INIT_HOR_VEL_FILTER;  taskMap[i++][1] = tasks.size() - 1;
@@ -64,8 +65,8 @@ Tasks::Tasks(const char *name,NetworkManager &nm, Europe_status* Status):RobotTh
 
 	actualHorVelFromFilter = new ActualHorVelFromFilter("ActualHorVelFromFilter", status);
 	tasks.push_back(actualHorVelFromFilter);
-
-
+	*/
+	/*
 
 	// Horizontal position tasks
 	horPosFilter = new HorPosFilter("HorPosFilter", status);
@@ -299,19 +300,19 @@ void Tasks::read_cmd()
 	int ret;
 
 	do{
-		ret=cmd->recv_message((char*)&msg,true);
+		ret=cmd->recv_message((char*)&msg);
 		if (ret>0)
 		{
-			printf("msg.cmd_type %d\n", msg.cmd_type);
+			//printf("msg.cmd_type: %lli       msg.value: %lli\n", msg.cmd_type, msg.value);
 			switch(msg.cmd_type)
 			{
 
-				case SET_ANG_RAW_FILTER:		if (msg.value == SENSOR_RAW)
+				case SET_ANG_RAW_FILTER:		if (((TaskStatus)msg.value) == SENSOR_RAW)
 												{
 													actualAngFromFilter->setStatus(TASK_OFF);
 													actualAngFromRaw->setStatus(TASK_RUNNING);
 												}
-												else if (msg.value == SENSOR_FILTER)
+												else if (((TaskStatus)msg.value) == SENSOR_FILTER)
 												{
 													actualAngFromRaw->setStatus(TASK_OFF);
 													actualAngFromFilter->setStatus(TASK_RUNNING);
@@ -401,13 +402,14 @@ void Tasks::read_cmd()
 
 				case SET_ANG_SENSOR:     for(uint32 i=0;i<angSensorsToRaw.size();i++)
 					                     	 angSensorsToRaw[i]->setStatus(TASK_OFF);
-									 	 switch(msg.value)
+					
+										 switch(msg.value)
 									 	 {
-									 	 	 case SENSOR_FOG: rawAngFromFOG->setStatus(TASK_RUNNING);
-									 	 	 break;
+									 	 	 case SENSOR_FOG:      rawAngFromFOG->setStatus(TASK_RUNNING);
+									 	 	                       break;
 
-									 	 	 case SENSOR_GPS_AHRS: rawAngFromAHRS->setStatus(TASK_RUNNING);
-									 	 	 break;
+											 case SENSOR_GPS_AHRS: rawAngFromAHRS->setStatus(TASK_RUNNING);
+									 	 	                       break;
 									 	 };
 
 									 	 break;

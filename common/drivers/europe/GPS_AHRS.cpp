@@ -7,7 +7,7 @@
 
 #include "GPS_AHRS.h"
 
-GPS_AHRS::GPS_AHRS(const char *name,NetworkManager &nm, DataAccess<Time_status>& Time_access, DataAccess<GPS_AHRS_status>& Gps_ahrs_access):Device(name,SCHED_FIFO,GPS_AHRS_THREAD_PRIORITY,start_gps_ahrs,nm)
+GPS_AHRS::GPS_AHRS(const char *name,NetworkManager &nm, DataAccess<GPS_AHRS_status>& Gps_ahrs_access, DataAccess<Time_status>& Time_access):Device(name,SCHED_FIFO,GPS_AHRS_THREAD_PRIORITY,start_gps_ahrs,nm)
 {
 	strcpy(configFileName,CONFIGURATION_GPS_AHRS_FILE);
 

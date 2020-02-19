@@ -37,6 +37,12 @@ class EuropeSim:public SimStatus
 		int Svfl, Svfr, Svrl, Svrr, Shfl, Shfr, Shrl, Shrr;
 		double Vvfl, Vvfr, Vvrl, Vvrr, Vhfl, Vhfr, Vhrl, Vhrr;
 
+		
+
+
+
+
+
 		long port_bow_thr_power, port_stern_thr_power, stbd_bow_thr_power, stbd_stern_thr_power;
 		long port_bow_thr_enable, port_stern_thr_enable, stbd_bow_thr_enable, stbd_stern_thr_enable;
 

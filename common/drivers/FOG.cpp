@@ -8,7 +8,7 @@
 
 #include "FOG.h"
 
-FOG::FOG(const char *name,NetworkManager &nm, DataAccess<Time_status>& Time_access, DataAccess<FOG_status>& Fog_access):Device(name,SCHED_FIFO,FOG_THREAD_PRIORITY,start_fog,nm)
+FOG::FOG(const char *name,NetworkManager &nm, DataAccess<FOG_status>& Fog_access, DataAccess<Time_status>& Time_access):Device(name,SCHED_FIFO,FOG_THREAD_PRIORITY,start_fog,nm)
 {
 	mpADatagram=NULL;
 	networkManager=&nm;
@@ -39,6 +39,9 @@ FOG::~FOG()
 {
 	delete NavData;
 	delete RobotNavData;
+
+	mpADatagram->terminate();
+	delete mpADatagram;
 }
 
 

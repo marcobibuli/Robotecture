@@ -8,6 +8,7 @@
 
 #include "../common/drivers/sim/europe/IO_europeSim.h"
 #include "../common/drivers/sim/FOG_Sim.h"
+#include "../common/drivers/sim/DVL_Sim.h"
 #include "../common/drivers/sim/europe/GPS_AHRS_Sim.h"
 
 
@@ -21,6 +22,7 @@ SimStatus* simStatus = NULL;
 IO_europeSim* io_sim = NULL;
 FOG_Sim* fog_sim = NULL;
 GPS_AHRS_Sim* gps_ahrs_sim = NULL;
+DVL_Sim* dvl_sim = NULL;
 
 
 
@@ -101,6 +103,16 @@ void init()
 	}
 	else printf("*** GPS_AHRS_Sim init failed\n");
 
+	
+	dvl_sim = new DVL_Sim("DVL_Sim", networkManager, simStatus);
+	ret = dvl_sim->init();
+	if (ret == 0)
+	{
+		printf("DVL_Sim init ok\n");
+		dvl_sim->create();
+	}
+	else printf("*** DVL_Sim init failed\n");
+	
 }
 
 
@@ -114,4 +126,7 @@ void terminate()
 
 	gps_ahrs_sim->terminate();
 	delete gps_ahrs_sim;
+
+	dvl_sim->terminate();
+	delete dvl_sim;
 }

@@ -16,6 +16,8 @@
 #include "../common/drivers/europe/IO_europe.h"
 #include "../common/drivers/FOG.h"
 #include "../common/drivers/europe/GPS_AHRS.h"
+#include "../common/drivers/DVL.h"
+
 
 #include "NGC.h"
 #include "Tasks.h"
@@ -32,6 +34,7 @@ NetworkManager networkManager;
 IO_europe* io = NULL;
 FOG* fog = NULL;
 GPS_AHRS* gps_ahrs = NULL;
+DVL* dvl = NULL;
 
 NGC* ngc = NULL;
 Tasks* tasks = NULL;
@@ -154,7 +157,7 @@ void init_hardware()
 	int ret;
 
 
-	io = new IO_europe("IO_europe", networkManager, status->time_status, status->io_status);
+	io = new IO_europe("IO_europe", networkManager, status->io_status, status->time_status);
 	ret = io->init();
 	if (ret == 0)
 	{
@@ -169,7 +172,7 @@ void init_hardware()
 
 
 
-	fog = new FOG("FOG", networkManager, status->time_status, status->fog_status);
+	fog = new FOG("FOG", networkManager, status->fog_status, status->time_status);
 	ret = fog->init();
 	if (ret == 0)
 	{
@@ -184,7 +187,7 @@ void init_hardware()
 
 
 
-	gps_ahrs = new GPS_AHRS("GPS_AHRS", networkManager, status->time_status, status->gps_ahrs_status);
+	gps_ahrs = new GPS_AHRS("GPS_AHRS", networkManager, status->gps_ahrs_status, status->time_status);
 	ret = gps_ahrs->init();
 	if (ret == 0)
 	{
@@ -194,6 +197,21 @@ void init_hardware()
 	else
 	{
 		printf("*** GPS_AHRS init failed\n");
+		exit(-1);
+	}
+
+
+	
+	dvl = new DVL("DVL", networkManager, status->dvl_status, status->io_status, status->time_status);
+	ret = dvl->init();
+	if (ret == 0)
+	{
+		printf("DVL init ok\n");
+		dvl->create();
+	}
+	else
+	{
+		printf("*** DVL init failed\n");
 		exit(-1);
 	}
 }
@@ -210,4 +228,7 @@ void terminate_hardware()
 
 	gps_ahrs->terminate();
 	delete gps_ahrs;
+
+	dvl->terminate();
+	delete dvl;
 }

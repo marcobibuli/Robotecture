@@ -83,11 +83,14 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\common\data\Status.cpp" />
+    <ClCompile Include="..\common\drivers\CTD.cpp" />
     <ClCompile Include="..\common\drivers\Device.cpp" />
+    <ClCompile Include="..\common\drivers\DVL.cpp" />
     <ClCompile Include="..\common\drivers\europe\GPS_AHRS.cpp" />
     <ClCompile Include="..\common\drivers\europe\hardwareLib\e-URoPelib.cpp" />
     <ClCompile Include="..\common\drivers\europe\IO_europe.cpp" />
     <ClCompile Include="..\common\drivers\FOG.cpp" />
+    <ClCompile Include="..\common\drivers\sio.cpp" />
     <ClCompile Include="..\common\generic\matrix.cpp" />
     <ClCompile Include="..\common\generic\RobotMath.cpp" />
     <ClCompile Include="..\common\generic\RobotThread.cpp" />
@@ -101,16 +104,24 @@
     <ClCompile Include="Tasks.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\data\CTD_status.h" />
     <ClInclude Include="..\common\data\DataAccess.h" />
+    <ClInclude Include="..\common\data\DVL_status.h" />
+    <ClInclude Include="..\common\data\Echologger_status.h" />
     <ClInclude Include="..\common\data\Filter_Ang_status.h" />
+    <ClInclude Include="..\common\data\Filter_HorVel_status.h" />
     <ClInclude Include="..\common\data\FOG_status.h" />
     <ClInclude Include="..\common\data\GPS_AHRS_status.h" />
     <ClInclude Include="..\common\data\IO_europe_status.h" />
     <ClInclude Include="..\common\data\NGC_status.h" />
+    <ClInclude Include="..\common\data\PA500_status.h" />
+    <ClInclude Include="..\common\data\Pinger_status.h" />
     <ClInclude Include="..\common\data\Status.h" />
     <ClInclude Include="..\common\data\Task_status.h" />
     <ClInclude Include="..\common\data\Time_status.h" />
+    <ClInclude Include="..\common\drivers\CTD.h" />
     <ClInclude Include="..\common\drivers\Device.h" />
+    <ClInclude Include="..\common\drivers\DVL.h" />
     <ClInclude Include="..\common\drivers\europe\GPS_AHRS.h" />
     <ClInclude Include="..\common\drivers\europe\hardwareLib\definitions.h" />
     <ClInclude Include="..\common\drivers\europe\hardwareLib\e-URoPelib.h" />
@@ -118,6 +129,7 @@
     <ClInclude Include="..\common\drivers\europe\IO_europe.h" />
     <ClInclude Include="..\common\drivers\FOG.h" />
     <ClInclude Include="..\common\drivers\Int24.h" />
+    <ClInclude Include="..\common\drivers\sio.h" />
     <ClInclude Include="..\common\generic\custom_types.h" />
     <ClInclude Include="..\common\generic\define.h" />
     <ClInclude Include="..\common\generic\matrix.h" />
@@ -132,9 +144,15 @@
     <ClInclude Include="..\common\tasks\ActualAngFromFilter.h" />
     <ClInclude Include="..\common\tasks\ActualAngFromRaw.h" />
     <ClInclude Include="..\common\tasks\ActualHorPosFromRaw.h" />
+    <ClInclude Include="..\common\tasks\ActualHorVelFromFilter.h" />
+    <ClInclude Include="..\common\tasks\ActualHorVelFromRaw.h" />
     <ClInclude Include="..\common\tasks\AngFilter.h" />
+    <ClInclude Include="..\common\tasks\HorVelFilter.h" />
     <ClInclude Include="..\common\tasks\RawAngFromAHRS.h" />
     <ClInclude Include="..\common\tasks\RawAngFromFOG.h" />
+    <ClInclude Include="..\common\tasks\RawHorVelFromDVL.h" />
+    <ClInclude Include="..\common\tasks\RawHorVelFromGPS.h" />
+    <ClInclude Include="..\common\tasks\RawHorVelFromUSBL.h" />
     <ClInclude Include="..\common\tasks\RobotTask.h" />
     <ClInclude Include="Europe_commands.h" />
     <ClInclude Include="Europe_status.h" />
@@ -147,6 +165,7 @@
     <None Include="config\AngFilter.cfg" />
     <None Include="config\AngPosControl.cfg" />
     <None Include="config\AngVelControl.cfg" />
+    <None Include="config\DVL.cfg" />
     <None Include="config\Echologger.cfg" />
     <None Include="config\FOG.cfg" />
     <None Include="config\GPS_AHRS - biograd.cfg" />

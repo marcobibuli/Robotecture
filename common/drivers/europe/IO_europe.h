@@ -47,7 +47,7 @@ class IO_europe :public Device
 		DataAccess<IO_europe_status>* io_access = NULL;
 
 	public:
-		IO_europe(const char *name,NetworkManager &nm, DataAccess<Time_status>& Time_access, DataAccess<IO_europe_status>& IO_access);
+		IO_europe(const char *name,NetworkManager &nm, DataAccess<IO_europe_status>& IO_access, DataAccess<Time_status>& Time_access);
 		~IO_europe();
 
 		virtual int init_sim();

@@ -41,7 +41,7 @@ class GPS_AHRS:public Device
 		DataAccess<GPS_AHRS_status>* gps_ahrs_access = NULL;
 
 	public:
-		GPS_AHRS(const char *name,NetworkManager &nm, DataAccess<Time_status>& Time_access, DataAccess<GPS_AHRS_status>& Gps_ahrs_access);
+		GPS_AHRS(const char *name,NetworkManager &nm, DataAccess<GPS_AHRS_status>& Gps_ahrs_access, DataAccess<Time_status>& Time_access);
 		~GPS_AHRS();
 
 		virtual int init_sim();

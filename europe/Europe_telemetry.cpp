@@ -38,6 +38,7 @@ void Europe_telemetry::execute()
 	IO_europe_status io_status;
 	FOG_status fog_status;
 	GPS_AHRS_status gps_ahrs_status;
+	DVL_status dvl_status;
 
 	NGC_status ngc_status;
 
@@ -55,6 +56,7 @@ void Europe_telemetry::execute()
 		io_status = status->io_status.get();
 		fog_status = status->fog_status.get();
 		gps_ahrs_status = status->gps_ahrs_status.get();
+		dvl_status = status->dvl_status.get();
 		ngc_status = status->ngc_status.get();
 		raw_Ang_From_FOG_status = status->raw_Ang_From_FOG_status.get();
 		raw_Ang_From_AHRS_status = status->raw_Ang_From_AHRS_status.get();
@@ -66,6 +68,7 @@ void Europe_telemetry::execute()
 		io_status.compose_tlm_packet(msg.io);
 		fog_status.compose_tlm_packet(msg.fog);
 		gps_ahrs_status.compose_tlm_packet(msg.gps_ahrs);
+		dvl_status.compose_tlm_packet(msg.dvl);
 		ngc_status.compose_tlm_packet(msg.ngc);
 		raw_Ang_From_FOG_status.compose_tlm_packet(msg.raw_Ang_From_FOG);
 		raw_Ang_From_AHRS_status.compose_tlm_packet(msg.raw_Ang_From_AHRS);
