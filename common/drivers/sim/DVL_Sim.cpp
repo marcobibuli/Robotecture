@@ -133,8 +133,8 @@ void DVL_Sim::send_tlm()
 	msg.errorVelocity=(int64)(error_measure*DVL_factor);
 	msg.validVelocity=(int64)isValid;
 
-	printf("altitude: %lf   surgeVelocity: %lf   swayVelocity: %lf   valid: %d\n",altitude_measure,surge_measure,sway_measure,isValid);
-
+	//printf("altitude: %lf   surgeVelocity: %lf   swayVelocity: %lf   valid: %d\n",altitude_measure,surge_measure,sway_measure,isValid);
+	
 	if (simStatus->status_dvl==DEVICE_RUNNING)
 		tlm->send_message((char*)&msg,sizeof(msg));
 }

@@ -10,7 +10,7 @@
 #define PINGER_LINK_THREAD_PRIORITY 80
 
 
-PingerLink::PingerLink(const char *name,NetworkManager &nm,Status *s):Device(name,SCHED_FIFO,PINGER_LINK_THREAD_PRIORITY,start_PingerLink,nm,s)
+PingerLink::PingerLink(const char *name,NetworkManager &nm):Device(name,SCHED_FIFO,PINGER_LINK_THREAD_PRIORITY,start_PingerLink,nm)
 {
 	strcpy(configFileName,CONFIGURATION_PINGER_FILE);
 
@@ -38,13 +38,13 @@ PingerLink::~PingerLink()
 {
 	if (inLink!=NULL)
 	{
-		inLink->close();
+		inLink->terminate();
 		delete inLink;
 	}
 
 	if (outLink!=NULL)
 	{
-		outLink->close();
+		outLink->terminate();
 		delete outLink;
 	}
 }
@@ -56,12 +56,12 @@ int PingerLink::init_sim()
 
 	outLink=new CommLink( "Pinger_out" , OVERRIDE );
 	outLink->open( networkManager->ROBOT_IP , networkManager->PINGER_SIM_PORT_OUT ,
-			       networkManager->USBL_IP   , networkManager->USBL_SIM_PORT_IN );
+			       networkManager->USBL_IP  , networkManager->USBL_SIM_PORT_IN );
 	outLink->create();
 
 	inLink=new CommLink( "Pinger_in" , OVERRIDE );
 	inLink->open( networkManager->ROBOT_IP , networkManager->PINGER_SIM_PORT_IN ,
-			      networkManager->USBL_IP   , networkManager->USBL_SIM_PORT_OUT );
+			      networkManager->USBL_IP  , networkManager->USBL_SIM_PORT_OUT );
 	inLink->create();
 
 	device_status=DEVICE_OFF;

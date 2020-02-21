@@ -11,10 +11,10 @@
 
 CTD_Sim::CTD_Sim(const char *name,NetworkManager &nm,SimStatus *s): DeviceSim(name,SCHED_FIFO,CTD_THREAD_PRIORITY,start_ctdSim,nm,s)
 {
-	tlm=new CommLink( "CTDSim_tlm" , OVERRIDE );
+	tlm=new CommLink( "CTDSim_tlm" , UDP_PURE );
 
 	tlm->open( networkManager->SIM_IP , networkManager->CTD_SIM_PORT_OUT ,
-			   networkManager->ROBOT_IP , networkManager->CTD_SIM_ROBOT_PORT_IN );
+			   networkManager->ROBOT_IP , networkManager->CTD_ROBOT_SIM_PORT_IN );
 
 	tlm->create();
 
@@ -117,8 +117,6 @@ void CTD_Sim::send_tlm()
 	msg.temperature=(int64)(temperature_measure*FOG_factor);
 	msg.depth=(int64)(depth_measure*FOG_factor);
 
-
-	//printf("phi: %lf   theta: %lf   psi: %lf\n",phi_measure,theta_measure,psi_measure);
 
 	tlm->send_message((char*)&msg,sizeof(msg));
 }

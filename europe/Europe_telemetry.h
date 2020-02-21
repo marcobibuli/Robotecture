@@ -19,6 +19,10 @@
 #include "../common/data/FOG_status.h"
 #include "../common/data/GPS_AHRS_status.h"
 #include "../common/data/DVL_status.h"
+#include "../common/data/CTD_status.h"
+#include "../common/data/PA500_status.h"
+#include "../common/data/Echologger_status.h"
+#include "../common/data/Pinger_status.h"
 
 #include "../common/data/NGC_status.h"
 
@@ -30,6 +34,10 @@ struct TLM_packet
 	FOG_tlm_packet fog;
 	GPS_AHRS_tlm_packet gps_ahrs;
 	DVL_tlm_packet dvl;
+	CTD_tlm_packet ctd;
+	PA500_tlm_packet pa500;
+	Echologger_tlm_packet echologger;
+	Pinger_tlm_packet pinger;
 
 	NGC_tlm_packet ngc;
 

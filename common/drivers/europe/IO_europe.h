@@ -16,6 +16,10 @@
 #include "./hardwareLib/globals.h"
 #include "./hardwareLib/e-URoPelib.h"
 #include "../../data/IO_europe_status.h"
+#include "../../data/DVL_status.h"
+#include "../../data/PA500_status.h"
+#include "../../data/Echologger_status.h"
+#include "../../data/Pinger_status.h"
 #include "../../data/Time_status.h"
 #include "../../data/DataAccess.h"
 
@@ -45,9 +49,14 @@ class IO_europe :public Device
 	  	
 		DataAccess<Time_status>* time_access = NULL;
 		DataAccess<IO_europe_status>* io_access = NULL;
+		DataAccess<DVL_status>* dvl_access = NULL;
+		DataAccess<PA500_status>* pa500_access = NULL;
+		DataAccess<Echologger_status>* echologger_access = NULL;
+		DataAccess<Pinger_status>* pinger_access = NULL;
 
 	public:
-		IO_europe(const char *name,NetworkManager &nm, DataAccess<IO_europe_status>& IO_access, DataAccess<Time_status>& Time_access);
+		IO_europe(const char *name,NetworkManager &nm, DataAccess<IO_europe_status>& IO_access, DataAccess<DVL_status>& DVL_access, DataAccess<PA500_status>& PA500_access, 
+			                                           DataAccess<Echologger_status>& Echologger_access, DataAccess<Pinger_status>& Pinger_access, DataAccess<Time_status>& Time_access);
 		~IO_europe();
 
 		virtual int init_sim();

@@ -45,10 +45,10 @@ class Europe_status :public Status
 		DataAccess<FOG_status> fog_status;
 		DataAccess<GPS_AHRS_status> gps_ahrs_status;
 		DataAccess<DVL_status> dvl_status;
-		DataAccess<DVL_status> ctd_status;
-		DataAccess<DVL_status> pa500_status;
-		DataAccess<DVL_status> echologger_status;
-		DataAccess<DVL_status> pinger_status;
+		DataAccess<CTD_status> ctd_status;
+		DataAccess<PA500_status> pa500_status;
+		DataAccess<Echologger_status> echologger_status;
+		DataAccess<Pinger_status> pinger_status;
 		DataAccess<NGC_status> ngc_status;
 	
 		DataAccess<Task_status> raw_Ang_From_FOG_status;

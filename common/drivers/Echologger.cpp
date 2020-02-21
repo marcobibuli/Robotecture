@@ -9,10 +9,12 @@
 
 #include "Echologger.h"
 
-Echologger::Echologger(const char *name,NetworkManager &nm,Status *s):Device(name,SCHED_FIFO,ECHOLOGGER_THREAD_PRIORITY,start_echologger,nm,s)
+Echologger::Echologger(const char *name,NetworkManager &nm, DataAccess<Echologger_status>& Echologger_access, DataAccess<Time_status>& Time_access):Device(name,SCHED_FIFO,ECHOLOGGER_THREAD_PRIORITY,start_echologger,nm)
 {
 	strcpy(configFileName,CONFIGURATION_ECHOLOGGER_FILE);
 
+	time_access = &Time_access;
+	echologger_access = &Echologger_access;
 
 	range=-1.0;
 /*
@@ -21,10 +23,7 @@ Echologger::Echologger(const char *name,NetworkManager &nm,Status *s):Device(nam
 			   networkManager->HMI_IP   , networkManager->PA500_HMI_PORT_IN );
 	tlm->create();
 */
-	tlmSim=new CommLink( "Micron_tlmSim" , OVERRIDE );
-	tlmSim->open( networkManager->ROBOT_IP , networkManager->ECHOLOGGER_SIM_ROBOT_PORT_IN ,
-			      networkManager->SIM_IP   , networkManager->ECHOLOGGER_SIM_PORT_OUT );
-	tlmSim->create();
+	
 
 
 	measure_flag=0;
@@ -42,6 +41,11 @@ int Echologger::init_sim()
 	running_sim=true;
 
 	device_status=DEVICE_OFF;
+
+	tlmSim = new CommLink("Micron_tlmSim", OVERRIDE);
+	tlmSim->open(networkManager->ROBOT_IP, networkManager->ECHOLOGGER_ROBOT_SIM_PORT_IN,
+		         networkManager->SIM_IP, networkManager->ECHOLOGGER_SIM_PORT_OUT);
+	tlmSim->create();
 
 	return 0;
 }
@@ -66,7 +70,7 @@ void Echologger::execute_sim()
 	tSleep.tv_sec=ECHOLOGGER_SLEEP_SEC;
 	tSleep.tv_nsec=ECHOLOGGER_SLEEP_NSEC;
 
-	IO_status io_status;
+	Echologger_status echologger_status;
 
 
 
@@ -74,11 +78,11 @@ void Echologger::execute_sim()
 	{
 		read_sim_tlm();
 
-		io_status=status->io_status.get();
+		echologger_status = echologger_access->get();
 
-		if (io_status.tlm.digital[EUROPE_DIO_PA500_2_POWER]==0) device_status=DEVICE_OFF;
+		if (echologger_status .powered==0) device_status=DEVICE_OFF;
 
-		if ((io_status.tlm.digital)[EUROPE_DIO_PA500_2_POWER]==1 && device_status==DEVICE_OFF)
+		if (echologger_status.powered ==1 && device_status==DEVICE_OFF)
 		{
 			printf("Init Echologger\n");
 			usleep(500000);
@@ -86,7 +90,7 @@ void Echologger::execute_sim()
 			device_status=DEVICE_INIT;
 		}
 
-		if (io_status.tlm.digital[EUROPE_DIO_PA500_2_POWER]==1 && device_status!=DEVICE_OFF)
+		if (echologger_status.powered ==1 && device_status!=DEVICE_OFF)
 		{
 			if (range==0.0 || measure_flag==0)
 			{
@@ -120,7 +124,7 @@ void Echologger::read_sim_tlm()
 
 void Echologger::update_device_status(int r)
 {
-	if (r>0)
+	if (r>0 && device_status != DEVICE_OFF)
 	{
 		missed_receive_count=0;
 		device_status=DEVICE_RUNNING;
@@ -150,7 +154,7 @@ void Echologger::execute_act()
 	tSleep.tv_sec=ECHOLOGGER_SLEEP_SEC;
 	tSleep.tv_nsec=ECHOLOGGER_SLEEP_NSEC;
 
-	IO_status io_status;
+	Echologger_status echologger_status;
 
 
 	while(running_act)
@@ -201,21 +205,27 @@ void Echologger::execute_act()
 void Echologger::updateStatus()
 {
 	Time_status ts;
-	ts=status->time_status.get();
+	ts=time_access->get();
 
 	if (missed_receive_count==0) lastValidTimeStamp=ts.timeStamp;
 
 	Echologger_status echologger_status;
-	echologger_status=status->echologger_status.get();
+	echologger_status=echologger_access->get();
 
 	if (device_status!=DEVICE_OFF)
 	{
 		echologger_status.range.value=range;
+		
+		echologger_status.range.valid = true;
+		if (range<0.0) echologger_status.range.valid = false;
+
+		echologger_status.range.timeStamp = lastValidTimeStamp;
+
 		echologger_status.timeStamp=lastValidTimeStamp;
 	}
 
 	echologger_status.device_status=device_status;
-	status->echologger_status.set(echologger_status);
+	echologger_access->set(echologger_status);
 
 	//printf("status: %d     range: %lf\n",echologger_status.device_status,echologger_status.range.value);
 }
@@ -223,6 +233,7 @@ void Echologger::updateStatus()
 
 void Echologger::send_telemetry()
 {
+	/*
 	Echologger_tlm_packet msg;
 
 	Echologger_status echologger_status;
@@ -230,12 +241,10 @@ void Echologger::send_telemetry()
 
 	echologger_status.compose_tlm_packet(msg);
 
-	/*
-	msg.range=(int64)(range*PA500_factor);
-	msg.device_status=device_status;
-	*/
+	
 
 	tlm->send_message((char*)&msg,sizeof(msg));
+	*/
 }
 
 

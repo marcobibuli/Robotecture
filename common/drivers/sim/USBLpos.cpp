@@ -10,7 +10,7 @@
 
 USBLpos::USBLpos(const char *name,NetworkManager &nm,SimStatus *s): DeviceSim(name,SCHED_FIFO,USBL_POS_THREAD_PRIORITY,start_usblpos,nm,s)
 {
-	tlm=new CommLink( "USBLpos_Link" , OVERRIDE  );
+	tlm=new CommLink( "USBLpos_Link" , UDP_PURE  );
 
 	tlm->open( networkManager->SIM_IP  , networkManager->USBL_POS_SIM_PORT_OUT ,
 			   networkManager->USBL_IP , networkManager->USBL_POS_PORT_IN );
@@ -52,7 +52,7 @@ int USBLpos::init()
 
 	else
 	{
-		printf("GPS_AHRS_Sim::init - File error: %s\n",name_dir_file);
+		printf("USBLpos::init - File error: %s\n",name_dir_file);
 		return -1;
 	}
 

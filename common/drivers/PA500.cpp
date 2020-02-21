@@ -9,9 +9,12 @@
 
 #include "PA500.h"
 
-PA500alt::PA500alt(const char *name,NetworkManager &nm,Status *s):Device(name,SCHED_FIFO,PA500_THREAD_PRIORITY,start_pa500alt,nm,s)
+PA500alt::PA500alt(const char *name,NetworkManager &nm, DataAccess<PA500_status>& PA500_access, DataAccess<Time_status>& Time_access):Device(name,SCHED_FIFO,PA500_THREAD_PRIORITY,start_pa500alt,nm)
 {
 	strcpy(configFileName,CONFIGURATION_PA500_FILE);
+
+	time_access = &Time_access;
+	pa500_access = &PA500_access;
 
 	strcpy(pa500SerialDeviceName,pa500_serial_name);
 
@@ -22,10 +25,7 @@ PA500alt::PA500alt(const char *name,NetworkManager &nm,Status *s):Device(name,SC
 			   networkManager->HMI_IP   , networkManager->PA500_HMI_PORT_IN );
 	tlm->create();
 */
-	tlmSim=new CommLink( "PA500_tlmSim" , OVERRIDE );
-	tlmSim->open( networkManager->ROBOT_IP , networkManager->PA500_SIM_ROBOT_PORT_IN ,
-			      networkManager->SIM_IP   , networkManager->PA500_SIM_PORT_OUT );
-	tlmSim->create();
+	
 
 	pa500=NULL;
 
@@ -44,6 +44,11 @@ int PA500alt::init_sim()
 	running_sim=true;
 
 	device_status=DEVICE_OFF;
+
+	tlmSim = new CommLink("PA500_tlmSim", UDP_PURE);
+	tlmSim->open(networkManager->ROBOT_IP, networkManager->PA500_ROBOT_SIM_PORT_IN,
+		         networkManager->SIM_IP, networkManager->PA500_SIM_PORT_OUT);
+	tlmSim->create();
 
 	return 0;
 }
@@ -68,7 +73,7 @@ void PA500alt::execute_sim()
 	tSleep.tv_sec=PA500_SLEEP_SEC;
 	tSleep.tv_nsec=PA500_SLEEP_NSEC;
 
-	IO_status io_status;
+	PA500_status pa500_status;
 
 
 
@@ -76,11 +81,11 @@ void PA500alt::execute_sim()
 	{
 		read_sim_tlm();
 
-		io_status=status->io_status.get();
+		pa500_status = pa500_access->get();
 
-		if (io_status.tlm.digital[EUROPE_DIO_PA500_1_POWER]==0) device_status=DEVICE_OFF;
+		if (pa500_status.powered ==0) device_status=DEVICE_OFF;
 
-		if ((io_status.tlm.digital)[EUROPE_DIO_PA500_1_POWER]==1 && device_status==DEVICE_OFF)
+		if (pa500_status.powered ==1 && device_status==DEVICE_OFF)
 		{
 			printf("Init PA500\n");
 			usleep(500000);
@@ -88,7 +93,7 @@ void PA500alt::execute_sim()
 			device_status=DEVICE_INIT;
 		}
 
-		if (io_status.tlm.digital[EUROPE_DIO_PA500_1_POWER]==1 && device_status!=DEVICE_OFF)
+		if (pa500_status.powered ==1 && device_status!=DEVICE_OFF)
 		{
 			if (range==0.0 || measure_flag==0)
 			{
@@ -122,7 +127,7 @@ void PA500alt::read_sim_tlm()
 
 void PA500alt::update_device_status(int r)
 {
-	if (r>0)
+	if (r>0 && device_status != DEVICE_OFF)
 	{
 		missed_receive_count=0;
 		device_status=DEVICE_RUNNING;
@@ -152,16 +157,16 @@ void PA500alt::execute_act()
 	tSleep.tv_sec=PA500_SLEEP_SEC;
 	tSleep.tv_nsec=PA500_SLEEP_NSEC;
 
-	IO_status io_status;
+	PA500_status pa500_status;
 
 
 	while(running_act)
 	{
-		io_status=status->io_status.get();
+		pa500_status =pa500_access->get();
 
-		if (io_status.tlm.digital[EUROPE_DIO_PA500_1_POWER]==0) device_status=DEVICE_OFF;
+		if (pa500_status .powered==0) device_status=DEVICE_OFF;
 
-		if ((io_status.tlm.digital)[EUROPE_DIO_PA500_1_POWER]==1 && device_status==DEVICE_OFF)
+		if (pa500_status.powered==1 && device_status==DEVICE_OFF)
 		{
 
 			printf("Init PA500\n");
@@ -175,7 +180,7 @@ void PA500alt::execute_act()
 			device_status=DEVICE_INIT;
 		}
 
-		if (io_status.tlm.digital[EUROPE_DIO_PA500_1_POWER]==1 && device_status!=DEVICE_OFF)
+		if (pa500_status.powered ==1 && device_status!=DEVICE_OFF)
 		{
 			if (pa500_read(pa500,&range)==0) measure_flag=1;
 
@@ -203,41 +208,39 @@ void PA500alt::execute_act()
 void PA500alt::updateStatus()
 {
 	Time_status ts;
-	ts=status->time_status.get();
+	ts=time_access->get();
 
 	if (missed_receive_count==0) lastValidTimeStamp=ts.timeStamp;
 
 	PA500_status pa500_status;
-	pa500_status=status->pa500_status.get();
+	pa500_status=pa500_access->get();
 
 	if (device_status!=DEVICE_OFF)
 	{
-		pa500_status.range.value=range;
+		pa500_status.range.value = range;   pa500_status.range.valid = true;     pa500_status.range.timeStamp = lastValidTimeStamp;
 		pa500_status.timeStamp=lastValidTimeStamp;
 	}
 
 	pa500_status.device_status=device_status;
-	status->pa500_status.set(pa500_status);
+	pa500_access->set(pa500_status);
 
-	//printf("range: %lf\n",pa500_status.range);
+	//printf("range: %lf\n",pa500_status.range.value);
 }
 
 
 void PA500alt::send_telemetry()
 {
+	/*
 	PA500_tlm_packet msg;
 
 	PA500_status pa500_status;
-	pa500_status=status->pa500_status.get();
+	pa500_status = pa500_access->get();
 
 	pa500_status.compose_tlm_packet(msg);
 
-	/*
-	msg.range=(int64)(range*PA500_factor);
-	msg.device_status=device_status;
-	*/
 
 	tlm->send_message((char*)&msg,sizeof(msg));
+	*/
 }
 
 

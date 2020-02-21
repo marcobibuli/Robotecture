@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{e0a4f6d4-9acb-4398-b125-a8406d59c776}</ProjectGuid>
+    <ProjectGuid>{e648a7b3-c379-4789-a58e-5b2c28284bc3}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>europeSim</RootNamespace>
+    <RootNamespace>USBL</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -76,98 +76,39 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="..\common\data\Status.cpp" />
-    <ClCompile Include="..\common\drivers\CTD.cpp" />
     <ClCompile Include="..\common\drivers\Device.cpp" />
-    <ClCompile Include="..\common\drivers\DVL.cpp" />
-    <ClCompile Include="..\common\drivers\Echologger.cpp" />
-    <ClCompile Include="..\common\drivers\europe\GPS_AHRS.cpp" />
-    <ClCompile Include="..\common\drivers\europe\hardwareLib\e-URoPelib.cpp" />
-    <ClCompile Include="..\common\drivers\europe\IO_europe.cpp" />
-    <ClCompile Include="..\common\drivers\FOG.cpp" />
-    <ClCompile Include="..\common\drivers\PA500.cpp" />
-    <ClCompile Include="..\common\drivers\sim\CTD_Sim.cpp" />
-    <ClCompile Include="..\common\drivers\sim\DeviceSim.cpp" />
-    <ClCompile Include="..\common\drivers\sim\DVL_Sim.cpp" />
-    <ClCompile Include="..\common\drivers\sim\Echologger_Sim.cpp" />
-    <ClCompile Include="..\common\drivers\sim\europe\GPS_AHRS_Sim.cpp" />
-    <ClCompile Include="..\common\drivers\sim\europe\IO_europeSim.cpp" />
-    <ClCompile Include="..\common\drivers\sim\FOG_Sim.cpp" />
-    <ClCompile Include="..\common\drivers\sim\PA500_Sim.cpp" />
-    <ClCompile Include="..\common\drivers\sim\SimStatus.cpp" />
-    <ClCompile Include="..\common\drivers\sim\USBLpos.cpp" />
-    <ClCompile Include="..\common\drivers\sio.cpp" />
-    <ClCompile Include="..\common\generic\matrix.cpp" />
     <ClCompile Include="..\common\generic\RobotMath.cpp" />
     <ClCompile Include="..\common\generic\RobotThread.cpp" />
-    <ClCompile Include="..\common\generic\vector.cpp" />
     <ClCompile Include="..\common\network\CommLink.cpp" />
     <ClCompile Include="..\common\network\NetworkManager.cpp" />
-    <ClCompile Include="EuropeSim.cpp" />
-    <ClCompile Include="main_europeSim.cpp" />
+    <ClCompile Include="client.cpp" />
+    <ClCompile Include="main_usbl.cpp" />
+    <ClCompile Include="streamsocket.cpp" />
+    <ClCompile Include="UsblLink.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\data\CTD_status.h" />
-    <ClInclude Include="..\common\data\DataAccess.h" />
-    <ClInclude Include="..\common\data\DVL_status.h" />
-    <ClInclude Include="..\common\data\Echologger_status.h" />
-    <ClInclude Include="..\common\data\FOG_status.h" />
-    <ClInclude Include="..\common\data\GPS_AHRS_status.h" />
-    <ClInclude Include="..\common\data\IO_europe_status.h" />
-    <ClInclude Include="..\common\data\PA500_status.h" />
-    <ClInclude Include="..\common\data\Pinger_status.h" />
-    <ClInclude Include="..\common\data\Status.h" />
-    <ClInclude Include="..\common\data\Time_status.h" />
-    <ClInclude Include="..\common\drivers\CTD.h" />
     <ClInclude Include="..\common\drivers\Device.h" />
-    <ClInclude Include="..\common\drivers\DVL.h" />
-    <ClInclude Include="..\common\drivers\Echologger.h" />
-    <ClInclude Include="..\common\drivers\europe\GPS_AHRS.h" />
-    <ClInclude Include="..\common\drivers\europe\hardwareLib\definitions.h" />
-    <ClInclude Include="..\common\drivers\europe\hardwareLib\e-URoPelib.h" />
-    <ClInclude Include="..\common\drivers\europe\hardwareLib\globals.h" />
-    <ClInclude Include="..\common\drivers\europe\IO_europe.h" />
-    <ClInclude Include="..\common\drivers\FOG.h" />
-    <ClInclude Include="..\common\drivers\Int24.h" />
-    <ClInclude Include="..\common\drivers\PA500.h" />
-    <ClInclude Include="..\common\drivers\sim\CTD_Sim.h" />
-    <ClInclude Include="..\common\drivers\sim\DeviceSim.h" />
-    <ClInclude Include="..\common\drivers\sim\DVL_Sim.h" />
-    <ClInclude Include="..\common\drivers\sim\Echologger_Sim.h" />
-    <ClInclude Include="..\common\drivers\sim\europe\GPS_AHRS_Sim.h" />
-    <ClInclude Include="..\common\drivers\sim\europe\IO_europeSim.h" />
-    <ClInclude Include="..\common\drivers\sim\FOG_Sim.h" />
-    <ClInclude Include="..\common\drivers\sim\PA500_Sim.h" />
-    <ClInclude Include="..\common\drivers\sim\SimStatus.h" />
-    <ClInclude Include="..\common\drivers\sim\USBLpos.h" />
-    <ClInclude Include="..\common\drivers\sio.h" />
     <ClInclude Include="..\common\generic\custom_types.h" />
     <ClInclude Include="..\common\generic\define.h" />
-    <ClInclude Include="..\common\generic\matrix.h" />
     <ClInclude Include="..\common\generic\RobotMath.h" />
     <ClInclude Include="..\common\generic\RobotThread.h" />
-    <ClInclude Include="..\common\generic\Variable.h" />
-    <ClInclude Include="..\common\generic\vector.h" />
     <ClInclude Include="..\common\network\CommLink.h" />
     <ClInclude Include="..\common\network\Message.h" />
     <ClInclude Include="..\common\network\MessageNumberGenerator.h" />
     <ClInclude Include="..\common\network\NetworkManager.h" />
-    <ClInclude Include="EuropeSim.h" />
+    <ClInclude Include="client.h" />
+    <ClInclude Include="debug.h" />
+    <ClInclude Include="my_types.h" />
+    <ClInclude Include="streamsocket.h" />
+    <ClInclude Include="UsblLink.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\europe\config\GPS_AHRS.cfg" />
     <None Include="..\europe\config\network.cfg" />
-    <None Include="..\europe\config\sim\CTD.cfg" />
-    <None Include="..\europe\config\sim\DVL.cfg" />
-    <None Include="..\europe\config\sim\Echologger.cfg" />
-    <None Include="..\europe\config\sim\FOG.cfg" />
-    <None Include="..\europe\config\sim\GPS_AHRS.cfg" />
-    <None Include="..\europe\config\sim\PA500.cfg" />
-    <None Include="..\europe\config\sim\USBL.cfg" />
+    <None Include="config\USBL.cfg" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <Link>
-      <LibraryDependencies>pthread;m;rt;%(LibraryDependencies)</LibraryDependencies>
+      <LibraryDependencies>m;rt;pthread;%(LibraryDependencies)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -17,7 +17,10 @@
 #include "../common/drivers/FOG.h"
 #include "../common/drivers/europe/GPS_AHRS.h"
 #include "../common/drivers/DVL.h"
-
+#include "../common/drivers/CTD.h"
+#include "../common/drivers/PA500.h"
+#include "../common/drivers/Echologger.h"
+#include "../common/drivers/Pinger.h"
 
 #include "NGC.h"
 #include "Tasks.h"
@@ -35,6 +38,10 @@ IO_europe* io = NULL;
 FOG* fog = NULL;
 GPS_AHRS* gps_ahrs = NULL;
 DVL* dvl = NULL;
+CTD* ctd = NULL;
+PA500alt* pa500 = NULL;
+Echologger* echologger = NULL;
+Pinger* pinger = NULL;
 
 NGC* ngc = NULL;
 Tasks* tasks = NULL;
@@ -157,7 +164,7 @@ void init_hardware()
 	int ret;
 
 
-	io = new IO_europe("IO_europe", networkManager, status->io_status, status->time_status);
+	io = new IO_europe("IO_europe", networkManager, status->io_status, status->dvl_status, status->pa500_status, status->echologger_status, status->pinger_status, status->time_status);
 	ret = io->init();
 	if (ret == 0)
 	{
@@ -202,7 +209,7 @@ void init_hardware()
 
 
 	
-	dvl = new DVL("DVL", networkManager, status->dvl_status, status->io_status, status->time_status);
+	dvl = new DVL("DVL", networkManager, status->dvl_status, status->time_status);
 	ret = dvl->init();
 	if (ret == 0)
 	{
@@ -212,6 +219,66 @@ void init_hardware()
 	else
 	{
 		printf("*** DVL init failed\n");
+		exit(-1);
+	}
+
+
+
+	ctd = new CTD("CTD", networkManager, status->ctd_status, status->time_status);
+	ret = ctd->init();
+	if (ret == 0)
+	{
+		printf("CTD init ok\n");
+		ctd->create();
+	}
+	else
+	{
+		printf("*** CTD init failed\n");
+		exit(-1);
+	}
+
+
+
+	pa500 = new PA500alt("PA500", networkManager, status->pa500_status, status->time_status);
+	ret = pa500->init();
+	if (ret == 0)
+	{
+		printf("PA500 init ok\n");
+		pa500->create();
+	}
+	else
+	{
+		printf("*** PA500 init failed\n");
+		exit(-1);
+	}
+
+
+
+	echologger = new Echologger("Echologger", networkManager, status->echologger_status, status->time_status);
+	ret = echologger->init();
+	if (ret == 0)
+	{
+		printf("Echologger init ok\n");
+		echologger->create();
+	}
+	else
+	{
+		printf("*** Echologger init failed\n");
+		exit(-1);
+	}
+
+
+
+	pinger = new Pinger("Pinger", networkManager, status->pinger_status, status->time_status);
+	ret = pinger->init();
+	if (ret == 0)
+	{
+		printf("Pinger init ok\n");
+		pinger->create();
+	}
+	else
+	{
+		printf("*** Pinger init failed\n");
 		exit(-1);
 	}
 }
@@ -231,4 +298,16 @@ void terminate_hardware()
 
 	dvl->terminate();
 	delete dvl;
+
+	ctd->terminate();
+	delete dvl;
+
+	pa500->terminate();
+	delete pa500;
+
+	echologger->terminate();
+	delete echologger;
+
+	pinger->terminate();
+	delete pinger;
 }

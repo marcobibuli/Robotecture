@@ -9,11 +9,13 @@
 #define DRIVERS_ECHOLOGGER_H_
 
 #include "../drivers/Device.h"
-#include "../common/custom_types.h"
-#include "../common/RobotMath.h"
+#include "../generic/custom_types.h"
+#include "../generic/define.h"
+#include "../generic/RobotMath.h"
 #include "../network/CommLink.h"
-#include "../drivers/europe/hardwareLib/e-URoPelib.h"
 #include "../data/Echologger_status.h"
+#include "../data/Time_status.h"
+#include "../data/DataAccess.h"
 
 
 
@@ -23,8 +25,11 @@ class Echologger:public Device
 		double range;
 		int measure_flag;
 
+		DataAccess<Time_status>* time_access = NULL;
+		DataAccess<Echologger_status>* echologger_access = NULL;
+
 	public:
-		Echologger(const char *name,NetworkManager &nm,Status *s);
+		Echologger(const char *name,NetworkManager &nm, DataAccess<Echologger_status>& Echologger_access, DataAccess<Time_status>& Time_access);
 		~Echologger();
 
 		virtual int init_sim();

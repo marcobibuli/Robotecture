@@ -30,6 +30,8 @@ class PA500_status
 			device_status=d.device_status;
 			timeStamp=d.timeStamp;
 
+			powered = d.powered;
+
 			compose_tlm_packet(tlm_packet);
 		}
 
@@ -41,6 +43,8 @@ class PA500_status
 		int device_status;
 		int64 timeStamp;
 
+		int powered;
+
 		PA500_tlm_packet tlm_packet;
 
 
@@ -50,6 +54,8 @@ class PA500_status
 
 			device_status=0;
 			timeStamp=0;
+
+			powered = 0;
 
 			tlm_packet.range=0;
 			tlm_packet.device_status=0;

@@ -32,7 +32,7 @@ extern "C" {
 #define PRE extern
 #endif // __MAIN__
 
-	PRE char _debugString[256];
+	
 	PRE int endLoop;
 
 #define HCI_TO_EUROPE_UDP_PORT (2968)

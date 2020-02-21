@@ -11,10 +11,11 @@
 #include <unistd.h>
 #include <math.h>
 #include "DeviceSim.h"
-#include "../../../common/custom_types.h"
-#include "../../../network/CommLink.h"
-#include "../../../drivers/PA500.h"
-#include "../../../simulators/europe/SimStatus.h"
+#include "../../generic/custom_types.h"
+#include "../../network/CommLink.h"
+#include "../PA500.h"
+#include "../../data/PA500_status.h"
+
 
 
 

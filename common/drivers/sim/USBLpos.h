@@ -9,8 +9,9 @@
 #define DRIVERS_EUROPE_SIM_USBLPOS_H_
 
 #include "DeviceSim.h"
-#include "../../../drivers/PingerLink.h"
-#include "../../../simulators/europe/SimStatus.h"
+#include "../../data/Pinger_status.h"
+
+
 
 
 

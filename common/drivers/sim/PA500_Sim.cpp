@@ -11,10 +11,10 @@
 
 PA500_Sim::PA500_Sim(const char *name,NetworkManager &nm,SimStatus *s): DeviceSim(name,SCHED_FIFO,PA500_THREAD_PRIORITY,start_pa500Sim,nm,s)
 {
-	tlm=new CommLink( "PA500_Sim_tlm" , OVERRIDE );
+	tlm=new CommLink( "PA500_Sim_tlm" , UDP_PURE );
 
 	tlm->open( networkManager->SIM_IP , networkManager->PA500_SIM_PORT_OUT ,
-			   networkManager->ROBOT_IP , networkManager->PA500_SIM_ROBOT_PORT_IN );
+			   networkManager->ROBOT_IP , networkManager->PA500_ROBOT_SIM_PORT_IN );
 
 	tlm->create();
 
@@ -109,7 +109,8 @@ void PA500_Sim::send_tlm()
 
 	//printf("range: %lf\n",range_measure);
 
-	tlm->send_message((char*)&msg,sizeof(msg));
+	if (simStatus->status_pa500 == DEVICE_RUNNING)
+		tlm->send_message((char*)&msg,sizeof(msg));
 }
 
 

@@ -243,6 +243,8 @@ void IO_europeSim::setStatus()
 	if (digitalInput[EUROPE_DIO_PA500_2_POWER] == 1) s->status_echo = DEVICE_RUNNING;
 	else s->status_echo = DEVICE_OFF;
 
+	//printf("dvl: %d    pa500: %d\n", s->status_dvl, s->status_pa500);
+
 	//printf("vhfl: %lf\n",simStatus->Vhfl);
 }
 

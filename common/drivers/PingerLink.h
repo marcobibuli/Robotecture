@@ -8,8 +8,8 @@
 #ifndef PINGERLINK_H_
 #define PINGERLINK_H_
 
-#include "../common/define.h"
-#include "../common/custom_types.h"
+#include "../generic/define.h"
+#include "../generic/custom_types.h"
 #include "../drivers/Device.h"
 #include "../network/CommLink.h"
 #include <termios.h>
@@ -61,17 +61,7 @@ struct Pinger_sim_packet
 	char data[BUF_SIZE];
 };
 
-struct USBLpos_packet
-{
-	int64 x;
-	int64 y;
-	int64 z;
-};
 
-struct Pinger_tlm_packet
-{
-	int64 device_status;
-};
 
 
 class PingerLink:public Device
@@ -94,7 +84,7 @@ class PingerLink:public Device
 
 
 	public:
-		PingerLink(const char *name,NetworkManager &nm,Status *s);
+		PingerLink(const char *name,NetworkManager &nm);
 		~PingerLink();
 
 		//void execute();

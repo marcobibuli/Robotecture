@@ -14,7 +14,7 @@ Echologger_Sim::Echologger_Sim(const char *name,NetworkManager &nm,SimStatus *s)
 	tlm=new CommLink( "Echologger_Sim_tlm" , OVERRIDE );
 
 	tlm->open( networkManager->SIM_IP   , networkManager->ECHOLOGGER_SIM_PORT_OUT ,
-			   networkManager->ROBOT_IP , networkManager->ECHOLOGGER_SIM_ROBOT_PORT_IN );
+			   networkManager->ROBOT_IP , networkManager->ECHOLOGGER_ROBOT_SIM_PORT_IN );
 
 	tlm->create();
 
@@ -109,7 +109,8 @@ void Echologger_Sim::send_tlm()
 
 	//printf("range: %lf\n",range_measure);
 
-	tlm->send_message((char*)&msg,sizeof(msg));
+	if (simStatus->status_echo == DEVICE_RUNNING)
+		tlm->send_message((char*)&msg,sizeof(msg));
 }
 
 

@@ -12,7 +12,7 @@
 #include "../generic/Variable.h"
 
 # pragma pack (push, 1)
-struct USBL_tlm_packet
+struct Pinger_tlm_packet
 {
 	int64 x;
 	int64 y;
@@ -21,11 +21,21 @@ struct USBL_tlm_packet
 };
 # pragma pack (pop)
 
-class USBL_status
+
+# pragma pack (push, 1)
+struct USBLpos_packet
+{
+	int64 x;
+	int64 y;
+	int64 z;
+};
+# pragma pack (pop)
+
+class Pinger_status
 {
 	private:
 
-		void copy_data(const USBL_status &d)
+		void copy_data(const Pinger_status&d)
 		{
 			x=d.x;
 			y=d.y;
@@ -33,6 +43,8 @@ class USBL_status
 
 			device_status=d.device_status;
 			timeStamp=d.timeStamp;
+
+			powered = d.powered;
 
 			compose_tlm_packet(tlm_packet);
 		}
@@ -45,9 +57,11 @@ class USBL_status
 		int device_status;
 		int64 timeStamp;
 
-		USBL_tlm_packet tlm_packet;
+		int powered;
 
-		USBL_status()
+		Pinger_tlm_packet tlm_packet;
+
+		Pinger_status()
 		{
 			x.zero();
 			y.zero();
@@ -56,28 +70,30 @@ class USBL_status
 			device_status=0;
 			timeStamp=0;
 
+			powered = 0;
+
 			tlm_packet.x=0; tlm_packet.y=0; tlm_packet.z=0;
 			tlm_packet.device_status=0;
 		}
 
 
-		USBL_status(USBL_status &d)
+		Pinger_status(Pinger_status&d)
 		{
 			copy_data(d);
 		}
 
 
-		~USBL_status(){}
+		~Pinger_status(){}
 
 
-		USBL_status& operator=(const USBL_status &d)
+		Pinger_status& operator=(const Pinger_status&d)
 		{
 			copy_data(d);
 			return *this;
 		}
 
 
-		void compose_tlm_packet(USBL_tlm_packet &tp)
+		void compose_tlm_packet(Pinger_tlm_packet &tp)
 		{
 			tp.x=(int64)(x.value*CTD_factor);
 			tp.y=(int64)(y.value*CTD_factor);

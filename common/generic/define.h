@@ -39,10 +39,10 @@
 #define COMM_LINK_SLEEP_SEC 		0
 #define COMM_LINK_SLEEP_NSEC 		50000000
 
-#define IO_SLEEP_SEC 		0
-#define IO_SLEEP_NSEC 		100000000
-#define IO_START_TICKS		10
-#define IO_STOP_TICKS		1
+#define IO_SLEEP_SEC 				0
+#define IO_SLEEP_NSEC 				100000000
+#define IO_START_TICKS				10
+#define IO_STOP_TICKS				1
 
 #define MOTORS_SLEEP_SEC 			0
 #define MOTORS_SLEEP_NSEC 			100000000
@@ -140,7 +140,7 @@
    #define PRE extern
 #endif // __MAIN__
 
-
+PRE char _debugString[256];
 
 PRE char ROBOT_NAME[256];
 PRE char CONFIGURATION_FILES_DIRECTORY[256];

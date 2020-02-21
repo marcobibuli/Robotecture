@@ -10,6 +10,10 @@
 
 #include "../drivers/Device.h"
 #include "../drivers/PingerLink.h"
+#include "../data/Pinger_status.h"
+#include "../data/Time_status.h"
+#include "../data/DataAccess.h"
+#include "../network/CommLink.h"
 
 
 class Pinger:public Device
@@ -18,9 +22,12 @@ class Pinger:public Device
 		PingerLink *pinger;
 		PingerMessage *m;
 
+		DataAccess<Time_status>* time_access = NULL;
+		DataAccess<Pinger_status>* pinger_access = NULL;
+
 
 	public:
-		Pinger(const char *name,NetworkManager &nm,Status *s);
+		Pinger(const char *name,NetworkManager &nm, DataAccess<Pinger_status>& Pinger_access, DataAccess<Time_status>& Time_access);
 		~Pinger();
 
 		void execute_pinger();

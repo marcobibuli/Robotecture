@@ -9,7 +9,9 @@
 #include "IO_europe.h"
 
 
-IO_europe::IO_europe(const char *name,NetworkManager &nm, DataAccess<IO_europe_status>& IO_access, DataAccess<Time_status>& Time_access): Device(name,SCHED_FIFO,IO_THREAD_PRIORITY,start_io_europe,nm)
+IO_europe::IO_europe(const char *name,NetworkManager &nm, DataAccess<IO_europe_status>& IO_access, DataAccess<DVL_status>& DVL_access,DataAccess<PA500_status>& PA500_access,
+	                                                      DataAccess<Echologger_status>& Echologger_access, DataAccess<Pinger_status>& Pinger_access,
+	                                                      DataAccess<Time_status>& Time_access): Device(name,SCHED_FIFO,IO_THREAD_PRIORITY,start_io_europe,nm)
 {
 	strcpy(configFileName,CONFIGURATION_IO_FILE);
 
@@ -22,6 +24,10 @@ IO_europe::IO_europe(const char *name,NetworkManager &nm, DataAccess<IO_europe_s
 
 	time_access = &Time_access;
 	io_access = &IO_access;
+	dvl_access = &DVL_access;
+	pa500_access = &PA500_access;
+	echologger_access = &Echologger_access;
+	pinger_access = &Pinger_access;
 }
 
 
@@ -121,8 +127,6 @@ void IO_europe::execute_sim()
 		send_sim_cmd();
 
 		read_sim_tlm();
-
-
 
 		updateStatus();
 
@@ -353,68 +357,28 @@ void IO_europe::automaticStartStop()
 
 void IO_europe::updateStatus()
 {
-	/*
-	int i;
+	IO_europe_status io_status;
+	io_status = io_access->get();
 
-	i=0;
-	if (io.digital[32+i]==1) ms.Svfl=MOTOR_FAULT;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==1) ms.Svfl=MOTOR_ENABLED;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==0) ms.Svfl=MOTOR_POWERED;
-	else if (io.digital[32+i]==0 && io.digital[i]==0 && io.digital[8+i]==0) ms.Svfl=MOTOR_OFF;
+	DVL_status dvl_status;
+	dvl_status = dvl_access->get();
+	dvl_status.powered = io_status.digitalInput[EUROPE_DIO_DVL_POWER];
+	dvl_access->set(dvl_status);
 
-	i=1;
-	if (io.digital[32+i]==1) ms.Svfr=MOTOR_FAULT;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==1) ms.Svfr=MOTOR_ENABLED;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==0) ms.Svfr=MOTOR_POWERED;
-	else if (io.digital[32+i]==0 && io.digital[i]==0 && io.digital[8+i]==0) ms.Svfr=MOTOR_OFF;
+	PA500_status pa500_status;
+	pa500_status = pa500_access->get();
+	pa500_status.powered = io_status.digitalInput[EUROPE_DIO_PA500_1_POWER];
+	pa500_access->set(pa500_status);
 
-	i=2;
-	if (io.digital[32+i]==1) ms.Svrl=MOTOR_FAULT;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==1) ms.Svrl=MOTOR_ENABLED;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==0) ms.Svrl=MOTOR_POWERED;
-	else if (io.digital[32+i]==0 && io.digital[i]==0 && io.digital[8+i]==0) ms.Svrl=MOTOR_OFF;
+	Echologger_status echologger_status;
+	echologger_status = echologger_access->get();
+	echologger_status.powered = io_status.digitalInput[EUROPE_DIO_PA500_2_POWER];
+	echologger_access->set(echologger_status);
 
-	i=3;
-	if (io.digital[32+i]==1) ms.Svrr=MOTOR_FAULT;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==1) ms.Svrr=MOTOR_ENABLED;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==0) ms.Svrr=MOTOR_POWERED;
-	else if (io.digital[32+i]==0 && io.digital[i]==0 && io.digital[8+i]==0) ms.Svrr=MOTOR_OFF;
-
-
-	i=4;
-	if (io.digital[32+i]==1) ms.Shfl=MOTOR_FAULT;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==1) ms.Shfl=MOTOR_ENABLED;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==0) ms.Shfl=MOTOR_POWERED;
-	else if (io.digital[32+i]==0 && io.digital[i]==0 && io.digital[8+i]==0) ms.Shfl=MOTOR_OFF;
-
-	i=5;
-	if (io.digital[32+i]==1) ms.Shfr=MOTOR_FAULT;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==1) ms.Shfr=MOTOR_ENABLED;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==0) ms.Shfr=MOTOR_POWERED;
-	else if (io.digital[32+i]==0 && io.digital[i]==0 && io.digital[8+i]==0) ms.Shfr=MOTOR_OFF;
-
-	i=6;
-	if (io.digital[32+i]==1) ms.Shrl=MOTOR_FAULT;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==1) ms.Shrl=MOTOR_ENABLED;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==0) ms.Shrl=MOTOR_POWERED;
-	else if (io.digital[32+i]==0 && io.digital[i]==0 && io.digital[8+i]==0) ms.Shrl=MOTOR_OFF;
-
-	i=7;
-	if (io.digital[32+i]==1) ms.Shrr=MOTOR_FAULT;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==1) ms.Shrr=MOTOR_ENABLED;
-	else if (io.digital[32+i]==0 && io.digital[i]==1 && io.digital[8+i]==0) ms.Shrr=MOTOR_POWERED;
-	else if (io.digital[32+i]==0 && io.digital[i]==0 && io.digital[8+i]==0) ms.Shrr=MOTOR_OFF;
-
-
-	ms.Vvfl=io.analogOutput[EUROPE_DA_MOTOR_VFL_VREF];
-	ms.Vvfr=io.analogOutput[EUROPE_DA_MOTOR_VFR_VREF];
-	ms.Vvrl=io.analogOutput[EUROPE_DA_MOTOR_VRL_VREF];
-	ms.Vvrr=io.analogOutput[EUROPE_DA_MOTOR_VRR_VREF];
-	ms.Vhfl=io.analogOutput[EUROPE_DA_MOTOR_HFL_VREF];
-	ms.Vhfr=io.analogOutput[EUROPE_DA_MOTOR_HFR_VREF];
-	ms.Vhrl=io.analogOutput[EUROPE_DA_MOTOR_HRL_VREF];
-	ms.Vhrr=io.analogOutput[EUROPE_DA_MOTOR_HRR_VREF];
-	*/
+	Pinger_status pinger_status;
+	pinger_status = pinger_access->get();
+	pinger_status.powered = io_status.digitalInput[EUROPE_DIO_EVOLOGICS_MODEM_POWER];
+	pinger_access->set(pinger_status);
 }
 
 

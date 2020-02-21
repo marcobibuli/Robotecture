@@ -17,7 +17,6 @@
 #include "../generic/RobotMath.h"
 #include "../network/CommLink.h"
 #include "../data/DVL_status.h"
-#include "../data/IO_europe_status.h"
 #include "../data/Time_status.h"
 #include "../data/DataAccess.h"
 
@@ -50,7 +49,6 @@ class DVL:public Device
 
 		DataAccess<Time_status>* time_access = NULL;
 		DataAccess<DVL_status>* dvl_access = NULL;
-		DataAccess<IO_europe_status>* io_access = NULL;
 
 		float bytesToLong(unsigned char b0, unsigned char b1, unsigned char b2, unsigned char b3)
 		{
@@ -60,7 +58,7 @@ class DVL:public Device
 		}
 
 	public:
-		DVL(const char *name,NetworkManager &nm, DataAccess<DVL_status>& DVL_access, DataAccess<IO_europe_status>& IO_access, DataAccess<Time_status>& Time_access);
+		DVL(const char *name,NetworkManager &nm, DataAccess<DVL_status>& DVL_access, DataAccess<Time_status>& Time_access);
 		~DVL();
 
 		virtual int init_sim();

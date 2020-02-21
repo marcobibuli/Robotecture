@@ -47,7 +47,7 @@ int CTD::init_sim()
 
 	tlmSim = new CommLink("FOG_tlmSim", UDP_PURE);
 	tlmSim->open(networkManager->ROBOT_IP, networkManager->CTD_ROBOT_SIM_PORT_IN,
-		networkManager->SIM_IP, networkManager->CTD_SIM_PORT_OUT);
+		         networkManager->SIM_IP, networkManager->CTD_SIM_PORT_OUT);
 	tlmSim->create();
 
 	return 0;
@@ -167,15 +167,13 @@ void CTD::updateStatus()
 	CTD_status ctd_status;
 	ctd_status=ctd_access->get();
 
-	ctd_status.conductivity.value=conductivity;
-	ctd_status.temperature.value=temperature;
-	ctd_status.depth.value=depth;
+	ctd_status.conductivity.value = conductivity;		ctd_status.conductivity.timeStamp = lastValidTimeStamp;      ctd_status.conductivity.valid = true;
+	ctd_status.temperature.value=temperature;			ctd_status.temperature.timeStamp = lastValidTimeStamp;		 ctd_status.temperature.valid = true;
+	ctd_status.depth.value=depth;						ctd_status.depth.timeStamp = lastValidTimeStamp;			 ctd_status.depth.valid = true;
 	ctd_status.device_status=device_status;
 	ctd_status.timeStamp=lastValidTimeStamp;
 
 	ctd_access->set(ctd_status);
-
-	//printf("c: %lf   t: %lf   d: %lf\n",ctd_status.conductivity,ctd_status.temperature,ctd_status.depth);
 }
 
 

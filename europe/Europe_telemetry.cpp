@@ -39,6 +39,10 @@ void Europe_telemetry::execute()
 	FOG_status fog_status;
 	GPS_AHRS_status gps_ahrs_status;
 	DVL_status dvl_status;
+	CTD_status ctd_status;
+	PA500_status pa500_status;
+	Echologger_status echologger_status;
+	Pinger_status pinger_status;
 
 	NGC_status ngc_status;
 
@@ -57,6 +61,12 @@ void Europe_telemetry::execute()
 		fog_status = status->fog_status.get();
 		gps_ahrs_status = status->gps_ahrs_status.get();
 		dvl_status = status->dvl_status.get();
+		ctd_status = status->ctd_status.get();
+		pa500_status = status->pa500_status.get();
+		echologger_status = status->echologger_status.get();
+		pinger_status = status->pinger_status.get();
+
+
 		ngc_status = status->ngc_status.get();
 		raw_Ang_From_FOG_status = status->raw_Ang_From_FOG_status.get();
 		raw_Ang_From_AHRS_status = status->raw_Ang_From_AHRS_status.get();
@@ -65,10 +75,17 @@ void Europe_telemetry::execute()
 		filter_Ang_status = status->filter_Ang_status.get();
 
 		
+
+
 		io_status.compose_tlm_packet(msg.io);
 		fog_status.compose_tlm_packet(msg.fog);
 		gps_ahrs_status.compose_tlm_packet(msg.gps_ahrs);
 		dvl_status.compose_tlm_packet(msg.dvl);
+		ctd_status.compose_tlm_packet(msg.ctd);
+		pa500_status.compose_tlm_packet(msg.pa500);
+		echologger_status.compose_tlm_packet(msg.echologger);
+		pinger_status.compose_tlm_packet(msg.pinger);
+
 		ngc_status.compose_tlm_packet(msg.ngc);
 		raw_Ang_From_FOG_status.compose_tlm_packet(msg.raw_Ang_From_FOG);
 		raw_Ang_From_AHRS_status.compose_tlm_packet(msg.raw_Ang_From_AHRS);

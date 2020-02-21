@@ -11,10 +11,10 @@
 #include <unistd.h>
 #include <math.h>
 #include "DeviceSim.h"
-#include "../../../common/custom_types.h"
-#include "../../../network/CommLink.h"
-#include "../../../drivers/CTD.h"
-#include "../../../simulators/europe/SimStatus.h"
+#include "../../generic/custom_types.h"
+#include "../../network/CommLink.h"
+#include "../CTD.h"
+#include "../../data/CTD_status.h"
 
 
 

@@ -9,12 +9,12 @@
 
 #include "DVL.h"
 
-DVL::DVL(const char *name,NetworkManager &nm,DataAccess<DVL_status>& DVL_access, DataAccess<IO_europe_status>& IO_access, DataAccess<Time_status>& Time_access):Device(name,SCHED_FIFO,DVL_THREAD_PRIORITY,start_dvl,nm)
+DVL::DVL(const char *name,NetworkManager &nm,DataAccess<DVL_status>& DVL_access, DataAccess<Time_status>& Time_access):Device(name,SCHED_FIFO,DVL_THREAD_PRIORITY,start_dvl,nm)
 {
 	strcpy(configFileName,CONFIGURATION_DVL_FILE);
 	time_access = &Time_access;
 	dvl_access = &DVL_access;
-	io_access = &IO_access;
+	
 /*
 	tlm=new CommLink( "DVL_tlm" , OVERRIDE , sizeof(DVL_tlm_packet) );
 	tlm->open( networkManager->ROBOT_IP , networkManager->DVL_ROBOT_PORT_OUT ,
@@ -91,19 +91,20 @@ void DVL::execute_sim()
 	tSleep.tv_sec=DVL_SLEEP_SEC;
 	tSleep.tv_nsec=DVL_SLEEP_NSEC;
 
-	IO_europe_status io_status;
+	
+	DVL_status dvl_status;
 
 	while(running_sim)
 	{
 		read_sim_tlm();
 
-		io_status = io_access->get();
+		dvl_status = dvl_access->get();
 
-		//printf("*** %d   %d\n", io_status.digitalInput[EUROPE_DIO_DVL_POWER], device_status);
+		//printf("*** %d   %d\n", dvl_status.powered, device_status);
 
-		if (io_status.digitalInput[EUROPE_DIO_DVL_POWER]==0) device_status=DEVICE_OFF;
+		if (dvl_status.powered==0) device_status=DEVICE_OFF;
 
-		if (io_status.digitalInput[EUROPE_DIO_DVL_POWER]==1 && device_status==DEVICE_OFF)
+		if (dvl_status.powered==1 && device_status==DEVICE_OFF)
 		{
 			printf("Init DVL\n");
 			usleep(500000);
@@ -111,7 +112,7 @@ void DVL::execute_sim()
 			device_status=DEVICE_INIT;
 		}
 
-		if (io_status.digitalInput[EUROPE_DIO_DVL_POWER]==1 && device_status!=DEVICE_OFF)
+		if (dvl_status.powered==1 && device_status!=DEVICE_OFF)
 		{
 			update_device_status(measure_flag);
 		}
@@ -148,7 +149,7 @@ void DVL::read_sim_tlm()
 
 			update_device_status(ret);
 
-			printf("*** altitude: %lf   surgeVelocity: %lf   swayVelocity: %lf   valid: %d\n", altitude, surgeVelocity, swayVelocity, validVelocity);
+			//printf("*** altitude: %lf   surgeVelocity: %lf   swayVelocity: %lf   valid: %d\n", altitude, surgeVelocity, swayVelocity, validVelocity);
 
 		}
 
@@ -158,7 +159,7 @@ void DVL::read_sim_tlm()
 
 void DVL::update_device_status(int r)
 {
-	if (r>0)
+	if (r>0 && device_status != DEVICE_OFF)
 	{
 		missed_receive_count=0;
 		device_status=DEVICE_RUNNING;
@@ -193,16 +194,16 @@ void DVL::execute_act()
 
 	unsigned char *message = new unsigned char[packetLength];
 
-	IO_europe_status io_status;
-
+	DVL_status dvl_status;
+	
 
 	while(running_act)
 	{
-		io_status=io_access->get();
+		dvl_status = dvl_access->get();
+		
+		if (dvl_status.powered==0) device_status=DEVICE_OFF;
 
-		if (io_status.digitalInput[EUROPE_DIO_DVL_POWER]==0) device_status=DEVICE_OFF;
-
-		if (io_status.digitalInput[EUROPE_DIO_DVL_POWER]==1 && device_status==DEVICE_OFF)
+		if (dvl_status.powered==1 && device_status==DEVICE_OFF)
 		{
 			printf("Init DVL\n");
 			usleep(500000);
@@ -211,7 +212,7 @@ void DVL::execute_act()
 			device_status=DEVICE_INIT;
 		}
 
-		if (io_status.digitalInput[EUROPE_DIO_DVL_POWER]==1 && device_status!=DEVICE_OFF)
+		if (dvl_status.powered==1 && device_status!=DEVICE_OFF)
 		{
 			received = this->receive(message);
 
@@ -233,21 +234,26 @@ void DVL::updateStatus()
 	Time_status ts;
 	ts=time_access->get();
 
+	if (missed_receive_count == 0) lastValidTimeStamp = ts.timeStamp;
+
 	DVL_status dvl_status;
 	dvl_status=dvl_access->get();
 
 	if (device_status!=DEVICE_OFF)
 	{
-		dvl_status.range1.value=range1;
-		dvl_status.range2.value=range2;
-		dvl_status.range3.value=range3;
-		dvl_status.range4.value=range4;
-		dvl_status.altitude.value=altitude;
-		dvl_status.surgeVelocity.value=surgeVelocity;
-		dvl_status.swayVelocity.value=swayVelocity;
-		dvl_status.heaveVelocity.value=heaveVelocity;
-		dvl_status.errorVelocity.value=errorVelocity;
-		dvl_status.validVelocity=validVelocity;
+		bool b = false;
+		if (validVelocity != 0) b = true;
+			
+		dvl_status.range1.value=range1;						dvl_status.range1.valid = b;			dvl_status.range1.timeStamp = ts.timeStamp;
+		dvl_status.range2.value=range2;						dvl_status.range2.valid = b;			dvl_status.range1.timeStamp = ts.timeStamp;
+		dvl_status.range3.value=range3;						dvl_status.range3.valid = b;			dvl_status.range1.timeStamp = ts.timeStamp;
+		dvl_status.range4.value=range4;						dvl_status.range4.valid = b;			dvl_status.range1.timeStamp = ts.timeStamp;
+		dvl_status.altitude.value=altitude;					dvl_status.altitude.valid = b;			dvl_status.range1.timeStamp = ts.timeStamp;
+		dvl_status.surgeVelocity.value=surgeVelocity;		dvl_status.surgeVelocity.valid = b;		dvl_status.range1.timeStamp = ts.timeStamp;
+		dvl_status.swayVelocity.value=swayVelocity;			dvl_status.swayVelocity.valid = b;		dvl_status.range1.timeStamp = ts.timeStamp;
+		dvl_status.heaveVelocity.value=heaveVelocity;		dvl_status.heaveVelocity.valid = b;		dvl_status.range1.timeStamp = ts.timeStamp;
+		dvl_status.errorVelocity.value=errorVelocity;		dvl_status.errorVelocity.valid = b;		dvl_status.range1.timeStamp = ts.timeStamp;
+		dvl_status.validVelocity=validVelocity;		
 
 		dvl_status.timeStamp=ts.timeStamp;
 	}

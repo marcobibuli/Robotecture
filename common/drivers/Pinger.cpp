@@ -7,11 +7,14 @@
 
 #include "Pinger.h"
 
-Pinger::Pinger(const char *name,NetworkManager &nm,Status *s):Device(name,SCHED_FIFO,PINGER_THREAD_PRIORITY,start_pinger,nm,s)
+Pinger::Pinger(const char *name,NetworkManager &nm, DataAccess<Pinger_status>& Pinger_access, DataAccess<Time_status>& Time_access):Device(name,SCHED_FIFO,PINGER_THREAD_PRIORITY,start_pinger,nm)
 {
 	strcpy(configFileName,CONFIGURATION_PINGER_FILE);
 	pinger=NULL;
 	m=NULL;
+
+	time_access = &Time_access;
+	pinger_access = &Pinger_access;
 
 	/*
 	tlm=new CommLink( "Pinger_tlm" , OVERRIDE );
@@ -30,7 +33,7 @@ Pinger::~Pinger()
 int Pinger::init_pinger()
 {
 	printf("Pinger::init_pinger()\n");
-	pinger=new PingerLink("PingerLink",*networkManager,status);
+	pinger=new PingerLink("PingerLink",*networkManager);
 	pinger->pingerStatus(RECEIVE);
 
 	//pinger->init();
@@ -67,7 +70,7 @@ void Pinger::execute_pinger()
 
 	char dato_str[100];
 
-	IO_status io_status;
+	Pinger_status pinger_status;
 
 	int st;
 
@@ -75,9 +78,9 @@ void Pinger::execute_pinger()
 	{
 		st=1;
 
-		io_status=status->io_status.get();
+		pinger_status = pinger_access->get();
 
-		if (io_status.tlm.digital[EUROPE_DIO_EVOLOGICS_MODEM_POWER]==0)
+		if (pinger_status.powered==0)
 		{
 			device_status=DEVICE_OFF;
 			if (pinger!=NULL)
@@ -89,7 +92,7 @@ void Pinger::execute_pinger()
 			}
 		}
 
-		if ((io_status.tlm.digital)[EUROPE_DIO_EVOLOGICS_MODEM_POWER]==1 && device_status==DEVICE_OFF)
+		if (pinger_status.powered ==1 && device_status==DEVICE_OFF)
 		{
 			init_pinger();
 			if (pinger->init()==0) pinger->create();
@@ -97,7 +100,7 @@ void Pinger::execute_pinger()
 			device_status=DEVICE_INIT;
 		}
 
-		if (io_status.tlm.digital[EUROPE_DIO_EVOLOGICS_MODEM_POWER]==1 && device_status!=DEVICE_OFF)
+		if (pinger_status.powered ==1 && device_status!=DEVICE_OFF)
 		{
 			device_status=DEVICE_RUNNING;
 
@@ -126,6 +129,7 @@ void Pinger::execute_pinger()
 
 		}
 
+
 		updateStatus();
 
 		//send_telemetry();
@@ -137,7 +141,7 @@ void Pinger::execute_pinger()
 
 void Pinger::update_device_status(int r)
 {
-	if (r>0)
+	if (r>0 && device_status != DEVICE_OFF)
 	{
 		missed_receive_count=0;
 		device_status=DEVICE_RUNNING;
@@ -162,27 +166,27 @@ void Pinger::update_device_status(int r)
 void Pinger::updateStatus()
 {
 	Time_status ts;
-	ts=status->time_status.get();
+	ts=time_access->get();
 
 	if (missed_receive_count==0) lastValidTimeStamp=ts.timeStamp;
 
-	USBL_status pinger_status;
-	pinger_status=status->pinger_status.get();
+	Pinger_status pinger_status;
+	pinger_status=pinger_access->get();
 
 	if (device_status!=DEVICE_OFF)
 	{
 
 		double x=0.0,y=0.0,z=0.0;
 		if (pinger!=NULL) pinger->getPosition(x,y,z);
-		pinger_status.x.value=x;
-		pinger_status.y.value=y;
-		pinger_status.z.value=z;
+		pinger_status.x.value=x;	pinger_status.x.valid = true;	pinger_status.x.timeStamp = lastValidTimeStamp;
+		pinger_status.y.value=y;	pinger_status.y.valid = true;	pinger_status.y.timeStamp = lastValidTimeStamp;
+		pinger_status.z.value=z;	pinger_status.z.valid = true;	pinger_status.z.timeStamp = lastValidTimeStamp;
 
 		pinger_status.timeStamp=lastValidTimeStamp;
 	}
 
 	pinger_status.device_status=device_status;
-	status->pinger_status.set(pinger_status);
+	pinger_access->set(pinger_status);
 }
 
 
@@ -200,11 +204,13 @@ void Pinger::execute_act()
 
 void Pinger::send_telemetry()
 {
+	/*
 	Pinger_tlm_packet msg;
 
 	msg.device_status=device_status;
 
 	tlm->send_message((char*)&msg,sizeof(msg));
+	*/
 }
 
 

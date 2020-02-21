@@ -28,6 +28,7 @@ extern "C" {
 
 #include <netinet/in.h>
 #include <stdio.h>
+#include "../../../generic/define.h"
 
 #define _PDEBUG_STRING_SIZE (1024)
 #ifdef __MAIN__

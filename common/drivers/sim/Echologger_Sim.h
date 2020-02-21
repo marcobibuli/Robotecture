@@ -11,11 +11,12 @@
 #include <unistd.h>
 #include <math.h>
 #include "DeviceSim.h"
-#include "../../../common/custom_types.h"
-#include "../../../network/CommLink.h"
-#include "../../../drivers/Echologger.h"
-#include "../../../simulators/europe/SimStatus.h"
-#include "../../../data/Echologger_status.h"
+#include "../Device.h"
+#include "../../generic/custom_types.h"
+#include "../../network/CommLink.h"
+#include "../../data/Echologger_status.h"
+#include "../../../europeSim/EuropeSim.h"
+
 
 
 class Echologger_Sim:public DeviceSim

@@ -47,6 +47,8 @@ class DVL_status
 			device_status=d.device_status;
 			timeStamp=d.timeStamp;
 
+			powered = d.powered;
+
 			compose_tlm_packet(tlm_packet);
 		}
 
@@ -59,6 +61,8 @@ class DVL_status
 
 		int device_status;
 		int64 timeStamp;
+
+		int powered;
 
 		DVL_tlm_packet tlm_packet;
 
@@ -74,6 +78,8 @@ class DVL_status
 
 			device_status=0;
 			timeStamp=0;
+
+			powered = 0;
 
 			tlm_packet.range1=0; tlm_packet.range2=0; tlm_packet.range3=0; tlm_packet.range4=0;
 			tlm_packet.altitude=0;

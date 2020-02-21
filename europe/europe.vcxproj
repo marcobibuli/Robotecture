@@ -86,10 +86,14 @@
     <ClCompile Include="..\common\drivers\CTD.cpp" />
     <ClCompile Include="..\common\drivers\Device.cpp" />
     <ClCompile Include="..\common\drivers\DVL.cpp" />
+    <ClCompile Include="..\common\drivers\Echologger.cpp" />
     <ClCompile Include="..\common\drivers\europe\GPS_AHRS.cpp" />
     <ClCompile Include="..\common\drivers\europe\hardwareLib\e-URoPelib.cpp" />
     <ClCompile Include="..\common\drivers\europe\IO_europe.cpp" />
     <ClCompile Include="..\common\drivers\FOG.cpp" />
+    <ClCompile Include="..\common\drivers\PA500.cpp" />
+    <ClCompile Include="..\common\drivers\Pinger.cpp" />
+    <ClCompile Include="..\common\drivers\PingerLink.cpp" />
     <ClCompile Include="..\common\drivers\sio.cpp" />
     <ClCompile Include="..\common\generic\matrix.cpp" />
     <ClCompile Include="..\common\generic\RobotMath.cpp" />
@@ -122,6 +126,7 @@
     <ClInclude Include="..\common\drivers\CTD.h" />
     <ClInclude Include="..\common\drivers\Device.h" />
     <ClInclude Include="..\common\drivers\DVL.h" />
+    <ClInclude Include="..\common\drivers\Echologger.h" />
     <ClInclude Include="..\common\drivers\europe\GPS_AHRS.h" />
     <ClInclude Include="..\common\drivers\europe\hardwareLib\definitions.h" />
     <ClInclude Include="..\common\drivers\europe\hardwareLib\e-URoPelib.h" />
@@ -129,6 +134,9 @@
     <ClInclude Include="..\common\drivers\europe\IO_europe.h" />
     <ClInclude Include="..\common\drivers\FOG.h" />
     <ClInclude Include="..\common\drivers\Int24.h" />
+    <ClInclude Include="..\common\drivers\PA500.h" />
+    <ClInclude Include="..\common\drivers\Pinger.h" />
+    <ClInclude Include="..\common\drivers\PingerLink.h" />
     <ClInclude Include="..\common\drivers\sio.h" />
     <ClInclude Include="..\common\generic\custom_types.h" />
     <ClInclude Include="..\common\generic\define.h" />
@@ -165,6 +173,7 @@
     <None Include="config\AngFilter.cfg" />
     <None Include="config\AngPosControl.cfg" />
     <None Include="config\AngVelControl.cfg" />
+    <None Include="config\CTD.cfg" />
     <None Include="config\DVL.cfg" />
     <None Include="config\Echologger.cfg" />
     <None Include="config\FOG.cfg" />
@@ -176,8 +185,10 @@
     <None Include="config\HorVelFilter.cfg" />
     <None Include="config\IO.cfg" />
     <None Include="config\network.cfg" />
+    <None Include="config\PA500.cfg" />
     <None Include="config\PathFollowing_FA.cfg" />
     <None Include="config\PathFollowing_UA.cfg" />
+    <None Include="config\Pinger.cfg" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <ClCompile>
