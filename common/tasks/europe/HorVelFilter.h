@@ -9,7 +9,7 @@
 #define TASKS_HORVELFILTER_H_
 
 
-#include "RobotTask.h"
+#include "../RobotTask.h"
 
 
 
@@ -24,10 +24,18 @@ class HorVelFilter:public RobotTask
 
 		const double convergenceThr=50.0;
 
+		DataAccess<Filter_HorVel_status>* filter_HorVel_access;
+		DataAccess<NGC_status>* ngc_access;
+		DataAccess<Time_status>* time_access;
+
 	public:
-		HorVelFilter(const char *name,Status *st):RobotTask(name,st),
+		HorVelFilter(const char* name, DataAccess<Filter_HorVel_status>& Filter_HorVel_access, DataAccess<NGC_status>& NGC_access, DataAccess<Time_status>& Time_access) :RobotTask(name),
 			P(4,4), Q(4,4), R(2,2), H(2,4), K(4,2), OMEGA(2,2), A(4,4), B(4,2), state(4,1), measure(2,1), in(2,1)
 		{
+			filter_HorVel_access = &Filter_HorVel_access;
+			ngc_access = &NGC_access;
+			time_access = &Time_access;
+
 			read_config();
 		}
 
@@ -37,14 +45,14 @@ class HorVelFilter:public RobotTask
 
 		virtual void execute()
 		{
-			Filter_HorVel_status task_status;
-			task_status=status->filter_HorVel_status.get();
+			Filter_HorVel_status filter_HorVel_status;
+			filter_HorVel_status = filter_HorVel_access->get();
 
-			if (task_status.execution==TASK_INIT)
+			if (filter_HorVel_status.execution==TASK_INIT)
 			{
 				init();
 			}
-			if (task_status.execution==TASK_RUNNING)
+			if (filter_HorVel_status.execution==TASK_RUNNING)
 			{
 				compute();
 			}
@@ -59,7 +67,7 @@ class HorVelFilter:public RobotTask
 				state.zeros();
 
 				NGC_status ngc_status;
-				ngc_status=status->ngc_status.get();
+				ngc_status=ngc_access->get();
 				state(0,0)=ngc_status.velocity_body.raw.u.value;
 				state(1,0)=ngc_status.velocity_body.raw.v.value;
 
@@ -73,9 +81,9 @@ class HorVelFilter:public RobotTask
 			if (f<convergenceThr)
 			{
 				Filter_HorVel_status filter_HorVel_status;
-				filter_HorVel_status=status->filter_HorVel_status.get();
+				filter_HorVel_status=filter_HorVel_access->get();
 				filter_HorVel_status.execution=TASK_RUNNING;
-				status->filter_HorVel_status.set(filter_HorVel_status);
+				filter_HorVel_access->set(filter_HorVel_status);
 
 				start=true;
 			}
@@ -89,9 +97,9 @@ class HorVelFilter:public RobotTask
 			if (f>=convergenceThr)
 			{
 				Filter_HorVel_status filter_HorVel_status;
-				filter_HorVel_status=status->filter_HorVel_status.get();
+				filter_HorVel_status = filter_HorVel_access->get();
 				filter_HorVel_status.execution=TASK_INIT;
-				status->filter_HorVel_status.set(filter_HorVel_status);
+				filter_HorVel_access->set(filter_HorVel_status);
 
 				start=true;
 			}
@@ -101,7 +109,7 @@ class HorVelFilter:public RobotTask
 		double filter()
 		{
 			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status=status->filter_HorVel_status.get();
+			filter_HorVel_status=filter_HorVel_access->get();
 			double q_uv=filter_HorVel_status.q_uv;
 			double q_current=filter_HorVel_status.q_current;
 			double r_uv_11=filter_HorVel_status.r_uv_11;
@@ -114,7 +122,7 @@ class HorVelFilter:public RobotTask
 
 
 			NGC_status ngc_status;
-			ngc_status=status->ngc_status.get();
+			ngc_status=ngc_access->get();
 			Variable uRaw=ngc_status.velocity_body.raw.u;
 			Variable vRaw=ngc_status.velocity_body.raw.v;
 			double fuRef=ngc_status.force.actual.fu.value;
@@ -122,7 +130,7 @@ class HorVelFilter:public RobotTask
 
 
 			Time_status time_status;
-			time_status=status->time_status.get();
+			time_status=time_access->get();
 			double dt=time_status.dt;
 
 
@@ -242,7 +250,7 @@ class HorVelFilter:public RobotTask
 			state=A*state + B*in;
 			P=A*P*A.t()+Q;
 
-			status->ngc_status.set(ngc_status);
+			ngc_access->set(ngc_status);
 
 			//printf("%lf       %lf   %lf      %lf   %lf\n",P.trace(),state(0,0),state(1,0),state(2,0), state(3,0));
 
@@ -253,18 +261,18 @@ class HorVelFilter:public RobotTask
 
 		virtual void setStatus(TaskStatus ts)
 		{
-			Filter_HorVel_status task_status;
-			task_status=status->filter_HorVel_status.get();
-			task_status.execution=ts;
-			status->filter_HorVel_status.set(task_status);
+			Filter_HorVel_status filter_HorVel_status;
+			filter_HorVel_status =filter_HorVel_access->get();
+			filter_HorVel_status.execution=ts;
+			filter_HorVel_access->set(filter_HorVel_status);
 		}
 
 
 		virtual TaskStatus getStatus()
 		{
-			Filter_HorVel_status task_status;
-			task_status=status->filter_HorVel_status.get();
-			return task_status.execution;
+			Filter_HorVel_status filter_HorVel_status;
+			filter_HorVel_status = filter_HorVel_access->get();
+			return filter_HorVel_status.execution;
 		}
 
 
@@ -272,7 +280,7 @@ class HorVelFilter:public RobotTask
 		virtual void set_param(int param_code,double val)
 		{
 			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status=status->filter_HorVel_status.get();
+			filter_HorVel_status = filter_HorVel_access->get();
 
 			switch (param_code)
 			{
@@ -287,7 +295,7 @@ class HorVelFilter:public RobotTask
 				case 8: filter_HorVel_status.bv=val; break;
 			};
 
-			status->filter_HorVel_status.set(filter_HorVel_status);
+			filter_HorVel_access->set(filter_HorVel_status);
 
 			write_config();
 		}
@@ -302,7 +310,7 @@ class HorVelFilter:public RobotTask
 			double val;
 
 			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status=status->filter_HorVel_status.get();
+			filter_HorVel_status = filter_HorVel_access->get();
 
 			sprintf(name_dir_file,"%s%s",CONFIGURATION_FILES_DIRECTORY,"HorVelFilter.cfg");
 
@@ -326,7 +334,7 @@ class HorVelFilter:public RobotTask
 
 				fclose(f);
 
-				status->filter_HorVel_status.set(filter_HorVel_status);
+				filter_HorVel_access->set(filter_HorVel_status);
 
 				return 0;
 			}
@@ -346,7 +354,7 @@ class HorVelFilter:public RobotTask
 			char name_dir_file[256];
 
 			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status=status->filter_HorVel_status.get();
+			filter_HorVel_status = filter_HorVel_access->get();
 
 			sprintf(name_dir_file,"%s%s",CONFIGURATION_FILES_DIRECTORY,"HorVelFilter.cfg");
 

@@ -15,11 +15,16 @@
 class RawHorVelFromDVL:public RobotTask
 {
 	private:
+		DataAccess<Task_status>* task_access;
+		DataAccess<DVL_status>* dvl_access;
+		DataAccess<NGC_status>* ngc_access;
 
 	public:
-		RawHorVelFromDVL(const char *name,Status *st):RobotTask(name,st)
+		RawHorVelFromDVL(const char *name, DataAccess<Task_status>& Task_access, DataAccess<DVL_status>& DVL_access, DataAccess<NGC_status>& NGC_access):RobotTask(name)
 		{
-
+			task_access = &Task_access;
+			dvl_access = &DVL_access;
+			ngc_access = &NGC_access;
 		}
 
 
@@ -28,7 +33,7 @@ class RawHorVelFromDVL:public RobotTask
 		virtual void execute()
 		{
 			Task_status task_status;
-			task_status=status->raw_HorVel_From_DVL_status.get();
+			task_status = task_access->get();
 
 			if (task_status.execution==TASK_INIT)
 			{
@@ -46,8 +51,8 @@ class RawHorVelFromDVL:public RobotTask
 			DVL_status dvl_status;
 			NGC_status ngc_status;
 
-			dvl_status=status->dvl_status.get();
-			ngc_status=status->ngc_status.get();
+			dvl_status=dvl_access->get();
+			ngc_status=ngc_access->get();
 
 			double psi=ngc_status.pose.actual.psi.value;
 
@@ -111,7 +116,7 @@ class RawHorVelFromDVL:public RobotTask
 			if (ngc_status.velocity_inertial.raw.speed.valid==true) ngc_status.velocity_inertial.raw.speed.timeStamp=dvl_status.timeStamp;
 			if (ngc_status.velocity_inertial.raw.course.valid==true) ngc_status.velocity_inertial.raw.course.timeStamp=dvl_status.timeStamp;
 
-			status->ngc_status.set(ngc_status);
+			ngc_access->set(ngc_status);
 
 		}
 
@@ -119,16 +124,16 @@ class RawHorVelFromDVL:public RobotTask
 		virtual void setStatus(TaskStatus ts)
 		{
 			Task_status task_status;
-			task_status=status->raw_HorVel_From_DVL_status.get();
+			task_status = task_access->get();
 			task_status.execution=ts;
-			status->raw_HorVel_From_DVL_status.set(task_status);
+			task_access->set(task_status);
 		}
 
 
 		virtual TaskStatus getStatus()
 		{
 			Task_status task_status;
-			task_status=status->raw_HorVel_From_DVL_status.get();
+			task_status=task_access->get();
 			return task_status.execution;
 		}
 };

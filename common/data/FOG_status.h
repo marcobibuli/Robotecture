@@ -107,6 +107,12 @@ class FOG_status
 
 			device_status = tp.device_status;
 		}
+
+
+		void compose_string_packet(char* str)
+		{
+			sprintf(str, "%lli", device_status);
+		}
 };
 
 

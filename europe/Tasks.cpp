@@ -24,11 +24,9 @@ Tasks::Tasks(const char *name,NetworkManager &nm, Europe_status* Status):RobotTh
 	int i=0;
 
 	// Angular tasks
-	
 	angFilter = new AngFilter("AngFilter", status->filter_Ang_status, status->ngc_status, status->time_status);
 	tasks.push_back(angFilter);
 	taskMap[i][0] = INIT_ANG_FILTER;  taskMap[i++][1] = tasks.size() - 1;
-	
 	
 	rawAngFromFOG = new RawAngFromFOG("rawAngFromFOG", status->raw_Ang_From_FOG_status, status->fog_status, status->ngc_status);
 	rawAngFromFOG->setStatus(TASK_RUNNING);
@@ -39,7 +37,6 @@ Tasks::Tasks(const char *name,NetworkManager &nm, Europe_status* Status):RobotTh
 	angSensorsToRaw.push_back(rawAngFromAHRS);
 	tasks.push_back(rawAngFromAHRS);
 	
-
 	actualAngFromRaw = new ActualAngFromRaw("ActualAngFromRaw", status->actual_Ang_From_Raw_status, status->ngc_status);
 	actualAngFromRaw->setStatus(TASK_RUNNING);
 	tasks.push_back(actualAngFromRaw);
@@ -49,23 +46,36 @@ Tasks::Tasks(const char *name,NetworkManager &nm, Europe_status* Status):RobotTh
 	
 	
 
-	
-	
-
 
 	// Horizontal velocity tasks
-	/*
-	horVelFilter = new HorVelFilter("HorVelFilter", status);
+	
+	horVelFilter = new HorVelFilter("HorVelFilter", status->filter_HorVel_status, status->ngc_status, status->time_status);
 	tasks.push_back(horVelFilter);
 	taskMap[i][0] = INIT_HOR_VEL_FILTER;  taskMap[i++][1] = tasks.size() - 1;
 
-	actualHorVelFromRaw = new ActualHorVelFromRaw("ActualHorVelFromRaw", status);
+	rawHorVelFromDVL = new RawHorVelFromDVL("RawHorVelFromDVL", status->raw_HorVel_From_DVL_status, status->dvl_status, status->ngc_status);
+	rawHorVelFromDVL->setStatus(TASK_RUNNING);
+	horVelSensorsToRaw.push_back(rawHorVelFromDVL);
+	tasks.push_back(rawHorVelFromDVL);
+
+	rawHorVelFromGPS = new RawHorVelFromGPS("RawHorVelFromGPS", status->raw_HorVel_From_GPS_status, status->gps_ahrs_status, status->ngc_status);
+	horVelSensorsToRaw.push_back(rawHorVelFromGPS);
+	tasks.push_back(rawHorVelFromGPS);
+
+	rawHorVelFromUSBL = new RawHorVelFromUSBL("RawHorVelFromUSBL", status->raw_HorVel_From_USBL_status, status->pinger_status, status->ngc_status, status->time_status);
+	horVelSensorsToRaw.push_back(rawHorVelFromUSBL);
+	tasks.push_back(rawHorVelFromUSBL);
+
+	actualHorVelFromRaw = new ActualHorVelFromRaw("ActualHorVelFromRaw", status->actual_HorVel_From_Raw_status, status->ngc_status);
 	actualHorVelFromRaw->setStatus(TASK_RUNNING);
 	tasks.push_back(actualHorVelFromRaw);
 
-	actualHorVelFromFilter = new ActualHorVelFromFilter("ActualHorVelFromFilter", status);
+	actualHorVelFromFilter = new ActualHorVelFromFilter("ActualHorVelFromFilter", status->actual_HorVel_From_Filter_status, status->ngc_status);
 	tasks.push_back(actualHorVelFromFilter);
-	*/
+	
+
+
+
 	/*
 
 	// Horizontal position tasks

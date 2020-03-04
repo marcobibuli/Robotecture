@@ -42,7 +42,7 @@ int Echologger::init_sim()
 
 	device_status=DEVICE_OFF;
 
-	tlmSim = new CommLink("Micron_tlmSim", OVERRIDE);
+	tlmSim = new CommLink("Micron_tlmSim", UDP_PURE);
 	tlmSim->open(networkManager->ROBOT_IP, networkManager->ECHOLOGGER_ROBOT_SIM_PORT_IN,
 		         networkManager->SIM_IP, networkManager->ECHOLOGGER_SIM_PORT_OUT);
 	tlmSim->create();

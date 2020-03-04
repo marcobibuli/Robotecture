@@ -15,11 +15,16 @@
 class RawHorVelFromGPS:public RobotTask
 {
 	private:
+		DataAccess<Task_status>* task_access;
+		DataAccess<GPS_AHRS_status>* gps_ahrs_access;
+		DataAccess<NGC_status>* ngc_access;
 
 	public:
-		RawHorVelFromGPS(const char *name,Status *st):RobotTask(name,st)
+		RawHorVelFromGPS(const char* name, DataAccess<Task_status>& Task_access, DataAccess<GPS_AHRS_status>& GPS_AHRS_access, DataAccess<NGC_status>& NGC_access) :RobotTask(name)
 		{
-
+			task_access = &Task_access;
+			gps_ahrs_access = &GPS_AHRS_access;
+			ngc_access = &NGC_access;
 		}
 
 
@@ -28,7 +33,7 @@ class RawHorVelFromGPS:public RobotTask
 		virtual void execute()
 		{
 			Task_status task_status;
-			task_status=status->raw_HorVel_From_GPS_status.get();
+			task_status = task_access->get();
 
 			if (task_status.execution==TASK_INIT)
 			{
@@ -46,8 +51,8 @@ class RawHorVelFromGPS:public RobotTask
 			GPS_AHRS_status gps_ahrs_status;
 			NGC_status ngc_status;
 
-			gps_ahrs_status=status->gps_ahrs_status.get();
-			ngc_status=status->ngc_status.get();
+			gps_ahrs_status=gps_ahrs_access->get();
+			ngc_status=ngc_access->get();
 
 
 			double psi=ngc_status.pose.actual.psi.value;
@@ -56,8 +61,8 @@ class RawHorVelFromGPS:public RobotTask
 
 			if (gps_ahrs_status.nedVelocityValidFlags!=0)
 			{
-				xDot=gps_ahrs_status.north.value;
-				yDot=gps_ahrs_status.east.value;
+				xDot=gps_ahrs_status.northVel.value;
+				yDot=gps_ahrs_status.eastVel.value;
 			}
 
 			double u=cos(psi)*xDot +sin(psi)*yDot;
@@ -87,7 +92,7 @@ class RawHorVelFromGPS:public RobotTask
 			ngc_status.velocity_inertial.raw.yDot_sea.valid=true;
 			ngc_status.velocity_inertial.raw.speed.valid=true;
 			ngc_status.velocity_inertial.raw.course.valid=true;
-			if (gps_ahrs_status.device_status!=DEVICE_RUNNING || gps_ahrs_status.nedVelocityValidFlags==0)
+			if (gps_ahrs_status.gps_status!=DEVICE_RUNNING || gps_ahrs_status.nedVelocityValidFlags==0)
 			{
 				ngc_status.velocity_body.raw.u.valid=false;
 				ngc_status.velocity_body.raw.v.valid=false;
@@ -115,7 +120,7 @@ class RawHorVelFromGPS:public RobotTask
 
 
 
-			status->ngc_status.set(ngc_status);
+			ngc_access->set(ngc_status);
 
 		}
 
@@ -123,16 +128,16 @@ class RawHorVelFromGPS:public RobotTask
 		virtual void setStatus(TaskStatus ts)
 		{
 			Task_status task_status;
-			task_status=status->raw_HorVel_From_GPS_status.get();
+			task_status = task_access->get();
 			task_status.execution=ts;
-			status->raw_HorVel_From_GPS_status.set(task_status);
+			task_access->set(task_status);
 		}
 
 
 		virtual TaskStatus getStatus()
 		{
 			Task_status task_status;
-			task_status=status->raw_HorVel_From_GPS_status.get();
+			task_status = task_access->get();
 			return task_status.execution;
 		}
 };

@@ -123,6 +123,16 @@ NetworkManager::NetworkManager()
 	PINGER_HMI_PORT_IN = 0;
 	PINGER_HMI_PORT_OUT = 0;
 
+	USBL_SIM_PORT_IN = 0;
+	USBL_SIM_PORT_OUT = 0;
+	USBL_POS_SIM_PORT_IN = 0;
+	USBL_POS_SIM_PORT_OUT = 0;
+	USBL_POS_PORT_IN = 0;
+	USBL_POS_PORT_OUT = 0;
+	USBL_HMI_POS_PORT_IN = 0;
+	USBL_HMI_POS_PORT_OUT = 0;
+	USBL_HMI_CHK_PORT_IN = 0;
+	USBL_HMI_CHK_PORT_OUT = 0;
 	USBL_HMI_TLM_PORT_IN=0;
 	USBL_HMI_TLM_PORT_OUT = 0;
 	USBL_HMI_CMD_PORT_IN = 0;
@@ -131,11 +141,17 @@ NetworkManager::NetworkManager()
 	USBL_TLM_PORT_OUT = 0;
 	USBL_CMD_PORT_IN = 0;
 	USBL_CMD_PORT_OUT = 0;
+	USBL_CHK_PORT_IN = 0;
+	USBL_CHK_PORT_OUT = 0;
 
+	
+	
+
+	USBL_HMI_POS_PORT_IN = 0;
+	USBL_HMI_POS_PORT_OUT = 0;
+	
+	USBL_POS_SIM_PORT_IN = 0;
 	USBL_POS_SIM_PORT_OUT = 0;
-	USBL_POS_PORT_IN = 0;
-	USBL_SIM_PORT_IN = 0;
-	USBL_SIM_PORT_OUT = 0;
 
 
 	NGC_ROBOT_HMI_PORT_IN = 0;
@@ -165,6 +181,8 @@ NetworkManager::NetworkManager()
 	CMD_ROBOT_PORT_OUT=0;
 	CMD_SIM_PORT_IN=0;
 	CMD_SIM_PORT_OUT=0;
+	CMD_HMI_PORT_IN = 0;
+	CMD_HMI_PORT_OUT = 0;
 	TLM_ROBOT_PORT_IN=0;
 	TLM_ROBOT_PORT_OUT=0;
 	TLM_HMI_PORT_IN=0;
@@ -365,25 +383,42 @@ int NetworkManager::init(const char *name_dir_file)
 			if (strcmp(var,"CMD_ROBOT_PORT_OUT")==0) CMD_ROBOT_PORT_OUT= (uint16)atoi(value);
 			if (strcmp(var,"CMD_SIM_PORT_IN")==0) CMD_SIM_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"CMD_SIM_PORT_OUT")==0) CMD_SIM_PORT_OUT= (uint16)atoi(value);
+			if (strcmp(var, "CMD_HMI_PORT_IN") == 0) CMD_HMI_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "CMD_HMI_PORT_OUT") == 0) CMD_HMI_PORT_OUT = (uint16)atoi(value);
 			if (strcmp(var,"TLM_ROBOT_PORT_IN")==0) TLM_ROBOT_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"TLM_ROBOT_PORT_OUT")==0) TLM_ROBOT_PORT_OUT= (uint16)atoi(value);
 			if (strcmp(var,"TLM_HMI_PORT_IN")==0) TLM_HMI_PORT_IN= (uint16)atoi(value);
 			if (strcmp(var,"TLM_HMI_PORT_OUT")==0) TLM_HMI_PORT_OUT= (uint16)atoi(value);
 
 
-			if (strcmp(var, "USBL_TLM_PORT_IN") == 0) USBL_TLM_PORT_IN = (uint16)atoi(value);
-			if (strcmp(var, "USBL_TLM_PORT_OUT") == 0) USBL_TLM_PORT_OUT = (uint16)atoi(value);
-			if (strcmp(var, "USBL_CMD_PORT_IN") == 0) USBL_CMD_PORT_IN = (uint16)atoi(value);
-			if (strcmp(var, "USBL_CMD_PORT_OUT") == 0) USBL_CMD_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "USBL_SIM_PORT_IN") == 0) USBL_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "USBL_SIM_PORT_OUT") == 0) USBL_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "USBL_POS_SIM_PORT_IN") == 0) USBL_POS_SIM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "USBL_POS_SIM_PORT_OUT") == 0) USBL_POS_SIM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "USBL_POS_PORT_IN") == 0) USBL_POS_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "USBL_POS_PORT_OUT") == 0) USBL_POS_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "USBL_HMI_POS_PORT_IN") == 0) USBL_HMI_POS_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "USBL_HMI_POS_PORT_OUT") == 0) USBL_HMI_POS_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "USBL_HMI_CHK_PORT_IN") == 0) USBL_HMI_CHK_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "USBL_HMI_CHK_PORT_OUT") == 0) USBL_HMI_CHK_PORT_OUT = (uint16)atoi(value);
 			if (strcmp(var, "USBL_HMI_TLM_PORT_IN") == 0) USBL_HMI_TLM_PORT_IN = (uint16)atoi(value);
 			if (strcmp(var, "USBL_HMI_TLM_PORT_OUT") == 0) USBL_HMI_TLM_PORT_OUT = (uint16)atoi(value);
 			if (strcmp(var, "USBL_HMI_CMD_PORT_IN") == 0) USBL_HMI_CMD_PORT_IN = (uint16)atoi(value);
 			if (strcmp(var, "USBL_HMI_CMD_PORT_OUT") == 0) USBL_HMI_CMD_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "USBL_TLM_PORT_IN") == 0) USBL_TLM_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "USBL_TLM_PORT_OUT") == 0) USBL_TLM_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "USBL_CMD_PORT_IN") == 0) USBL_CMD_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "USBL_CMD_PORT_OUT") == 0) USBL_CMD_PORT_OUT = (uint16)atoi(value);
+			if (strcmp(var, "USBL_CHK_PORT_IN") == 0) USBL_CHK_PORT_IN = (uint16)atoi(value);
+			if (strcmp(var, "USBL_CHK_PORT_OUT") == 0) USBL_CHK_PORT_OUT = (uint16)atoi(value);
 			
-			if (strcmp(var,"USBL_POS_SIM_PORT_OUT")==0) USBL_POS_SIM_PORT_OUT = (uint16)atoi(value);
-			if (strcmp(var,"USBL_POS_PORT_IN")==0) USBL_POS_PORT_IN = (uint16)atoi(value);
-			if (strcmp(var, "USBL_SIM_PORT_IN") == 0) USBL_SIM_PORT_IN = (uint16)atoi(value);
-			if (strcmp(var, "USBL_SIM_PORT_OUT") == 0) USBL_SIM_PORT_OUT = (uint16)atoi(value);
+			
+			
+			
+			
+			
+			
+			
 			
 
 

@@ -79,8 +79,9 @@ class PingerLink:public Device
 		double range;
 		char sequence;
 		double pos_x,pos_y,pos_z;
+		char msg[BUF_SIZE];
 
-		char* extractPosition(char *dataBuf);
+		void extractPositionAndMessage(char *dataBuf,int size);
 
 
 	public:

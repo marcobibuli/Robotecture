@@ -70,7 +70,7 @@ int UsblLink::init_sim()
 	inLink->create();
 
 
-	posLink=new CommLink( "USBLpos_Link" , OVERRIDE );
+	posLink=new CommLink( "USBLpos_Link" , UDP_PURE );
 	posLink->open( networkManager->USBL_IP , networkManager->USBL_POS_PORT_IN ,
 			       networkManager->SIM_IP  , networkManager->USBL_POS_SIM_PORT_OUT );
 	posLink->create();
@@ -184,9 +184,13 @@ int UsblLink::init_act()
 
 UsblLink::~UsblLink()
 {
-	cl->close();
-	delete cl;
-
+	
+	if (cl != NULL)
+	{
+		cl->close();
+		delete cl;
+	}
+	
 	inLink->terminate();
 	delete inLink;
 
@@ -195,6 +199,7 @@ UsblLink::~UsblLink()
 
 	posLink->terminate();
 	delete posLink;
+	
 }
 
 
@@ -236,7 +241,7 @@ void UsblLink::execute_sim()
 				pos_y=((double)(pos.y))/USBLpos_factor;
 				pos_z=((double)(pos.z))/USBLpos_factor;
 
-				//printf("x: %lf   y: %lf   z: %lf\n",pos_x,pos_y,pos_z);
+				//printf("********* x: %lf   y: %lf   z: %lf\n",pos_x,pos_y,pos_z);
 			}
 		}while(ret>0);
 
@@ -466,7 +471,7 @@ void UsblLink::sendUsblMessage(char* m)
 		unsigned int dataLen=strlen(msg);
 
 		//printf("xs: %s   ys: %s   zs: %s\n",xs,ys,zs);
-		//printf("msg: %s\n",msg);
+		//printf("msg: %s   %d\n",msg, dataLen);
 
 
 		sprintf(buf,"AT*SENDIM,%d,%d,ack,%s\n",dataLen,PINGER_ADDR,msg);

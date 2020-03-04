@@ -18,11 +18,20 @@
 #include "../common/tasks/RobotTask.h"
 #include "Europe_status.h"
 
+#include "../common/tasks/europe/AngFilter.h"
+#include "../common/tasks/europe/HorVelFilter.h"
+
 #include "../common/tasks/RawAngFromFOG.h"
 #include "../common/tasks/RawAngFromAHRS.h"
-#include "../common/tasks/AngFilter.h"
 #include "../common/tasks/ActualAngFromRaw.h"
 #include "../common/tasks/ActualAngFromFilter.h"
+
+#include "../common/tasks/RawHorVelFromDVL.h"
+#include "../common/tasks/RawHorVelFromGPS.h"
+#include "../common/tasks/RawHorVelFromUSBL.h"
+#include "../common/tasks/ActualHorVelFromRaw.h"
+#include "../common/tasks/ActualHorVelFromFilter.h"
+
 
 
 
@@ -179,6 +188,7 @@ class Tasks:public RobotThread
 
 		std::vector<RobotTask*> tasks;
 		std::vector<RobotTask*> angSensorsToRaw;
+		std::vector<RobotTask*> horVelSensorsToRaw;
 
 		RobotTask* rawAngFromFOG = NULL;
 		RobotTask* rawAngFromAHRS = NULL;
@@ -186,11 +196,14 @@ class Tasks:public RobotThread
 		RobotTask* actualAngFromRaw = NULL;
 		RobotTask* actualAngFromFilter = NULL;
 		
-		/*
+		RobotTask* rawHorVelFromDVL = NULL;
+		RobotTask* rawHorVelFromGPS = NULL;
+		RobotTask* rawHorVelFromUSBL = NULL;
 		RobotTask* horVelFilter = NULL;
 		RobotTask* actualHorVelFromRaw = NULL;
 		RobotTask* actualHorVelFromFilter = NULL;
 
+		/*
 		RobotTask* horPosFilter = NULL;
 		RobotTask* actualHorPosFromRaw = NULL;
 		RobotTask* actualHorPosFromFilter = NULL;
@@ -206,7 +219,7 @@ class Tasks:public RobotThread
 		/*
 
 		
-		std::vector<RobotTask*> horVelSensorsToRaw;
+		
 		std::vector<RobotTask*> horPosSensorsToRaw;
 		std::vector<RobotTask*> verVelSensorsToRaw;
 		std::vector<RobotTask*> verPosSensorsToRaw;

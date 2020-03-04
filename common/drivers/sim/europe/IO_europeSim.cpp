@@ -11,7 +11,7 @@
 
 IO_europeSim::IO_europeSim(const char *name,NetworkManager &nm, SimStatus*s): DeviceSim(name,SCHED_FIFO,IO_THREAD_PRIORITY,start_io_europeSim,nm,s)
 {
-	cmd=new CommLink( "IO_europeSim_cmd" , OVERRIDE);
+	cmd=new CommLink( "IO_europeSim_cmd" , UDP_PURE);
 
 	cmd->open( networkManager->SIM_IP ,   networkManager->IO_SIM_PORT_IN ,
 			   networkManager->ROBOT_IP , networkManager->IO_ROBOT_SIM_PORT_OUT );
@@ -115,6 +115,8 @@ void IO_europeSim::execute()
 
 		send_tlm();
 
+		//printf("digIn[0]: %d\n",digitalInput[0]);
+
 		nanosleep(&tSleep,NULL);
 	}
 }
@@ -139,6 +141,7 @@ void IO_europeSim::read_cmd()
 			for(int i=0;i<EUROPE_DA_MAX_CHANNELS;i++)
 				analogOutput[i]=((double)(msg.da[i]))/IO_factor;
 		}
+		
 	}while(ret>0);
 }
 

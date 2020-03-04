@@ -26,7 +26,7 @@ class PA500alt:public Device
 	private:
 		char pa500SerialDeviceName[64];
 
-		PA500 *pa500;
+		PA500 pa500;
 
 		double range;
 

@@ -19,7 +19,7 @@ struct Filter_Ang_tlm_packet
 	int64 r_r;
 	int64 Kr;
 	int64 br;
-	int32 execution;
+	int64 execution;
 
 	void zero()
 	{

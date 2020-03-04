@@ -41,11 +41,12 @@ class IO_europe :public Device
 
 	  	//Diamond diamond0,diamond1;
 
-	  	int autoStartStop;
 	  	int state;
 	  	int tickCount;
 
 	  	void automaticStartStop();
+
+		Diamond diamond0, diamond1;
 	  	
 		DataAccess<Time_status>* time_access = NULL;
 		DataAccess<IO_europe_status>* io_access = NULL;

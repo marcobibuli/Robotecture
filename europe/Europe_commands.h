@@ -13,21 +13,42 @@
 
 #include "../common/generic/RobotThread.h"
 #include "Europe_status.h"
+#include "Tasks.h"
+#include "../common/network/CommLink.h"
+#include "../common/network/NetworkManager.h"
 
+
+enum System
+{
+	ACOUSTIC_PING = 0,
+	IO_SYSTEM = 1,
+	NGC_SYSTEM = 2,
+	TASK_SYSTEM = 3
+};
 
 
 class Europe_commands :public RobotThread
 {
-protected:
-	timespec tDelay, tStart, tSleep;
+	private:
+		void exec_cmd(char* cmd_string);
+		void parse_cmd(std::vector<char*>& cmd_msg, char* cmd_string);
+		void dispatch_cmd(std::vector<char*>& cmd_msg);
+		void io_command(std::vector<char*>& cmd_msg);
+		void ngc_command(std::vector<char*>& cmd_msg);
+		void task_command(std::vector<char*>& cmd_msg);
 
-public:
-	Europe_commands(const char* name);
-	~Europe_commands();
+	protected:
+		timespec tDelay, tStart, tSleep;
+		CommLink* io_cmd;
+		NetworkManager* networkManager;
 
-	virtual void execute();
+	public:
+		Europe_commands(const char* name, NetworkManager& nm, Europe_status* s);
+		~Europe_commands();
 
-	Europe_status *status;
+		virtual void execute();
+
+		Europe_status *status;
 };
 
 void* start_europe_commands(void* arg);

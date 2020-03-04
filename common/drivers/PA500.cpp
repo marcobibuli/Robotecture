@@ -27,8 +27,6 @@ PA500alt::PA500alt(const char *name,NetworkManager &nm, DataAccess<PA500_status>
 */
 	
 
-	pa500=NULL;
-
 	measure_flag=0;
 }
 
@@ -164,25 +162,25 @@ void PA500alt::execute_act()
 	{
 		pa500_status =pa500_access->get();
 
-		if (pa500_status .powered==0) device_status=DEVICE_OFF;
+		if (pa500_status.powered==0) device_status=DEVICE_OFF;
 
 		if (pa500_status.powered==1 && device_status==DEVICE_OFF)
 		{
 
 			printf("Init PA500\n");
 			usleep(500000);
-
-			if(pa500_init(pa500,pa500SerialDeviceName,FREE_RUNNING_PA500_MODE)<0)
+			
+			if(pa500_init(&pa500,pa500SerialDeviceName,FREE_RUNNING_PA500_MODE)<0)
 			{
 				printf("PA500 serial device error\n");
 			}
-
+			printf("Init PA500 ok\n");
 			device_status=DEVICE_INIT;
 		}
 
 		if (pa500_status.powered ==1 && device_status!=DEVICE_OFF)
 		{
-			if (pa500_read(pa500,&range)==0) measure_flag=1;
+			if (pa500_read(&pa500,&range)==0) measure_flag=1;
 
 			if (range==0.0 || measure_flag==0)
 			{

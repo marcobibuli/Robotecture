@@ -23,7 +23,7 @@ struct Filter_HorVel_tlm_packet
 	int64 bu;
 	int64 Kv;
 	int64 bv;
-	int32 execution;
+	int64 execution;
 
 	void zero()
 	{

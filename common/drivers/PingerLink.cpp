@@ -234,7 +234,7 @@ int PingerLink::init_pinger()
 }
 
 
-char* PingerLink::extractPosition(char *dataBuf)
+void PingerLink::extractPositionAndMessage(char *dataBuf,int size)
 {
 	sequence=dataBuf[0];
 
@@ -265,9 +265,16 @@ char* PingerLink::extractPosition(char *dataBuf)
 	pos_z=((double)(zl))/100.0;
 	i++;
 
-	//printf("xl: %lf    yl: %lf    zl: %lf\n",pos_x,pos_y,pos_z);
 
-	return (dataBuf+i);
+	//printf("xl: %lf    yl: %lf    zl: %lf\n",pos_x,pos_y,pos_z);
+	/*
+	int k;
+	for ( k= i; k < size; k++)
+		msg[k - i] = dataBuf[k];
+	msg[k] = NULL;
+	*/
+
+	strcpy(msg, &(dataBuf[i]));
 }
 
 
@@ -286,7 +293,9 @@ void PingerLink::execute_sim()
 			ret=inLink->recv_message((char*)&dataBuf);
 			if (ret>0)
 			{
-				char *msg=extractPosition(dataBuf.data);
+				//((char*)&dataBuf)[ret] = NULL;
+				dataBuf.data[ret] = NULL;
+				extractPositionAndMessage(dataBuf.data,ret);
 				strcpy(msgIn.data,msg);
 				pingerStatus(RECEIVED);
 			}
@@ -402,10 +411,9 @@ void PingerLink::execute_act()
 
 				fullString[0]='\0';
 
-				char *msg=extractPosition(dataBuf);
+				extractPositionAndMessage(dataBuf,strlen(dataBuf));
 
 				strcpy(msgIn.data,msg);
-
 
 
 				pingerStatus(RECEIVED);

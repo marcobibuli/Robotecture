@@ -45,8 +45,15 @@ struct TLM_packet
 	Task_tlm_packet raw_Ang_From_AHRS;
 	Task_tlm_packet actual_Ang_From_Raw;
 	Task_tlm_packet actual_Ang_From_Filter;
-
 	Filter_Ang_tlm_packet filter_Ang;
+
+	Task_tlm_packet raw_HorVel_From_DVL;
+	Task_tlm_packet raw_HorVel_From_GPS;
+	Task_tlm_packet raw_HorVel_From_USBL;
+	Task_tlm_packet actual_HorVel_From_Raw;
+	Task_tlm_packet actual_HorVel_From_Filter;
+	Filter_HorVel_tlm_packet filter_HorVel;
+	
 };
 # pragma pack (pop)
 
@@ -58,6 +65,7 @@ class Europe_telemetry :public RobotThread
 		NetworkManager* networkManager;
 		CommLink* tlm;
 		TLM_packet msg;
+		char tlm_string[BUF_SIZE];
 
 	public:
 		Europe_telemetry(const char* name, NetworkManager& nm, Europe_status* s);

@@ -84,6 +84,12 @@ class CTD_status
 			tp.depth=(int64)(depth.value*CTD_factor);
 			tp.device_status=(int64)device_status;
 		}
+
+
+		void compose_string_packet(char* str)
+		{
+			sprintf(str, "%lli", device_status);
+		}
 };
 
 

@@ -28,7 +28,7 @@
 #include "../common/data/Task_status.h"
 
 #include "../common/data/Filter_Ang_status.h"
-//#include "../common/data/Filter_HorVel_status.h"
+#include "../common/data/Filter_HorVel_status.h"
 
 
 class Europe_status :public Status
@@ -55,8 +55,14 @@ class Europe_status :public Status
 		DataAccess<Task_status> raw_Ang_From_AHRS_status;
 		DataAccess<Task_status> actual_Ang_From_Raw_status;
 		DataAccess<Task_status> actual_Ang_From_Filter_status;
-
 		DataAccess<Filter_Ang_status> filter_Ang_status;
+
+		DataAccess<Task_status> raw_HorVel_From_DVL_status;
+		DataAccess<Task_status> raw_HorVel_From_GPS_status;
+		DataAccess<Task_status> raw_HorVel_From_USBL_status;
+		DataAccess<Task_status> actual_HorVel_From_Raw_status;
+		DataAccess<Task_status> actual_HorVel_From_Filter_status;
+		DataAccess<Filter_HorVel_status> filter_HorVel_status;
 
 };
 

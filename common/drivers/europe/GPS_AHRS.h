@@ -16,6 +16,7 @@
 #include "../../data/GPS_AHRS_status.h"
 #include "../../data/Time_status.h"
 #include "../../data/DataAccess.h"
+#include "./hardwareLib/e-URoPelib.h"
 
 
 struct GPS_AHRS_Sim_Data
@@ -36,6 +37,11 @@ class GPS_AHRS:public Device
     	char utmzone_char;
 		DeviceStatus ahrs_status, gps_status;
 		CommLink *tlmHMI;
+
+		IS3DMGX335 is3dmgx335;
+		IS3DMGX335Data is3dmgx335Data;
+
+		char is3dmgx335SerialDeviceName[64];
 
 		DataAccess<Time_status> *time_access=NULL;
 		DataAccess<GPS_AHRS_status>* gps_ahrs_access = NULL;
@@ -61,6 +67,8 @@ class GPS_AHRS:public Device
 
 
 		void send_telemetry();
+
+		void updateStatus();
 };
 
 

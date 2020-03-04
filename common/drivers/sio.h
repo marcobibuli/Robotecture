@@ -54,7 +54,7 @@ class Sio
                );
       int terminate(void);
       ssize_t read(void* buffer,size_t bufferSize){return(::read(mFdCom,buffer,bufferSize));};
-      ssize_t write(const void* buffer,size_t bufferSize){return(::write(mFdCom,buffer,bufferSize));};;
+      ssize_t write(const void* buffer,size_t bufferSize){return(::write(mFdCom,buffer,bufferSize));};
       int flush(){ if(tcflush(mFdCom,TCIOFLUSH)<0) {
       printf("Sio::init error - flush %s\n",strerror(errno));
       return(-1);

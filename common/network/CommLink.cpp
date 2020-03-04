@@ -185,11 +185,11 @@ ssize_t CommLink::sendto(struct sockaddr_in addr,char* buf,int bufLen,int flags)
 
 void CommLink::flush_buffer()
 {
-	char buf[1024];
+	char buf[BUF_SIZE];
 	int ret;
 
 	do{
-		ret=recv(buf,1024,0);
+		ret=recv(buf, BUF_SIZE,0);
 	}while(ret>0);
 
 }
@@ -516,7 +516,7 @@ void CommLink::execute_override()
 			{
 				m.resizePacket(byteReceived);
 
-				char mmm[1024];
+				char mmm[BUF_SIZE];
 				for (int i = 0; i < byteReceived; i++)
 					mmm[i] = *(m.dataPointer() + i);
 				mmm[byteReceived] = NULL;

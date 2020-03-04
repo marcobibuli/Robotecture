@@ -14,6 +14,7 @@
 
 #include "DataAccess.h"
 #include "Time_status.h"
+#include "Connection_status.h"
 #include <time.h>
 
 
@@ -30,6 +31,7 @@ class Status:public RobotThread
 
 		virtual void execute();
 
+		DataAccess<Connection_status> connection_status;
 		DataAccess<Time_status> time_status;
 };
 

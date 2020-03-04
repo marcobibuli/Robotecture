@@ -206,15 +206,18 @@ void DVL::execute_act()
 		if (dvl_status.powered==1 && device_status==DEVICE_OFF)
 		{
 			printf("Init DVL\n");
-			usleep(500000);
-			initExplorerDVL();
+			//usleep(1000000);
+			//initExplorerDVL();
 
 			device_status=DEVICE_INIT;
 		}
 
 		if (dvl_status.powered==1 && device_status!=DEVICE_OFF)
 		{
+			printf("receive\n");
 			received = this->receive(message);
+
+			printf("received: %d     dev status: %d\n",received, device_status);
 
 			//if (received < 0) printf("DVL ERROR reading message\n");
 
@@ -325,12 +328,12 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 	// Send the CR1 command to the device.
-	//printf("CR1\n");
+	printf("CR1\n");
 	written = this->m_pSio->write("CR1\r", 4);
 	//printf("CR1\n");
 	if (4 != written)
@@ -349,12 +352,12 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 	// Send the CB411 command to the device.
-	//printf("CB411\n");
+	printf("CB411\n");
 	written = this->m_pSio->write("CB411\r", 6);
 	//printf("CB411\n");
 	if (6 != written)
@@ -372,7 +375,7 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
@@ -403,7 +406,7 @@ int DVL::initExplorerDVL()
 #else
 		//printf("CF11110\n");
 			written = this->m_pSio->write("CF11110\r", 8);
-			//printf("CF11110\n");
+			printf("CF11110\n");
 			if (8 != written)
 			{
 				printf("Error: CF11110 Expected to write 8 bytes but only wrote %d\n",written);
@@ -420,7 +423,7 @@ int DVL::initExplorerDVL()
 				return -2;
 			}
 			for(int i=0; i<read; i++)
-				printf("%d",received[i]);
+				printf("%c",received[i]);
 			printf("\n");
 #endif
 
@@ -429,7 +432,7 @@ int DVL::initExplorerDVL()
 	// Send the BP001 command to the device.
 	//printf("BP001\n");
 	written = this->m_pSio->write("BP001\r", 6);
-	//printf("BP001\n");
+	printf("BP001\n");
 	if (6 != written)
 	{
 		printf("Error: BP001 Expected to write 6 bytes but only wrote %d\n",written);
@@ -446,18 +449,18 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 
 	// Send the BX50(BX01000) command to the device.
+	printf("BX500\n");
+	written = this->m_pSio->write("BX500\r", 6);
 	//printf("BX50\n");
-	written = this->m_pSio->write("BX50\r", 5);
-	//printf("BX50\n");
-	if (5 != written)
+	if (6 != written)
 	{
-		printf("Error: BX50 Expected to write 5 bytes but only wrote %d\n",written);
+		printf("Error: BX50 Expected to write 6 bytes but only wrote %d\n",written);
 		return -1;
 	}
 
@@ -471,13 +474,13 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 
 	// Send the EA00000 command to the device.
-	//printf("EA00000\n");
+	printf("EA00000\n");
 	written = this->m_pSio->write("EA00000\r", 8);
 	//printf("EA00000\n");
 	if (8 != written)
@@ -496,12 +499,12 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 	// Send the ED0000 command to the device.
-	//printf("ED0000\n");
+	printf("ED0000\n");
 	written = this->m_pSio->write("ED0000\r", 7);
 	//printf("ED0000\n");
 	if (7 != written)
@@ -520,13 +523,13 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 
 	// Send the ES35 command to the device.
-	//printf("ES35\n");
+	printf("ES35\n");
 	written = this->m_pSio->write("ES35\r", 5);
 	//printf("ES35\n");
 	if (5 != written)
@@ -545,12 +548,12 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 	// Send the EX01111 command to the device. Ship coordinates
-	//printf("EX01111\n");
+	printf("EX01111\n");
 	//written = this->m_pSio->write("EX01000\r", 8);//Instrument coord
 	written = this->m_pSio->write("EX01111\r", 8);//TBC
 	//printf("EX01111\n");
@@ -570,12 +573,12 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 	// Send the EZ11211210(EZ22222220) command to the device.
-	//printf("EZ11211210\n");
+	printf("EZ11211210\n");
 	written = this->m_pSio->write("EZ11211210\r", 11);
 	//printf("EZ11211210\n");
 	if (11 != written)
@@ -594,13 +597,13 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 
 	// Send the TE00000000 command to the device.
-	//printf("TE00000000\n");
+	printf("TE00000000\n");
 	written = this->m_pSio->write("TE00000000\r", 11);
 	//printf("TE00000000\n");
 	if (11 != written)
@@ -619,13 +622,13 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 
 	// Send the TP00:00.00 command to the device.
-	//printf("TP00:00.00\n");
+	printf("TP00:00.00\n");
 	written = this->m_pSio->write("TP00:00.00\r", 11);
 	//printf("TP00:00.00\n");
 	if (11 != written)
@@ -644,17 +647,19 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 	// Send the #BF00028 command to the device.
 	//printf("#BF00028\n");
-	written = this->m_pSio->write("#BF00028\r", 9);
+	//written = this->m_pSio->write("#BF00028\r", 9);
+	printf("#BF0\n");
+	written = this->m_pSio->write("#BF0\r", 5);
 	//printf("#BF00028\n");
-	if (9 != written)
+	if (5 != written)
 	{
-		printf("Error: #BF00028 Expected to write 9 bytes but only wrote %d\n",written);
+		printf("Error: #BF00028 Expected to write 5 bytes but only wrote %d\n",written);
 		return -1;
 	}
 
@@ -668,7 +673,7 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
@@ -677,7 +682,7 @@ int DVL::initExplorerDVL()
 	////Water profiling feature - non present
 
 	// Send the #BK0 command to the device.
-	//printf("#BK0\n");
+	printf("#BK0\n");
 	written = this->m_pSio->write("#BK0\r", 5);
 	//printf("#BK0\n");
 	if (5 != written)
@@ -696,13 +701,13 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 
 	// Send the #BL20,80,160 command to the device.
-	//printf("#BL20,80,160\n");
+	printf("#BL20,80,160\n");
 	written = this->m_pSio->write("#BL20,80,160\r", 13);
 	//printf("#BL20,80,160\n");
 	if (13 != written)
@@ -721,16 +726,18 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 
 
 	// Send the #EE0000111 command to the device.
-	//printf("#EE0000111\n");
+	
 	written = this->m_pSio->write("#EE0000111\r", 11);
-	//printf("#EE0000111\n");
+	//written = this->m_pSio->write("#EE0000010\r", 11);
+	printf("#EE0000111\n");
+	//printf("#EE0000010\n");
 	if (11 != written)
 	{
 		printf("Error: #EE0000111 Expected to write 11 bytes but only wrote %d\n",written);
@@ -747,13 +754,13 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
-
+	
 	// Send the #EV0 command to the device.
-	//printf("#EV0\n");
+	printf("#EV0\n");
 	written = this->m_pSio->write("#EV0\r", 5);
 	//printf("#EV0\n");
 	if (5 != written)
@@ -772,14 +779,14 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
-
-
+	
+	/*
 	// Send the #EY 0 0 0 0 0 0 0 0 command to the device.
 	//printf("#EY 0 0 0 0 0 0 0 0\n");
 	written = this->m_pSio->write("#EY 0 0 0 0 0 0 0 0\r", 20);
-	//printf("#EY 0 0 0 0 0 0 0 0\n");
+	printf("#EY 0 0 0 0 0 0 0 0\n");
 	if (20 != written)
 	{
 		printf("Error: #EY 0 0 0 0 0 0 0 0 Expected to write 20 bytes but only wrote %d\n",written);
@@ -796,15 +803,15 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
-
+	*/
 
 	//********************
 	// Send the #BI010 command to the device.
 	//printf("#BI010\n");
 	written = this->m_pSio->write("#BI010\r", 7);
-	//printf("#BI010\n");
+	printf("#BI010\n");
 	if (7 != written)
 	{
 		printf("Error: #BI010 Expected to write 7 bytes but only wrote %d\n",written);
@@ -821,7 +828,7 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 	//********************+
 
@@ -829,7 +836,7 @@ int DVL::initExplorerDVL()
 	// Send the #PD0 command to the device.
 	//printf("#PD0\n");
 	written = this->m_pSio->write("#PD0\r", 5);
-	//printf("#PD0\n");
+	printf("#PD0\n");
 	if (5 != written)
 	{
 		printf("Error: #PD0 Expected to write 5 bytes but only wrote %d\n",written);
@@ -846,13 +853,13 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 
 	// Send the #CT1 command to the device.
-	//printf("#CT1\n");
+	printf("#CT1\n");
 	written = this->m_pSio->write("#CT1\r", 5);
 	//printf("#CT1\n");
 	if (5 != written)
@@ -871,14 +878,14 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
 	// Send the CK command to the device.
 	//printf("CK\n");
 	written = this->m_pSio->write("CK\r", 3);
-	//printf("CK\n");
+	printf("CK\n");
 	if (3 != written)
 	{
 		printf("Error: CK Expected to write 3 bytes but only wrote %d\n",written);
@@ -895,7 +902,7 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 
@@ -903,7 +910,7 @@ int DVL::initExplorerDVL()
 	// Send the CS command to the device.
 	//printf("CS\n");
 	written = this->m_pSio->write("CS\r", 3);
-	//printf("CS\n");
+	printf("CS\n");
 	if (3 != written)
 	{
 		printf("Error: CS Expected to write 3 bytes but only wrote %d\n",written);
@@ -920,7 +927,7 @@ int DVL::initExplorerDVL()
 		return -2;
 	}
 	for(int i=0; i<read; i++)
-		printf("%d",received[i]);
+		printf("%c",received[i]);
 	printf("\n");
 
 	printf("Init complete\n");

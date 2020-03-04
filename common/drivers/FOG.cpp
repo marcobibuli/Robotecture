@@ -114,17 +114,24 @@ void FOG::execute_act()
 	tSleep.tv_sec=FOG_SLEEP_SEC;
 	tSleep.tv_nsec=FOG_SLEEP_NSEC;
 
+	FOG_status fog_status;
+
 	while(running_act)
 	{
 		received = receive(message);
 
 		if (received < 0)
 		{
-			//printf("FOG - ERROR reading message.\n");
+			printf("FOG - ERROR reading message.\n");
 
 		}
 
-		send_telemetry();
+		
+		/*
+		fog_status = fog_access->get();
+		printf("FOG psi: %lf\n", fog_status.heading.value*180.0/M_PI);
+		*/
+		//send_telemetry();
 
 		nanosleep(&tSleep,NULL);
 	}
@@ -154,6 +161,7 @@ int FOG::receive(char *recMessage)
 	if(this->check_crc((unsigned char*)recMessage) == 0)
 	{
 		convertData();
+		updateStatus();
 		update_device_status(received);
 	}
 
@@ -257,6 +265,7 @@ void FOG::convertData()
 	RobotNavData->rollRate = ChRollRate*AngleResolution;//deg/s
 	RobotNavData->pitchRate = ChPitchRate*AngleResolution;//deg/s
 	//ANGLES & ANGULAR VELOCITIES
+
 }
 
 

@@ -146,6 +146,12 @@ class NGC_status
 			tp.theta=(int64)(pose.actual.theta.value*(180.0/M_PI)*NGC_factor);
 			tp.psi=(int64)(pose.actual.psi.value*(180.0/M_PI)*NGC_factor);
 		}
+
+
+		void compose_string_packet(char* str)
+		{	
+			sprintf(str, "%.2lf %.2lf %.2lf %.2lf %.2lf", pose.actual.x.value, pose.actual.y.value, pose.actual.z.value, pose.actual.altitude.value, pose.actual.psi.value * (180.0 / M_PI));
+		}
 };
 
 

@@ -162,7 +162,7 @@ class IO_europe_status
 			device_status =d.device_status;
 			timeStamp=d.timeStamp;
 
-			updated = d.updated;
+			autoStartStop = d.autoStartStop;
 
 			compose_tlm_packet(tlm_packet);
 		}
@@ -178,7 +178,7 @@ class IO_europe_status
 		int64 device_status;
 		int64 timeStamp;
 
-		bool updated;
+		int autoStartStop;
 
 		IO_europe_tlm_packet tlm_packet;
 
@@ -207,7 +207,7 @@ class IO_europe_status
 			device_status =0;
 			timeStamp=0;
 
-			updated = false;
+			autoStartStop = 0;
 		}
 
 
@@ -262,6 +262,29 @@ class IO_europe_status
 				analogOutput[i] = ((double)tp.analogOutput[i]) / IO_factor;
 
 			device_status = tp.device_status;
+		}
+
+
+		void compose_string_packet(char *str)
+		{
+			int64 dig = 0;
+			for (int i = 0; i < EUROPE_DIO_MAX_CHANNELS; i++)
+			{
+				dig = (dig << 1) + digitalInput[EUROPE_DIO_MAX_CHANNELS - 1 - i];
+			}
+
+			sprintf(str,"%lli %.2lf %.2lf",dig,analogInput[EUROPE_AD_INPUT_VOLTAGE], analogInput[EUROPE_AD_INTERNAL_TEMPERATURE]);
+			//printf("telem: %s\n",str);
+
+			/*
+			for (int i = 0; i < EUROPE_AD_MAX_CHANNELS; i++)
+				tp.analogInput[i] = (int64)(analogInput[i] * IO_factor);
+
+			for (int i = 0; i < EUROPE_DA_MAX_CHANNELS; i++)
+				tp.analogOutput[i] = (int64)(analogOutput[i] * IO_factor);
+			*/
+
+			
 		}
 };
 

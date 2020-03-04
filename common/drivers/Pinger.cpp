@@ -16,6 +16,10 @@ Pinger::Pinger(const char *name,NetworkManager &nm, DataAccess<Pinger_status>& P
 	time_access = &Time_access;
 	pinger_access = &Pinger_access;
 
+	Pinger_status pinger_status;
+	pinger_status = pinger_access->get();
+	
+
 	/*
 	tlm=new CommLink( "Pinger_tlm" , OVERRIDE );
 	tlm->open( networkManager->ROBOT_IP , networkManager->PINGER_ROBOT_PORT_OUT ,
@@ -57,6 +61,10 @@ int Pinger::init_sim()
 	printf("Pinger::init_sim()\n");
 	//return init_pinger();
 
+	Pinger_status pinger_status;
+	pinger_status = pinger_access->get();
+	
+
 	device_status=DEVICE_OFF;
 	return 0;
 }
@@ -74,12 +82,14 @@ void Pinger::execute_pinger()
 
 	int st;
 
+	
+
 	while(running)
 	{
-		st=1;
-
+		st=0;
+		
 		pinger_status = pinger_access->get();
-
+		
 		if (pinger_status.powered==0)
 		{
 			device_status=DEVICE_OFF;
@@ -102,12 +112,14 @@ void Pinger::execute_pinger()
 
 		if (pinger_status.powered ==1 && device_status!=DEVICE_OFF)
 		{
-			device_status=DEVICE_RUNNING;
+			//device_status=DEVICE_RUNNING;
 
 			if (pinger->pingerStatus()==SEND)
 			{
-				sprintf(dato_str,"qazwscedcrfvtgbyhnujmikolp");
+				//sprintf(dato_str,"qazwscedcrfvtgbyhnujmikolp");
+				strcpy(dato_str, pinger_status.acoustic_tlm);
 				pinger->sendPingerMessage(dato_str);
+				//printf("sending: %s\n", dato_str);
 				st=1;
 			}
 
@@ -119,8 +131,11 @@ void Pinger::execute_pinger()
 
 			if (pinger->pingerStatus()==RECEIVED)
 			{
-				char *s=pinger->receivePingerMessage();
-				//printf("Dato ricevuto: %s\n",s);
+				//strcpy(pinger_status.acoustic_cmd, pinger->receivePingerMessage());
+				if ((pinger->receivePingerMessage())[0]!='0') pinger_status.add_cmd(pinger->receivePingerMessage());
+				//char *s=pinger->receivePingerMessage();
+				//printf("Cmd ricevuto: %s\n", pinger_status.acoustic_cmd[pinger_status.acoustic_cmd.size()-1]);
+				//printf("Cmd ricevuto: %s\n", pinger->receivePingerMessage());
 				pinger->pingerStatus(SEND);
 				st=1;
 			}
@@ -129,11 +144,12 @@ void Pinger::execute_pinger()
 
 		}
 
+		pinger_access->set(pinger_status);
 
 		updateStatus();
 
 		//send_telemetry();
-
+		
 		nanosleep(&tSleep,NULL);
 	}
 }
@@ -187,6 +203,7 @@ void Pinger::updateStatus()
 
 	pinger_status.device_status=device_status;
 	pinger_access->set(pinger_status);
+
 }
 
 

@@ -19,9 +19,19 @@ class RawHorVelFromUSBL:public RobotTask
 		double y_prev;
 		bool valid;
 
+		DataAccess<Task_status>* task_access;
+		DataAccess<Pinger_status>* pinger_access;
+		DataAccess<NGC_status>* ngc_access;
+		DataAccess<Time_status>* time_access;
+
 	public:
-		RawHorVelFromUSBL(const char *name,Status *st):RobotTask(name,st)
+		RawHorVelFromUSBL(const char* name, DataAccess<Task_status>& Task_access, DataAccess<Pinger_status>& Pinger_access, DataAccess<NGC_status>& NGC_access, DataAccess<Time_status>& Time_access) :RobotTask(name)
 		{
+			task_access = &Task_access;
+			pinger_access = &Pinger_access;
+			ngc_access = &NGC_access;
+			time_access = &Time_access;
+
 			x_prev=0.0;
 			y_prev=0.0;
 			valid=false;
@@ -33,7 +43,7 @@ class RawHorVelFromUSBL:public RobotTask
 		virtual void execute()
 		{
 			Task_status task_status;
-			task_status=status->raw_HorVel_From_USBL_status.get();
+			task_status = task_access->get();
 
 			if (task_status.execution==TASK_INIT)
 			{
@@ -47,22 +57,22 @@ class RawHorVelFromUSBL:public RobotTask
 
 		virtual void compute()
 		{
-			USBL_status usbl_status;
+			Pinger_status pinger_status;
 			NGC_status ngc_status;
 			Time_status time_status;
 
-			time_status=status->time_status.get();
-			usbl_status=status->pinger_status.get();
-			ngc_status=status->ngc_status.get();
+			time_status=time_access->get();
+			pinger_status =pinger_access->get();
+			ngc_status= ngc_access->get();
 
 			double dt=time_status.dt;
 
 			bool valid_measure=false;
 			double x=0.0 , y=0.0;
-			if (usbl_status.device_status==DEVICE_RUNNING)
+			if (pinger_status.device_status==DEVICE_RUNNING)
 			{
-				x=usbl_status.x.value;
-				y=usbl_status.y.value;
+				x= pinger_status.x.value;
+				y= pinger_status.y.value;
 				valid_measure=true;
 			}
 			double psi=ngc_status.pose.actual.psi.value;
@@ -110,19 +120,19 @@ class RawHorVelFromUSBL:public RobotTask
 
 
 
-			if (ngc_status.velocity_body.raw.u.valid==true) ngc_status.velocity_body.raw.u.timeStamp=usbl_status.timeStamp;
-			if (ngc_status.velocity_body.raw.v.valid==true) ngc_status.velocity_body.raw.v.timeStamp=usbl_status.timeStamp;
-			if (ngc_status.velocity_body.raw.u_sea.valid==true) ngc_status.velocity_body.raw.u_sea.timeStamp=usbl_status.timeStamp;
-			if (ngc_status.velocity_body.raw.v_sea.valid==true) ngc_status.velocity_body.raw.v_sea.timeStamp=usbl_status.timeStamp;
-			if (ngc_status.velocity_inertial.raw.xDot.valid==true) ngc_status.velocity_inertial.raw.xDot.timeStamp=usbl_status.timeStamp;
-			if (ngc_status.velocity_inertial.raw.yDot.valid==true) ngc_status.velocity_inertial.raw.yDot.timeStamp=usbl_status.timeStamp;
-			if (ngc_status.velocity_inertial.raw.xDot_sea.valid==true) ngc_status.velocity_inertial.raw.xDot_sea.timeStamp=usbl_status.timeStamp;
-			if (ngc_status.velocity_inertial.raw.yDot_sea.valid==true) ngc_status.velocity_inertial.raw.yDot_sea.timeStamp=usbl_status.timeStamp;
-			if (ngc_status.velocity_inertial.raw.speed.valid==true) ngc_status.velocity_inertial.raw.speed.timeStamp=usbl_status.timeStamp;
-			if (ngc_status.velocity_inertial.raw.course.valid==true) ngc_status.velocity_inertial.raw.course.timeStamp=usbl_status.timeStamp;
+			if (ngc_status.velocity_body.raw.u.valid==true) ngc_status.velocity_body.raw.u.timeStamp= pinger_status.timeStamp;
+			if (ngc_status.velocity_body.raw.v.valid==true) ngc_status.velocity_body.raw.v.timeStamp= pinger_status.timeStamp;
+			if (ngc_status.velocity_body.raw.u_sea.valid==true) ngc_status.velocity_body.raw.u_sea.timeStamp= pinger_status.timeStamp;
+			if (ngc_status.velocity_body.raw.v_sea.valid==true) ngc_status.velocity_body.raw.v_sea.timeStamp= pinger_status.timeStamp;
+			if (ngc_status.velocity_inertial.raw.xDot.valid==true) ngc_status.velocity_inertial.raw.xDot.timeStamp= pinger_status.timeStamp;
+			if (ngc_status.velocity_inertial.raw.yDot.valid==true) ngc_status.velocity_inertial.raw.yDot.timeStamp= pinger_status.timeStamp;
+			if (ngc_status.velocity_inertial.raw.xDot_sea.valid==true) ngc_status.velocity_inertial.raw.xDot_sea.timeStamp= pinger_status.timeStamp;
+			if (ngc_status.velocity_inertial.raw.yDot_sea.valid==true) ngc_status.velocity_inertial.raw.yDot_sea.timeStamp= pinger_status.timeStamp;
+			if (ngc_status.velocity_inertial.raw.speed.valid==true) ngc_status.velocity_inertial.raw.speed.timeStamp= pinger_status.timeStamp;
+			if (ngc_status.velocity_inertial.raw.course.valid==true) ngc_status.velocity_inertial.raw.course.timeStamp= pinger_status.timeStamp;
 
 
-			status->ngc_status.set(ngc_status);
+			ngc_access->set(ngc_status);
 
 		}
 
@@ -130,16 +140,16 @@ class RawHorVelFromUSBL:public RobotTask
 		virtual void setStatus(TaskStatus ts)
 		{
 			Task_status task_status;
-			task_status=status->raw_HorVel_From_USBL_status.get();
+			task_status = task_access->get();
 			task_status.execution=ts;
-			status->raw_HorVel_From_USBL_status.set(task_status);
+			task_access->set(task_status);
 		}
 
 
 		virtual TaskStatus getStatus()
 		{
 			Task_status task_status;
-			task_status=status->raw_HorVel_From_USBL_status.get();
+			task_status = task_access->get();
 			return task_status.execution;
 		}
 };

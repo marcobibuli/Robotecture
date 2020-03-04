@@ -8,8 +8,11 @@
 #ifndef PINGER_STATUS_H_
 #define PINGER_STATUS_H_
 
+#include "../generic/define.h"
 #include "../generic/custom_types.h"
 #include "../generic/Variable.h"
+#include <vector>
+#include <stdio.h>
 
 # pragma pack (push, 1)
 struct Pinger_tlm_packet
@@ -45,6 +48,24 @@ class Pinger_status
 			timeStamp=d.timeStamp;
 
 			powered = d.powered;
+			
+			//printf(" d.acoustic_tlm: %s\n", d.acoustic_tlm);
+
+			strcpy(acoustic_tlm, d.acoustic_tlm);
+			
+
+			for (int i = 0; i < acoustic_cmd.size(); i++)
+				delete acoustic_cmd[i];
+
+			acoustic_cmd.clear();
+
+			for (int i = 0; i < d.acoustic_cmd.size(); i++)
+			{
+				char *s=new char[BUF_SIZE];
+				strcpy(s, d.acoustic_cmd[i]);
+				acoustic_cmd.push_back(s);
+			}
+			
 
 			compose_tlm_packet(tlm_packet);
 		}
@@ -59,6 +80,11 @@ class Pinger_status
 
 		int powered;
 
+		
+		//char acoustic_tlm[BUF_SIZE];
+		std::vector<char*> acoustic_cmd;
+		char* acoustic_tlm;
+
 		Pinger_tlm_packet tlm_packet;
 
 		Pinger_status()
@@ -69,6 +95,10 @@ class Pinger_status
 
 			device_status=0;
 			timeStamp=0;
+
+			acoustic_tlm = new char[BUF_SIZE];
+			sprintf(acoustic_tlm, "0");
+			acoustic_cmd.clear();
 
 			powered = 0;
 
@@ -83,7 +113,24 @@ class Pinger_status
 		}
 
 
-		~Pinger_status(){}
+		~Pinger_status()
+		{
+			delete []acoustic_tlm;
+
+			for (int i = 0; i < acoustic_cmd.size(); i++)
+				delete acoustic_cmd[i];
+
+			acoustic_cmd.clear();
+			
+		}
+
+
+		void add_cmd(char* cmd)
+		{
+			char* s = new char[BUF_SIZE];
+			strcpy(s, cmd);
+			acoustic_cmd.push_back(s);
+		}
 
 
 		Pinger_status& operator=(const Pinger_status&d)
@@ -95,10 +142,15 @@ class Pinger_status
 
 		void compose_tlm_packet(Pinger_tlm_packet &tp)
 		{
-			tp.x=(int64)(x.value*CTD_factor);
-			tp.y=(int64)(y.value*CTD_factor);
-			tp.z=(int64)(z.value*CTD_factor);
+			tp.x=(int64)(x.value* USBLpos_factor);
+			tp.y=(int64)(y.value* USBLpos_factor);
+			tp.z=(int64)(z.value* USBLpos_factor);
 			tp.device_status=(int64)device_status;
+		}
+
+		void compose_string_packet(char* str)
+		{
+			sprintf(str, "%lli", device_status);
 		}
 };
 

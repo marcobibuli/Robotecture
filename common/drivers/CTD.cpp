@@ -121,6 +121,7 @@ void CTD::execute_act()
 	while(running_act)
 	{
 		int ret=ctd_304_plus_read(&ctd304Plus,&conductivity,&temperature,&depth);
+		if (ret == 0) ret = 1;
 
 		update_device_status(ret);
 

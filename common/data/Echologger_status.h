@@ -84,6 +84,12 @@ class Echologger_status
 			tp.range=(int64)(range.value*Echologger_factor);
 			tp.device_status=(int64)device_status;
 		}
+
+
+		void compose_string_packet(char* str)
+		{
+			sprintf(str, "%lli", device_status);
+		}
 };
 
 

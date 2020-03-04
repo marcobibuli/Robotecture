@@ -18,7 +18,6 @@ IO_europe::IO_europe(const char *name,NetworkManager &nm, DataAccess<IO_europe_s
 
 	
 
-	autoStartStop=0;
 	state=0;
 	tickCount=0;
 
@@ -68,19 +67,18 @@ int IO_europe::init_sim()
 		analogOutput[i]=0.0;
 	}
 
-	io_status.updated = true;
 	io_access->set(io_status);
 
 	running_sim=true;
 
-
+/*
 	cmd = new CommLink("IO_cmd", OVERRIDE);
 	cmd->open(networkManager->ROBOT_IP, networkManager->IO_ROBOT_HMI_PORT_IN,
 			  networkManager->HMI_IP, networkManager->IO_HMI_PORT_OUT);
 	cmd->create();
+	*/
 
-
-	cmdSim = new CommLink("IO_cmdSim", OVERRIDE);
+	cmdSim = new CommLink("IO_cmdSim", UDP_PURE);
 	cmdSim->open(networkManager->ROBOT_IP, networkManager->IO_ROBOT_SIM_PORT_OUT,
 		      networkManager->SIM_IP, networkManager->IO_SIM_PORT_IN);
 	cmdSim->create();
@@ -98,7 +96,7 @@ int IO_europe::init_sim()
 
 int IO_europe::init_act()
 {
-	/*
+	
 	printf("IO_channels::init_act()\n");
 
 	input_output_channels_init(digitalInput,digitalOutput,digitalOutputPulseCounter,analogInput,analogOutput);
@@ -107,7 +105,7 @@ int IO_europe::init_act()
 
 	running_act=true;
 
-	*/
+	
 
 	return 0;
 }
@@ -118,11 +116,15 @@ void IO_europe::execute_sim()
 	tSleep.tv_sec=IO_SLEEP_SEC;
 	tSleep.tv_nsec=IO_SLEEP_NSEC;
 
+	IO_europe_status io_status;
+	
+
 	while(running_sim)
 	{
-		read_cmd();
-
-		if (autoStartStop!=0) automaticStartStop();
+		//read_cmd();
+		io_status = io_access->get();
+		
+		if (io_status.autoStartStop!=0) automaticStartStop();
 
 		send_sim_cmd();
 
@@ -144,19 +146,26 @@ void IO_europe::execute_act()
 	tSleep.tv_sec=IO_SLEEP_SEC;
 	tSleep.tv_nsec=IO_SLEEP_NSEC;
 
+	IO_europe_status io_status;
+	
+
 	while(running_act)
 	{
-		read_cmd();
+		//read_cmd();
 
-		if (autoStartStop!=0) automaticStartStop();
+		if (io_status.autoStartStop != 0) automaticStartStop();
 
-		/*
+		io_status = io_access->get();
+		
 
 		for(int i=0;i<EUROPE_DIO_MAX_CHANNELS;i++)
-			digitalOutput[i]=status->io.cmd.digital[i];
-
+			digitalOutput[i]= io_status.digitalOutput[i];
+		
 		for(int i=0;i<EUROPE_DA_MAX_CHANNELS;i++)
-			analogOutput[i]=status->io.cmd.analogOutput[i];
+			analogOutput[i]= io_status.analogOutput[i];
+
+
+		
 
 
 		io_boards_put_analog_outputs(&diamond0,&diamond1,analogOutput);
@@ -167,15 +176,17 @@ void IO_europe::execute_act()
 
 
 		for(int i=0;i<EUROPE_DIO_MAX_CHANNELS;i++)
-			status->io.tlm.digital[i]=digitalInput[i];
+			io_status.digitalInput[i]=digitalInput[i];
 
 		for(int i=0;i<EUROPE_AD_MAX_CHANNELS;i++)
-			status->io.tlm.analogInput[i]=analogInput[i];
+			io_status.analogInput[i]=analogInput[i];
 
-		updateStatus(status->io.tlm,status->motor);
+		io_access->set(io_status);
 
-		send_telemetry();
-		*/
+		updateStatus();
+
+		//send_telemetry();
+		
 		nanosleep(&tSleep,NULL);
 	}
 }
@@ -211,15 +222,14 @@ void IO_europe::read_cmd()
 
 				case SET_ANALOG:  io_status.analogOutput[msg.index]=((double)msg.value)/IO_factor;
 								  break;
-
+/*
 				case AUTO_START:  autoStartStop=1;
 								  break;
 
 				case AUTO_STOP:   autoStartStop=2;
-								  break;
+								  break;*/
 			};
 			
-			io_status.updated = true;
 			
 			io_access->set(io_status);
 		}
@@ -237,25 +247,23 @@ void IO_europe::send_sim_cmd()
 	IO_europe_status io_status;
 	io_status = io_access->get();
 
+	//printf("send_sim_cmd - digOut[0]: %d    updated: %d\n", io_status.digitalOutput[0],io_status.updated);
 
-	if (io_status.updated)
-	{
-		io_status.updated = false;
-		io_access->set(io_status);
+	
 
-		cmd.digital = 0;
-		for (int i = 0; i < EUROPE_DIO_MAX_CHANNELS; i++)
-			cmd.digital = (cmd.digital << 1) + io_status.digitalOutput[EUROPE_DIO_MAX_CHANNELS - 1 - i];
+	cmd.digital = 0;
+	for (int i = 0; i < EUROPE_DIO_MAX_CHANNELS; i++)
+		cmd.digital = (cmd.digital << 1) + io_status.digitalOutput[EUROPE_DIO_MAX_CHANNELS - 1 - i];
 
 
 
-		for (int i = 0; i < EUROPE_DA_MAX_CHANNELS; i++)
-			cmd.da[i] = (int64)(io_status.analogOutput[i] * IO_factor);
+	for (int i = 0; i < EUROPE_DA_MAX_CHANNELS; i++)
+		cmd.da[i] = (int64)(io_status.analogOutput[i] * IO_factor);
 
-		//printf("cmd dig: %lli\n", cmd.digital);
+	//printf("cmd dig: %lli\n", cmd.digital);
 
-		cmdSim->send_message((char*)&cmd, sizeof(cmd));
-	}
+	cmdSim->send_message((char*)&cmd, sizeof(cmd));
+	
 }
 
 
@@ -321,29 +329,27 @@ void IO_europe::automaticStartStop()
 	
 	if (state==16)
 	{
-		autoStartStop=0;
+		io_status.autoStartStop=0;
 		state=0;
 		tickCount=0;
 	}
 
-	else if (autoStartStop==1)
+	else if (io_status.autoStartStop==1)
 	{
 		if (tickCount>=IO_START_TICKS)
 		{
 			io_status.digitalOutput[state]=1;
-			io_status.updated = true;
 			tickCount=0;
 			state++;
 		}
 		else tickCount++;
 	}
 
-	else if (autoStartStop==2)
+	else if (io_status.autoStartStop==2)
 	{
 		if (tickCount>=IO_STOP_TICKS)
 		{
 			io_status.digitalOutput[15-state]=0;
-			io_status.updated = true;
 			tickCount=0;
 			state++;
 		}

@@ -11,7 +11,7 @@
 
 Echologger_Sim::Echologger_Sim(const char *name,NetworkManager &nm,SimStatus *s): DeviceSim(name,SCHED_FIFO,ECHOLOGGER_THREAD_PRIORITY,start_echologgerSim,nm,s)
 {
-	tlm=new CommLink( "Echologger_Sim_tlm" , OVERRIDE );
+	tlm=new CommLink( "Echologger_Sim_tlm" , UDP_PURE );
 
 	tlm->open( networkManager->SIM_IP   , networkManager->ECHOLOGGER_SIM_PORT_OUT ,
 			   networkManager->ROBOT_IP , networkManager->ECHOLOGGER_ROBOT_SIM_PORT_IN );

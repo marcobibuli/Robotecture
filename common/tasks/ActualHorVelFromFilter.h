@@ -16,12 +16,14 @@
 class ActualHorVelFromFilter:public RobotTask
 {
 	private:
-
+		DataAccess<NGC_status>* ngc_access = NULL;
+		DataAccess<Task_status>* task_access = NULL;
 
 	public:
-		ActualHorVelFromFilter(const char *name,Status *st):RobotTask(name,st)
+		ActualHorVelFromFilter(const char* name, DataAccess<Task_status>& Task_access, DataAccess<NGC_status>& NGC_access) :RobotTask(name)
 		{
-
+			task_access = &Task_access;
+			ngc_access = &NGC_access;
 		}
 
 
@@ -31,7 +33,7 @@ class ActualHorVelFromFilter:public RobotTask
 		virtual void execute()
 		{
 			Task_status task_status;
-			task_status=status->actual_HorVel_From_Filter_status.get();
+			task_status = task_access->get();
 
 			if (task_status.execution==TASK_INIT)
 			{
@@ -48,7 +50,7 @@ class ActualHorVelFromFilter:public RobotTask
 		virtual void compute()
 		{
 			NGC_status ngc_status;
-			ngc_status=status->ngc_status.get();
+			ngc_status = ngc_access->get();
 
 			ngc_status.velocity_body.actual.u=ngc_status.velocity_body.filtered.u;
 			ngc_status.velocity_body.actual.v=ngc_status.velocity_body.filtered.v;
@@ -61,23 +63,23 @@ class ActualHorVelFromFilter:public RobotTask
 			ngc_status.velocity_inertial.actual.speed=ngc_status.velocity_inertial.filtered.speed;
 			ngc_status.velocity_inertial.actual.course=ngc_status.velocity_inertial.filtered.course;
 
-			status->ngc_status.set(ngc_status);
+			ngc_access->set(ngc_status);
 		}
 
 
 		virtual void setStatus(TaskStatus ts)
 		{
 			Task_status task_status;
-			task_status=status->actual_HorVel_From_Filter_status.get();
+			task_status = task_access->get();
 			task_status.execution=ts;
-			status->actual_HorVel_From_Filter_status.set(task_status);
+			task_access->set(task_status);
 		}
 
 
 		virtual TaskStatus getStatus()
 		{
 			Task_status task_status;
-			task_status=status->actual_HorVel_From_Filter_status.get();
+			task_status = task_access->get();
 			return task_status.execution;
 		}
 };

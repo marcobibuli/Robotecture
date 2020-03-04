@@ -122,6 +122,12 @@ class DVL_status
 			tp.validVelocity=(int64)(validVelocity);
 			tp.device_status=(int64)(device_status);
 		}
+
+
+		void compose_string_packet(char* str)
+		{
+			sprintf(str, "%lli", device_status);
+		}
 };
 
 

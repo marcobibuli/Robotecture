@@ -16,12 +16,15 @@
 class ActualHorVelFromRaw:public RobotTask
 {
 	private:
+		DataAccess<NGC_status>* ngc_access = NULL;
+		DataAccess<Task_status>* task_access = NULL;
 
 
 	public:
-		ActualHorVelFromRaw(const char *name,Status *st):RobotTask(name,st)
+		ActualHorVelFromRaw(const char* name, DataAccess<Task_status>& Task_access, DataAccess<NGC_status>& NGC_access) :RobotTask(name)
 		{
-
+			task_access = &Task_access;
+			ngc_access = &NGC_access;
 		}
 
 
@@ -31,7 +34,7 @@ class ActualHorVelFromRaw:public RobotTask
 		virtual void execute()
 		{
 			Task_status task_status;
-			task_status=status->actual_HorVel_From_Raw_status.get();
+			task_status= task_access->get();
 
 			if (task_status.execution==TASK_INIT)
 			{
@@ -48,7 +51,7 @@ class ActualHorVelFromRaw:public RobotTask
 		virtual void compute()
 		{
 			NGC_status ngc_status;
-			ngc_status=status->ngc_status.get();
+			ngc_status=ngc_access->get();
 
 			ngc_status.velocity_body.actual.u=ngc_status.velocity_body.raw.u;
 			ngc_status.velocity_body.actual.v=ngc_status.velocity_body.raw.v;
@@ -61,23 +64,23 @@ class ActualHorVelFromRaw:public RobotTask
 			ngc_status.velocity_inertial.actual.speed=ngc_status.velocity_inertial.raw.speed;
 			ngc_status.velocity_inertial.actual.course=ngc_status.velocity_inertial.raw.course;
 
-			status->ngc_status.set(ngc_status);
+			ngc_access->set(ngc_status);
 		}
 
 
 		virtual void setStatus(TaskStatus ts)
 		{
 			Task_status task_status;
-			task_status=status->actual_HorVel_From_Raw_status.get();
+			task_status = task_access->get();
 			task_status.execution=ts;
-			status->actual_HorVel_From_Raw_status.set(task_status);
+			task_access->set(task_status);
 		}
 
 
 		virtual TaskStatus getStatus()
 		{
 			Task_status task_status;
-			task_status=status->actual_HorVel_From_Raw_status.get();
+			task_status = task_access->get();
 			return task_status.execution;
 		}
 };

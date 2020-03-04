@@ -667,13 +667,13 @@ int fd=-1;
        return(-1);
     break;
     }
-
+ 
  if((fd=open(device,O_RDWR|O_NONBLOCK))<0)
     {
     pdebug("serial_init error - open %s\n",strerror(errno));
     return(-1);
     }
-
+ 
  if(tcflush(fd,TCIOFLUSH)<0)
     {
     pdebug("serial_init error - flush %s\n",strerror(errno));
@@ -686,19 +686,22 @@ struct termios tio;
  tio.c_cflag=CS8|CREAD|CLOCAL;
  tio.c_cc[VMIN] =1;
  tio.c_cc[VTIME]=0;
-
+ 
  if(cfsetospeed(&tio,baudRate)<0)
     {
     pdebug("serial_init error - cfsetospeed %s\n",strerror(errno));
     return(-1);
     }
-
+ 
  if(cfsetispeed(&tio,baudRate)<0)
     {
     pdebug("serial_init error - cfsetospeed %s\n",strerror(errno));
     return(-1);
     }
+ 
  tcsetattr(fd,TCSANOW,&tio);
+
+ 
  return(fd);
 }
 

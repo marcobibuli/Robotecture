@@ -78,6 +78,17 @@ int GPS_AHRS::init_act()
 
 	device_status=DEVICE_RUNNING;
 
+	strcpy(is3dmgx335SerialDeviceName, gps_ahrs_serial_name);
+	init_is3dmgx335_data(&is3dmgx335Data);
+	if (is3dmgx335_init(&is3dmgx335, is3dmgx335SerialDeviceName) < 0)
+	{
+		printf("GPS_AHRS::Device open error\n");
+
+		return(-1);
+	}
+
+	/*
+
 	char s_ip[256];
 	int a, b, c, ip;
 	strcpy(s_ip, networkManager->ROBOT_IP);
@@ -93,7 +104,9 @@ int GPS_AHRS::init_act()
 	char msg2[256];
 	sprintf(msg2, "10001 210 2969");
 	cmd->send_message(msg2, strlen(msg2));
-	
+	*/
+
+
 
 	int ret=init_pos();
 
@@ -232,7 +245,7 @@ void GPS_AHRS::read_sim_tlm()
 			gps_ahrs_status.pitch.value = modpi(pitch * M_PI / 180.0);				gps_ahrs_status.pitch.timeStamp = time_status.timeStamp;									gps_ahrs_status.pitch.valid = true;
 			gps_ahrs_status.heading.value = modpi(heading * M_PI / 180.0);			gps_ahrs_status.heading.timeStamp = time_status.timeStamp;									gps_ahrs_status.heading.valid = true;
 			gps_ahrs_status.latitude.value = latitude;								if (pos_valid) gps_ahrs_status.latitude.timeStamp = time_status.timeStamp;					gps_ahrs_status.latitude.valid = pos_valid;
-			gps_ahrs_status.longitude.value = longitude;								if (pos_valid) gps_ahrs_status.longitude.timeStamp = time_status.timeStamp;					gps_ahrs_status.longitude.valid = pos_valid;
+			gps_ahrs_status.longitude.value = longitude;							if (pos_valid) gps_ahrs_status.longitude.timeStamp = time_status.timeStamp;					gps_ahrs_status.longitude.valid = pos_valid;
 			gps_ahrs_status.heightAboveEllipsoid.value = heightAboveEllipsoid;		if (pos_valid) gps_ahrs_status.heightAboveEllipsoid.timeStamp = time_status.timeStamp;		gps_ahrs_status.heightAboveEllipsoid.valid = pos_valid;
 			gps_ahrs_status.heightAboveMSL.value = heightAboveMSL;					if (pos_valid) gps_ahrs_status.heightAboveMSL.timeStamp = time_status.timeStamp;			gps_ahrs_status.heightAboveMSL.valid = pos_valid;
 			gps_ahrs_status.horizontalAccuracy.value = heightAboveMSL;				if (pos_valid) gps_ahrs_status.horizontalAccuracy.timeStamp = time_status.timeStamp;		gps_ahrs_status.horizontalAccuracy.valid = pos_valid;
@@ -314,7 +327,7 @@ void GPS_AHRS::read_tlm()
 	Time_status time_status;
 
 
-	char msg[1024];
+	char msg[BUF_SIZE];
 	int ret;
 	do {
 		ret = tlm->recv_message(msg, sizeof(msg));
@@ -410,14 +423,98 @@ void GPS_AHRS::execute_act()
 
 	while(running_act)
 	{
+		int ret = is3dmgx335_read(&is3dmgx335, &is3dmgx335Data);
+
+		update_device_status(ret);
+
+		updateStatus();
+
+		/*
 		read_tlm();
 
 		raw_data();
 
 		send_telemetry();
+		*/
 
 		nanosleep(&tSleep,NULL);
 	}
+}
+
+
+void GPS_AHRS::updateStatus()
+{
+	Time_status time_status;
+	time_status = time_access->get();
+
+	if (missed_receive_count == 0) lastValidTimeStamp = time_status.timeStamp;
+
+	GPS_AHRS_status gps_ahrs_status;
+	gps_ahrs_status = gps_ahrs_access->get();
+
+	
+
+
+	gps_ahrs_status.llhPositionValidFlags = is3dmgx335Data.llhPositionValidFlags;  int64 pos_valid = (is3dmgx335Data.llhPositionValidFlags != 0);
+	gps_ahrs_status.nedVelocityValidFlags = is3dmgx335Data.nedVelocityValidFlags;  int64 vel_valid = (is3dmgx335Data.nedVelocityValidFlags != 0);
+
+
+	gps_ahrs_status.roll.value = modpi(is3dmgx335Data.roll * M_PI / 180.0);					gps_ahrs_status.roll.timeStamp = time_status.timeStamp;										gps_ahrs_status.roll.valid = true;
+	gps_ahrs_status.pitch.value = modpi(is3dmgx335Data.pitch * M_PI / 180.0);				gps_ahrs_status.pitch.timeStamp = time_status.timeStamp;									gps_ahrs_status.pitch.valid = true;
+	gps_ahrs_status.heading.value = modpi(is3dmgx335Data.yaw * M_PI / 180.0);				gps_ahrs_status.heading.timeStamp = time_status.timeStamp;									gps_ahrs_status.heading.valid = true;
+	gps_ahrs_status.latitude.value = is3dmgx335Data.latitude;								if (pos_valid) gps_ahrs_status.latitude.timeStamp = time_status.timeStamp;					gps_ahrs_status.latitude.valid = pos_valid;
+	gps_ahrs_status.longitude.value = is3dmgx335Data.longitude;								if (pos_valid) gps_ahrs_status.longitude.timeStamp = time_status.timeStamp;					gps_ahrs_status.longitude.valid = pos_valid;
+	gps_ahrs_status.heightAboveEllipsoid.value = is3dmgx335Data.heightAboveEllipsode;		if (pos_valid) gps_ahrs_status.heightAboveEllipsoid.timeStamp = time_status.timeStamp;		gps_ahrs_status.heightAboveEllipsoid.valid = pos_valid;
+	gps_ahrs_status.heightAboveMSL.value = is3dmgx335Data.heightAboveMSL;					if (pos_valid) gps_ahrs_status.heightAboveMSL.timeStamp = time_status.timeStamp;			gps_ahrs_status.heightAboveMSL.valid = pos_valid;
+	gps_ahrs_status.horizontalAccuracy.value = is3dmgx335Data.horizontalAccuracy;			if (pos_valid) gps_ahrs_status.horizontalAccuracy.timeStamp = time_status.timeStamp;		gps_ahrs_status.horizontalAccuracy.valid = pos_valid;
+	gps_ahrs_status.verticalAccuracy.value = is3dmgx335Data.verticalAccuracy;				if (pos_valid) gps_ahrs_status.verticalAccuracy.timeStamp = time_status.timeStamp;			gps_ahrs_status.verticalAccuracy.valid = pos_valid;
+	gps_ahrs_status.xGyro.value = is3dmgx335Data.xGyro * M_PI / 180.0;						gps_ahrs_status.xGyro.timeStamp = time_status.timeStamp;									gps_ahrs_status.xGyro.valid = true;
+	gps_ahrs_status.yGyro.value = is3dmgx335Data.yGyro * M_PI / 180.0;						gps_ahrs_status.yGyro.timeStamp = time_status.timeStamp;									gps_ahrs_status.yGyro.valid = true;
+	gps_ahrs_status.zGyro.value = is3dmgx335Data.zGyro * M_PI / 180.0;						gps_ahrs_status.zGyro.timeStamp = time_status.timeStamp;									gps_ahrs_status.zGyro.valid = true;
+	gps_ahrs_status.northVel.value = is3dmgx335Data.north;									if (vel_valid) gps_ahrs_status.northVel.timeStamp = time_status.timeStamp;					gps_ahrs_status.northVel.valid = vel_valid;
+	gps_ahrs_status.eastVel.value = is3dmgx335Data.east;									if (vel_valid) gps_ahrs_status.eastVel.timeStamp = time_status.timeStamp;					gps_ahrs_status.eastVel.valid = vel_valid;
+	gps_ahrs_status.downVel.value = is3dmgx335Data.down;									if (vel_valid) gps_ahrs_status.downVel.timeStamp = time_status.timeStamp;					gps_ahrs_status.downVel.valid = vel_valid;
+	gps_ahrs_status.speed.value = is3dmgx335Data.speed;										if (vel_valid) gps_ahrs_status.speed.timeStamp = time_status.timeStamp;						gps_ahrs_status.speed.valid = vel_valid;
+	gps_ahrs_status.groundSpeed.value = is3dmgx335Data.groundSpeed;							if (vel_valid) gps_ahrs_status.groundSpeed.timeStamp = time_status.timeStamp;				gps_ahrs_status.groundSpeed.valid = vel_valid;
+	gps_ahrs_status.course.value = modpi(is3dmgx335Data.heading * M_PI / 180.0);			if (vel_valid) gps_ahrs_status.course.timeStamp = time_status.timeStamp;					gps_ahrs_status.course.valid = vel_valid;
+	gps_ahrs_status.speedAccuracy.value = is3dmgx335Data.speedAccuracy;						if (vel_valid) gps_ahrs_status.speedAccuracy.timeStamp = time_status.timeStamp;				gps_ahrs_status.speedAccuracy.valid = vel_valid;
+	gps_ahrs_status.courseAccuracy.value = is3dmgx335Data.headingAccuracy;					if (vel_valid) gps_ahrs_status.courseAccuracy.timeStamp = time_status.timeStamp;			gps_ahrs_status.courseAccuracy.valid = vel_valid;
+
+
+
+	gps_ahrs_status.ahrs_status = ahrs_status;
+	gps_ahrs_status.gps_status = gps_status;
+
+	gps_ahrs_status.lat0.value = lat0;		gps_ahrs_status.lat0.timeStamp = time_status.timeStamp;		gps_ahrs_status.lat0.valid = true;
+	gps_ahrs_status.lon0.value = lon0;		gps_ahrs_status.lon0.timeStamp = time_status.timeStamp;		gps_ahrs_status.lon0.valid = true;
+	gps_ahrs_status.x0.value = x0;			gps_ahrs_status.x0.timeStamp = time_status.timeStamp;		gps_ahrs_status.x0.valid = true;
+	gps_ahrs_status.y0.value = y0;			gps_ahrs_status.y0.timeStamp = time_status.timeStamp;		gps_ahrs_status.y0.valid = true;
+
+	double x = 0.0, y = 0.0;
+	compute_xy_from_lat_lon(gps_ahrs_status.latitude.value, gps_ahrs_status.longitude.value, x, y, utmzone, utmzone_char);
+
+	gps_ahrs_status.x.value = x - x0;		if (pos_valid) gps_ahrs_status.x.timeStamp = time_status.timeStamp;		gps_ahrs_status.x.valid = pos_valid;
+	gps_ahrs_status.y.value = y - y0;		if (pos_valid) gps_ahrs_status.y.timeStamp = time_status.timeStamp;		gps_ahrs_status.y.valid = pos_valid;
+
+
+	double xDot = 0.0, yDot = 0.0, psi = 0.0;
+
+	xDot = gps_ahrs_status.northVel.value;
+	yDot = gps_ahrs_status.eastVel.value;
+	psi = gps_ahrs_status.heading.value;
+
+	double u = cos(psi) * xDot + sin(psi) * yDot;
+	double v = -sin(psi) * xDot + cos(psi) * yDot;
+
+	gps_ahrs_status.u.value = u;		if (vel_valid) gps_ahrs_status.u.timeStamp = time_status.timeStamp;		gps_ahrs_status.u.valid = vel_valid;
+	gps_ahrs_status.v.value = v;		if (vel_valid) gps_ahrs_status.v.timeStamp = time_status.timeStamp;		gps_ahrs_status.v.valid = vel_valid;
+
+
+	//printf("%lf  %lf  %lf\n", gps_ahrs_status.roll.value, gps_ahrs_status.pitch.value, gps_ahrs_status.heading.value);
+
+
+	gps_ahrs_access->set(gps_ahrs_status);
+	time_access->set(time_status);
 }
 
 

@@ -8,7 +8,7 @@
 #ifndef USBLLINK_H_
 #define USBLLINK_H_
 
-
+#include "../common/data/Pinger_status.h"
 #include "../common/generic/RobotThread.h"
 #include "../common/generic/RobotMath.h"
 #include "../common/network/CommLink.h"
@@ -28,7 +28,6 @@
 
 #define USBL_IP_ADDR "10.17.20.133"
 #define USBL_PORT 9200
-#define BUF_SIZE 2048
 #define DEFAULT_INTERVAL 200000
 #define USBL_POWER_LEVEL 3
 #define USBL_WAVE_FORM 0
@@ -79,18 +78,12 @@ struct USBL_sim_packet
 };
 
 
-struct USBLpos_packet
-{
-	int64 x;
-	int64 y;
-	int64 z;
-};
 
 
 class UsblLink:public RobotThread
 {
 	private:
-		Client *cl;
+		Client *cl=NULL;
 		UsblMessage msgIn;
 		UsblMessage msgOut;
 		unsigned int timeStampSend;

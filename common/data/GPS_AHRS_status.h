@@ -203,6 +203,12 @@ class GPS_AHRS_status
 			gps_status = tp.gps_status;
 			
 		}
+
+
+		void compose_string_packet(char* str)
+		{
+			sprintf(str, "%lli %lli", ahrs_status, gps_status);
+		}
 };
 
 

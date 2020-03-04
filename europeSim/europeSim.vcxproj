@@ -107,6 +107,7 @@
     <ClCompile Include="main_europeSim.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\data\Connection_status.h" />
     <ClInclude Include="..\common\data\CTD_status.h" />
     <ClInclude Include="..\common\data\DataAccess.h" />
     <ClInclude Include="..\common\data\DVL_status.h" />

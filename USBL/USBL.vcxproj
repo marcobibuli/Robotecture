@@ -87,11 +87,13 @@
     <ClCompile Include="UsblLink.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\data\Pinger_status.h" />
     <ClInclude Include="..\common\drivers\Device.h" />
     <ClInclude Include="..\common\generic\custom_types.h" />
     <ClInclude Include="..\common\generic\define.h" />
     <ClInclude Include="..\common\generic\RobotMath.h" />
     <ClInclude Include="..\common\generic\RobotThread.h" />
+    <ClInclude Include="..\common\generic\Variable.h" />
     <ClInclude Include="..\common\network\CommLink.h" />
     <ClInclude Include="..\common\network\Message.h" />
     <ClInclude Include="..\common\network\MessageNumberGenerator.h" />

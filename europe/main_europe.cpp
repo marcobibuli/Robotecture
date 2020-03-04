@@ -25,6 +25,8 @@
 #include "NGC.h"
 #include "Tasks.h"
 
+#include <vector>
+
 
 bool running = true;
 
@@ -81,21 +83,21 @@ int main()
 
 
 	init_hardware();
-
+	
 	telemetry = new Europe_telemetry("europeTelemetry", networkManager, status);
 	telemetry->create();
 
-	commands = new Europe_commands("europeCommands");
+	commands = new Europe_commands("europeCommands", networkManager, status);
 	commands->create();
 
-
+	
 	ngc = new NGC("NGC",networkManager, status->ngc_status, status->time_status);
 	ngc->create();
 
 	tasks = new Tasks("Tasks", networkManager, status);
 	tasks->create();
 
-
+	
 	CommLink* cl_in = new CommLink("HeartBeat_commLink_in", HARD_ACK);
 	CommLink* cl_out = new CommLink("HeartBeat_commLink_out", HARD_ACK);
 
@@ -110,27 +112,60 @@ int main()
 	cl_in->create();
 	cl_out->create();
 	
-	
+	Connection_status connection_status;
 	Time_status time_status;
 	int br;
 	int64 msg;
 
+	Pinger_status pinger_status;
+
+	/*
+	IO_europe_status io;
+	io=status->io_status.get();
+	io.digitalOutput[EUROPE_DIO_EVOLOGICS_MODEM_POWER] = 1;
+	status->io_status.set(io);
+	*/
+	
+	
 	
 
 	while (running)
 	{
-		
+		connection_status = status->connection_status.get();
 		time_status = status->time_status.get();
 
 		
-		if (cl_out->getLinkLevel() == NORMAL) cl_out->send_message((char*) & (time_status.timeStamp), sizeof(time_status.timeStamp));
-
+		if (cl_out->getLinkLevel() == NORMAL)
+		{
+			cl_out->send_message((char*) & (time_status.timeStamp), sizeof(time_status.timeStamp));
+			connection_status.ethernet_active = true;
+		}
+		else connection_status.ethernet_active = false;
+		
+		
+		
+		
 		do {
 			br = cl_in->recv_message((char*)&msg);
 			//if (br>0) printf("%lli\n",msg);
 		} while (br > 0);
 		
 		
+		
+		pinger_status = status->pinger_status.get();
+		
+		if (pinger_status.device_status==DEVICE_RUNNING) connection_status.acoustics_active = true;
+		else
+		{
+			connection_status.acoustics_active = false;
+			strcpy(pinger_status.acoustic_tlm, "0");
+			status->pinger_status.set(pinger_status);
+		}
+		
+
+		
+		status->connection_status.set(connection_status);
+
 		
 
 		nanosleep(&loopSleep, NULL);
@@ -162,7 +197,7 @@ int main()
 void init_hardware()
 {
 	int ret;
-
+	
 
 	io = new IO_europe("IO_europe", networkManager, status->io_status, status->dvl_status, status->pa500_status, status->echologger_status, status->pinger_status, status->time_status);
 	ret = io->init();
@@ -266,9 +301,9 @@ void init_hardware()
 		printf("*** Echologger init failed\n");
 		exit(-1);
 	}
+	
 
-
-
+	
 	pinger = new Pinger("Pinger", networkManager, status->pinger_status, status->time_status);
 	ret = pinger->init();
 	if (ret == 0)
