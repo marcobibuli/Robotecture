@@ -53,6 +53,12 @@ struct TLM_packet
 	Task_tlm_packet actual_HorVel_From_Raw;
 	Task_tlm_packet actual_HorVel_From_Filter;
 	Filter_HorVel_tlm_packet filter_HorVel;
+
+	Task_tlm_packet raw_HorPos_From_GPS;
+	Task_tlm_packet raw_HorPos_From_USBL;
+	Task_tlm_packet actual_HorPos_From_Raw;
+	Task_tlm_packet actual_HorPos_From_Filter;
+	Filter_HorPos_tlm_packet filter_HorPos;
 	
 };
 # pragma pack (pop)

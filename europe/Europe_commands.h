@@ -16,7 +16,8 @@
 #include "Tasks.h"
 #include "../common/network/CommLink.h"
 #include "../common/network/NetworkManager.h"
-
+#include <string>
+#include "../common/generic/util.h"
 
 enum System
 {
@@ -30,16 +31,16 @@ enum System
 class Europe_commands :public RobotThread
 {
 	private:
-		void exec_cmd(char* cmd_string);
-		void parse_cmd(std::vector<char*>& cmd_msg, char* cmd_string);
-		void dispatch_cmd(std::vector<char*>& cmd_msg);
-		void io_command(std::vector<char*>& cmd_msg);
-		void ngc_command(std::vector<char*>& cmd_msg);
-		void task_command(std::vector<char*>& cmd_msg);
+		void read_cmd(std::string cmd_string);
+		void dispatch_cmd(std::vector<std::string>& cmd_msg, std::string cmd_string);
+		
+		void ngc_command(std::vector<std::string>& cmd_msg);
+		void task_command(std::vector<std::string>& cmd_msg);
 
 	protected:
 		timespec tDelay, tStart, tSleep;
 		CommLink* io_cmd;
+		CommLink* task_cmd;
 		NetworkManager* networkManager;
 
 	public:

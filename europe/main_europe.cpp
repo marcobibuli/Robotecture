@@ -158,11 +158,13 @@ int main()
 		else
 		{
 			connection_status.acoustics_active = false;
-			strcpy(pinger_status.acoustic_tlm, "0");
+			//strcpy(pinger_status.acoustic_tlm, "0");
+			pinger_status.acoustic_tlm = "0";
 			status->pinger_status.set(pinger_status);
 		}
 		
 
+		
 		
 		status->connection_status.set(connection_status);
 

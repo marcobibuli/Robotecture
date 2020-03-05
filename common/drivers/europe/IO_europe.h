@@ -9,8 +9,10 @@
 #define DRIVERS_IO_EUROPE_H_
 
 #include <unistd.h>
+#include <string>
 #include "../../drivers/Device.h"
 #include "../../generic/custom_types.h"
+#include "../../generic/util.h"
 #include "../../network/CommLink.h"
 #include "./hardwareLib/definitions.h"
 #include "./hardwareLib/globals.h"
@@ -22,8 +24,6 @@
 #include "../../data/Pinger_status.h"
 #include "../../data/Time_status.h"
 #include "../../data/DataAccess.h"
-
-
 
 
 
@@ -68,6 +68,7 @@ class IO_europe :public Device
 
 		void updateStatus();
 
+		void exec_cmd(std::vector<std::string>& cmd_msg);
 		void read_cmd();
 		void send_sim_cmd();
 		void read_sim_tlm();

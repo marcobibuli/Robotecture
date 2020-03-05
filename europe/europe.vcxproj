@@ -98,6 +98,7 @@
     <ClCompile Include="..\common\generic\matrix.cpp" />
     <ClCompile Include="..\common\generic\RobotMath.cpp" />
     <ClCompile Include="..\common\generic\RobotThread.cpp" />
+    <ClCompile Include="..\common\generic\util.cpp" />
     <ClCompile Include="..\common\generic\vector.cpp" />
     <ClCompile Include="..\common\network\CommLink.cpp" />
     <ClCompile Include="..\common\network\NetworkManager.cpp" />
@@ -108,12 +109,14 @@
     <ClCompile Include="Tasks.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\data\Command_status.h" />
     <ClInclude Include="..\common\data\Connection_status.h" />
     <ClInclude Include="..\common\data\CTD_status.h" />
     <ClInclude Include="..\common\data\DataAccess.h" />
     <ClInclude Include="..\common\data\DVL_status.h" />
     <ClInclude Include="..\common\data\Echologger_status.h" />
     <ClInclude Include="..\common\data\Filter_Ang_status.h" />
+    <ClInclude Include="..\common\data\Filter_HorPos_status.h" />
     <ClInclude Include="..\common\data\Filter_HorVel_status.h" />
     <ClInclude Include="..\common\data\FOG_status.h" />
     <ClInclude Include="..\common\data\GPS_AHRS_status.h" />
@@ -144,6 +147,7 @@
     <ClInclude Include="..\common\generic\matrix.h" />
     <ClInclude Include="..\common\generic\RobotMath.h" />
     <ClInclude Include="..\common\generic\RobotThread.h" />
+    <ClInclude Include="..\common\generic\util.h" />
     <ClInclude Include="..\common\generic\Variable.h" />
     <ClInclude Include="..\common\generic\vector.h" />
     <ClInclude Include="..\common\network\CommLink.h" />
@@ -152,13 +156,17 @@
     <ClInclude Include="..\common\network\NetworkManager.h" />
     <ClInclude Include="..\common\tasks\ActualAngFromFilter.h" />
     <ClInclude Include="..\common\tasks\ActualAngFromRaw.h" />
+    <ClInclude Include="..\common\tasks\ActualHorPosFromFilter.h" />
     <ClInclude Include="..\common\tasks\ActualHorPosFromRaw.h" />
     <ClInclude Include="..\common\tasks\ActualHorVelFromFilter.h" />
     <ClInclude Include="..\common\tasks\ActualHorVelFromRaw.h" />
     <ClInclude Include="..\common\tasks\europe\AngFilter.h" />
+    <ClInclude Include="..\common\tasks\europe\HorPosFilter.h" />
     <ClInclude Include="..\common\tasks\europe\HorVelFilter.h" />
     <ClInclude Include="..\common\tasks\RawAngFromAHRS.h" />
     <ClInclude Include="..\common\tasks\RawAngFromFOG.h" />
+    <ClInclude Include="..\common\tasks\RawHorPosFromGPS.h" />
+    <ClInclude Include="..\common\tasks\RawHorPosFromUSBL.h" />
     <ClInclude Include="..\common\tasks\RawHorVelFromDVL.h" />
     <ClInclude Include="..\common\tasks\RawHorVelFromGPS.h" />
     <ClInclude Include="..\common\tasks\RawHorVelFromUSBL.h" />

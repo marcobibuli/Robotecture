@@ -13,6 +13,8 @@
 #include "../generic/Variable.h"
 #include <vector>
 #include <stdio.h>
+#include <string>
+
 
 # pragma pack (push, 1)
 struct Pinger_tlm_packet
@@ -51,11 +53,13 @@ class Pinger_status
 			
 			//printf(" d.acoustic_tlm: %s\n", d.acoustic_tlm);
 
-			strcpy(acoustic_tlm, d.acoustic_tlm);
-			
+			//strcpy(acoustic_tlm, d.acoustic_tlm);
+			acoustic_tlm = d.acoustic_tlm;
 
+			/*
 			for (int i = 0; i < acoustic_cmd.size(); i++)
 				delete acoustic_cmd[i];
+			
 
 			acoustic_cmd.clear();
 
@@ -65,7 +69,10 @@ class Pinger_status
 				strcpy(s, d.acoustic_cmd[i]);
 				acoustic_cmd.push_back(s);
 			}
-			
+			*/
+
+			acoustic_cmd = d.acoustic_cmd;
+
 
 			compose_tlm_packet(tlm_packet);
 		}
@@ -82,8 +89,12 @@ class Pinger_status
 
 		
 		//char acoustic_tlm[BUF_SIZE];
-		std::vector<char*> acoustic_cmd;
-		char* acoustic_tlm;
+
+		//std::vector<char*> acoustic_cmd;
+		//char* acoustic_tlm;
+
+		std::vector<std::string> acoustic_cmd;
+		std::string acoustic_tlm;
 
 		Pinger_tlm_packet tlm_packet;
 
@@ -96,8 +107,11 @@ class Pinger_status
 			device_status=0;
 			timeStamp=0;
 
-			acoustic_tlm = new char[BUF_SIZE];
-			sprintf(acoustic_tlm, "0");
+			//acoustic_tlm = new char[BUF_SIZE];
+			//sprintf(acoustic_tlm, "0");
+
+			acoustic_tlm = "0";
+
 			acoustic_cmd.clear();
 
 			powered = 0;
@@ -115,11 +129,12 @@ class Pinger_status
 
 		~Pinger_status()
 		{
+			/*
 			delete []acoustic_tlm;
 
 			for (int i = 0; i < acoustic_cmd.size(); i++)
 				delete acoustic_cmd[i];
-
+			*/
 			acoustic_cmd.clear();
 			
 		}
@@ -127,8 +142,9 @@ class Pinger_status
 
 		void add_cmd(char* cmd)
 		{
-			char* s = new char[BUF_SIZE];
-			strcpy(s, cmd);
+			//char* s = new char[BUF_SIZE];
+			//strcpy(s, cmd);
+			std::string s = cmd;
 			acoustic_cmd.push_back(s);
 		}
 

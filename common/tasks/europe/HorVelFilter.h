@@ -45,14 +45,14 @@ class HorVelFilter:public RobotTask
 
 		virtual void execute()
 		{
-			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status = filter_HorVel_access->get();
+			Filter_HorVel_status task_status;
+			task_status = filter_HorVel_access->get();
 
-			if (filter_HorVel_status.execution==TASK_INIT)
+			if (task_status.execution==TASK_INIT)
 			{
 				init();
 			}
-			if (filter_HorVel_status.execution==TASK_RUNNING)
+			if (task_status.execution==TASK_RUNNING)
 			{
 				compute();
 			}
@@ -80,10 +80,10 @@ class HorVelFilter:public RobotTask
 
 			if (f<convergenceThr)
 			{
-				Filter_HorVel_status filter_HorVel_status;
-				filter_HorVel_status=filter_HorVel_access->get();
-				filter_HorVel_status.execution=TASK_RUNNING;
-				filter_HorVel_access->set(filter_HorVel_status);
+				Filter_HorVel_status task_status;
+				task_status =filter_HorVel_access->get();
+				task_status.execution=TASK_RUNNING;
+				filter_HorVel_access->set(task_status);
 
 				start=true;
 			}
@@ -96,10 +96,10 @@ class HorVelFilter:public RobotTask
 
 			if (f>=convergenceThr)
 			{
-				Filter_HorVel_status filter_HorVel_status;
-				filter_HorVel_status = filter_HorVel_access->get();
-				filter_HorVel_status.execution=TASK_INIT;
-				filter_HorVel_access->set(filter_HorVel_status);
+				Filter_HorVel_status task_status;
+				task_status = filter_HorVel_access->get();
+				task_status.execution=TASK_INIT;
+				filter_HorVel_access->set(task_status);
 
 				start=true;
 			}
@@ -108,17 +108,17 @@ class HorVelFilter:public RobotTask
 
 		double filter()
 		{
-			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status=filter_HorVel_access->get();
-			double q_uv=filter_HorVel_status.q_uv;
-			double q_current=filter_HorVel_status.q_current;
-			double r_uv_11=filter_HorVel_status.r_uv_11;
-			double r_uv_12=filter_HorVel_status.r_uv_12;
-			double r_uv_22=filter_HorVel_status.r_uv_22;
-			double Ku=filter_HorVel_status.Ku;
-			double bu=filter_HorVel_status.bu;
-			double Kv=filter_HorVel_status.Kv;
-			double bv=filter_HorVel_status.bv;
+			Filter_HorVel_status task_status;
+			task_status =filter_HorVel_access->get();
+			double q_uv= task_status.q_uv;
+			double q_current= task_status.q_current;
+			double r_uv_11= task_status.r_uv_11;
+			double r_uv_12= task_status.r_uv_12;
+			double r_uv_22= task_status.r_uv_22;
+			double Ku= task_status.Ku;
+			double bu= task_status.bu;
+			double Kv= task_status.Kv;
+			double bv= task_status.bv;
 
 
 			NGC_status ngc_status;
@@ -261,41 +261,41 @@ class HorVelFilter:public RobotTask
 
 		virtual void setStatus(TaskStatus ts)
 		{
-			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status =filter_HorVel_access->get();
-			filter_HorVel_status.execution=ts;
-			filter_HorVel_access->set(filter_HorVel_status);
+			Filter_HorVel_status task_status;
+			task_status =filter_HorVel_access->get();
+			task_status.execution=ts;
+			filter_HorVel_access->set(task_status);
 		}
 
 
 		virtual TaskStatus getStatus()
 		{
-			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status = filter_HorVel_access->get();
-			return filter_HorVel_status.execution;
+			Filter_HorVel_status task_status;
+			task_status = filter_HorVel_access->get();
+			return task_status.execution;
 		}
 
 
 
 		virtual void set_param(int param_code,double val)
 		{
-			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status = filter_HorVel_access->get();
+			Filter_HorVel_status task_status;
+			task_status = filter_HorVel_access->get();
 
 			switch (param_code)
 			{
-				case 0: filter_HorVel_status.q_uv=val; break;
-				case 1: filter_HorVel_status.q_current=val; break;
-				case 2: filter_HorVel_status.r_uv_11=val; break;
-				case 3: filter_HorVel_status.r_uv_12=val; break;
-				case 4: filter_HorVel_status.r_uv_22=val; break;
-				case 5: filter_HorVel_status.Ku=val; break;
-				case 6: filter_HorVel_status.bu=val; break;
-				case 7: filter_HorVel_status.Kv=val; break;
-				case 8: filter_HorVel_status.bv=val; break;
+				case 0: task_status.q_uv=val; break;
+				case 1: task_status.q_current=val; break;
+				case 2: task_status.r_uv_11=val; break;
+				case 3: task_status.r_uv_12=val; break;
+				case 4: task_status.r_uv_22=val; break;
+				case 5: task_status.Ku=val; break;
+				case 6: task_status.bu=val; break;
+				case 7: task_status.Kv=val; break;
+				case 8: task_status.bv=val; break;
 			};
 
-			filter_HorVel_access->set(filter_HorVel_status);
+			filter_HorVel_access->set(task_status);
 
 			write_config();
 		}
@@ -309,8 +309,8 @@ class HorVelFilter:public RobotTask
 			char value[100],value2[100];
 			double val;
 
-			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status = filter_HorVel_access->get();
+			Filter_HorVel_status task_status;
+			task_status = filter_HorVel_access->get();
 
 			sprintf(name_dir_file,"%s%s",CONFIGURATION_FILES_DIRECTORY,"HorVelFilter.cfg");
 
@@ -320,21 +320,21 @@ class HorVelFilter:public RobotTask
 				{
 					fscanf(f,"%s %s %lf\n",value,value2,&val);
 
-					if (strcmp(value,"q_uv")==0) filter_HorVel_status.q_uv=val;
-					if (strcmp(value,"q_current")==0) filter_HorVel_status.q_current=val;
-					if (strcmp(value,"r_uv_11")==0) filter_HorVel_status.r_uv_11=val;
-					if (strcmp(value,"r_uv_12")==0) filter_HorVel_status.r_uv_12=val;
-					if (strcmp(value,"r_uv_22")==0) filter_HorVel_status.r_uv_22=val;
-					if (strcmp(value,"Ku")==0) filter_HorVel_status.Ku=val;
-					if (strcmp(value,"bu")==0) filter_HorVel_status.bu=val;
-					if (strcmp(value,"Kv")==0) filter_HorVel_status.Kv=val;
-					if (strcmp(value,"bv")==0) filter_HorVel_status.bv=val;
+					if (strcmp(value,"q_uv")==0) task_status.q_uv=val;
+					if (strcmp(value,"q_current")==0) task_status.q_current=val;
+					if (strcmp(value,"r_uv_11")==0) task_status.r_uv_11=val;
+					if (strcmp(value,"r_uv_12")==0) task_status.r_uv_12=val;
+					if (strcmp(value,"r_uv_22")==0) task_status.r_uv_22=val;
+					if (strcmp(value,"Ku")==0) task_status.Ku=val;
+					if (strcmp(value,"bu")==0) task_status.bu=val;
+					if (strcmp(value,"Kv")==0) task_status.Kv=val;
+					if (strcmp(value,"bv")==0) task_status.bv=val;
 
 				}
 
 				fclose(f);
 
-				filter_HorVel_access->set(filter_HorVel_status);
+				filter_HorVel_access->set(task_status);
 
 				return 0;
 			}
@@ -353,22 +353,22 @@ class HorVelFilter:public RobotTask
 			FILE *f;
 			char name_dir_file[256];
 
-			Filter_HorVel_status filter_HorVel_status;
-			filter_HorVel_status = filter_HorVel_access->get();
+			Filter_HorVel_status task_status;
+			task_status = filter_HorVel_access->get();
 
 			sprintf(name_dir_file,"%s%s",CONFIGURATION_FILES_DIRECTORY,"HorVelFilter.cfg");
 
 			if((f=fopen(name_dir_file,"w"))!=NULL)
 			{
-				fprintf(f,"q_uv = %lf\n", filter_HorVel_status.q_uv );
-				fprintf(f,"q_current = %lf\n", filter_HorVel_status.q_current );
-				fprintf(f,"r_uv_11 = %lf\n", filter_HorVel_status.r_uv_11 );
-				fprintf(f,"r_uv_12 = %lf\n", filter_HorVel_status.r_uv_12 );
-				fprintf(f,"r_uv_22 = %lf\n", filter_HorVel_status.r_uv_22 );
-				fprintf(f,"Ku = %lf\n", filter_HorVel_status.Ku );
-				fprintf(f,"bu = %lf\n", filter_HorVel_status.bu );
-				fprintf(f,"Kv = %lf\n", filter_HorVel_status.Kv );
-				fprintf(f,"bv = %lf\n", filter_HorVel_status.bv );
+				fprintf(f,"q_uv = %lf\n", task_status.q_uv );
+				fprintf(f,"q_current = %lf\n", task_status.q_current );
+				fprintf(f,"r_uv_11 = %lf\n", task_status.r_uv_11 );
+				fprintf(f,"r_uv_12 = %lf\n", task_status.r_uv_12 );
+				fprintf(f,"r_uv_22 = %lf\n", task_status.r_uv_22 );
+				fprintf(f,"Ku = %lf\n", task_status.Ku );
+				fprintf(f,"bu = %lf\n", task_status.bu );
+				fprintf(f,"Kv = %lf\n", task_status.Kv );
+				fprintf(f,"bv = %lf\n", task_status.bv );
 
 
 				fclose(f);

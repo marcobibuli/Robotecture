@@ -8,6 +8,7 @@
 
 
 
+
 //#define CONFIGURATION_FILES_DIRECTORY "../config/"
 //#define CONFIGURATION_FILES_DIRECTORY "../config/"
 //#define CONFIGURATION_SIM_FILES_DIRECTORY "../config/sim/"
@@ -132,7 +133,6 @@
 #define NGC_THREAD_PRIORITY 		60
 #define TASKS_THREAD_PRIORITY 		60
 #define PATHPLANNER_THREAD_PRIORITY 50
-
 
 
 

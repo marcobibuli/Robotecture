@@ -62,6 +62,12 @@ void Europe_telemetry::execute()
 	Task_status actual_HorVel_From_Filter_status;
 	Filter_HorVel_status filter_HorVel_status;
 
+	Task_status raw_HorPos_From_GPS_status;
+	Task_status raw_HorPos_From_USBL_status;
+	Task_status actual_HorPos_From_Raw_status;
+	Task_status actual_HorPos_From_Filter_status;
+	Filter_HorPos_status filter_HorPos_status;
+
 
 	while(true)
 	{
@@ -93,6 +99,12 @@ void Europe_telemetry::execute()
 		actual_HorVel_From_Filter_status = status->actual_HorVel_From_Filter_status.get();
 		filter_HorVel_status = status->filter_HorVel_status.get();
 
+		raw_HorPos_From_GPS_status = status->raw_HorPos_From_GPS_status.get();
+		raw_HorPos_From_USBL_status = status->raw_HorPos_From_USBL_status.get();
+		actual_HorPos_From_Raw_status = status->actual_HorPos_From_Raw_status.get();
+		actual_HorPos_From_Filter_status = status->actual_HorPos_From_Filter_status.get();
+		filter_HorPos_status = status->filter_HorPos_status.get();
+
 		
 		if (connection_status.ethernet_active)
 		{
@@ -114,15 +126,20 @@ void Europe_telemetry::execute()
 			filter_Ang_status.compose_tlm_packet(msg.filter_Ang);
 
 			raw_HorVel_From_DVL_status.compose_tlm_packet(msg.raw_HorVel_From_DVL);
-			
 			raw_HorVel_From_GPS_status.compose_tlm_packet(msg.raw_HorVel_From_GPS);
 			raw_HorVel_From_USBL_status.compose_tlm_packet(msg.raw_HorVel_From_USBL);
 			actual_HorVel_From_Raw_status.compose_tlm_packet(msg.actual_HorVel_From_Raw);
 			actual_HorVel_From_Filter_status.compose_tlm_packet(msg.actual_HorVel_From_Filter);
 			filter_HorVel_status.compose_tlm_packet(msg.filter_HorVel);
+
+			raw_HorPos_From_GPS_status.compose_tlm_packet(msg.raw_HorPos_From_GPS);
+			raw_HorPos_From_USBL_status.compose_tlm_packet(msg.raw_HorPos_From_USBL);
+			actual_HorPos_From_Raw_status.compose_tlm_packet(msg.actual_HorPos_From_Raw);
+			actual_HorPos_From_Filter_status.compose_tlm_packet(msg.actual_HorPos_From_Filter);
+			filter_HorPos_status.compose_tlm_packet(msg.filter_HorPos);
 			
 			tlm->send_message((char*)&msg, sizeof(msg));
-
+			
 		}
 
 		else if (!connection_status.ethernet_active && connection_status.acoustics_active)
@@ -157,7 +174,9 @@ void Europe_telemetry::execute()
 			sprintf(tlm_string,"%s %s %s %s %s %s %s %s %s", io_string, fog_string, gps_ahrs_string, ctd_string, dvl_string, pa500_string, echologger_string, pinger_string, ngc_string);
 			//printf("tlm: %s\n", tlm_string);
 
-			strcpy( pinger_status.acoustic_tlm , tlm_string );
+			//strcpy( pinger_status.acoustic_tlm , tlm_string );
+			
+			pinger_status.acoustic_tlm = tlm_string;
 			status->pinger_status.set(pinger_status);
 		}
 

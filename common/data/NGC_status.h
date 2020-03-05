@@ -69,6 +69,8 @@ class NGC_status
 			velocity_inertial=d.velocity_inertial;
 			force=d.force;
 
+			commands = d.commands;
+
 			compose_tlm_packet(tlm_packet);
 		}
 
@@ -80,6 +82,7 @@ class NGC_status
 		VelocityInertialSet velocity_inertial;
 		ForceSet force;
 		
+		std::vector<std::string> commands;
 
 		NGC_tlm_packet tlm_packet;
 
@@ -97,6 +100,8 @@ class NGC_status
 
 
 			tlm_packet.zero();
+
+			commands.clear();
 		}
 
 

@@ -100,6 +100,7 @@
     <ClCompile Include="..\common\generic\matrix.cpp" />
     <ClCompile Include="..\common\generic\RobotMath.cpp" />
     <ClCompile Include="..\common\generic\RobotThread.cpp" />
+    <ClCompile Include="..\common\generic\util.cpp" />
     <ClCompile Include="..\common\generic\vector.cpp" />
     <ClCompile Include="..\common\network\CommLink.cpp" />
     <ClCompile Include="..\common\network\NetworkManager.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="..\common\generic\matrix.h" />
     <ClInclude Include="..\common\generic\RobotMath.h" />
     <ClInclude Include="..\common\generic\RobotThread.h" />
+    <ClInclude Include="..\common\generic\util.h" />
     <ClInclude Include="..\common\generic\Variable.h" />
     <ClInclude Include="..\common\generic\vector.h" />
     <ClInclude Include="..\common\network\CommLink.h" />

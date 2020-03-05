@@ -117,7 +117,7 @@ void Pinger::execute_pinger()
 			if (pinger->pingerStatus()==SEND)
 			{
 				//sprintf(dato_str,"qazwscedcrfvtgbyhnujmikolp");
-				strcpy(dato_str, pinger_status.acoustic_tlm);
+				strcpy(dato_str, pinger_status.acoustic_tlm.c_str());
 				pinger->sendPingerMessage(dato_str);
 				//printf("sending: %s\n", dato_str);
 				st=1;
@@ -132,7 +132,12 @@ void Pinger::execute_pinger()
 			if (pinger->pingerStatus()==RECEIVED)
 			{
 				//strcpy(pinger_status.acoustic_cmd, pinger->receivePingerMessage());
-				if ((pinger->receivePingerMessage())[0]!='0') pinger_status.add_cmd(pinger->receivePingerMessage());
+				if ((pinger->receivePingerMessage())[0] != '0')
+				{
+					pinger_status.add_cmd(pinger->receivePingerMessage());
+					pinger_access->set(pinger_status);
+					//printf("Cmd ricevuto: %s\n", (pinger_status.acoustic_cmd[pinger_status.acoustic_cmd.size() - 1]).c_str());
+				}
 				//char *s=pinger->receivePingerMessage();
 				//printf("Cmd ricevuto: %s\n", pinger_status.acoustic_cmd[pinger_status.acoustic_cmd.size()-1]);
 				//printf("Cmd ricevuto: %s\n", pinger->receivePingerMessage());
@@ -144,7 +149,7 @@ void Pinger::execute_pinger()
 
 		}
 
-		pinger_access->set(pinger_status);
+		
 
 		updateStatus();
 
@@ -203,7 +208,7 @@ void Pinger::updateStatus()
 
 	pinger_status.device_status=device_status;
 	pinger_access->set(pinger_status);
-
+	
 }
 
 

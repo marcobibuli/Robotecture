@@ -9,6 +9,7 @@
 #define TASKS_H_
 
 #include <vector>
+#include "../common/generic/util.h"
 #include "../common/generic/custom_types.h"
 #include "../common/generic/define.h"
 #include "../common/generic/RobotThread.h"
@@ -20,6 +21,7 @@
 
 #include "../common/tasks/europe/AngFilter.h"
 #include "../common/tasks/europe/HorVelFilter.h"
+#include "../common/tasks/europe/HorPosFilter.h"
 
 #include "../common/tasks/RawAngFromFOG.h"
 #include "../common/tasks/RawAngFromAHRS.h"
@@ -32,6 +34,10 @@
 #include "../common/tasks/ActualHorVelFromRaw.h"
 #include "../common/tasks/ActualHorVelFromFilter.h"
 
+#include "../common/tasks/RawHorPosFromGPS.h"
+#include "../common/tasks/RawHorPosFromUSBL.h"
+#include "../common/tasks/ActualHorPosFromRaw.h"
+#include "../common/tasks/ActualHorPosFromFilter.h"
 
 
 
@@ -39,12 +45,6 @@
 
 
 
-
-#include "../tasks/HorVelFilter.h"
-#include "../tasks/ActualHorVelFromRaw.h"
-#include "../tasks/ActualHorVelFromFilter.h"
-
-#include "../tasks/HorPosFilter.h"
 #include "../common/tasks/ActualHorPosFromRaw.h"
 #include "../tasks/ActualHorPosFromFilter.h"
 
@@ -189,6 +189,7 @@ class Tasks:public RobotThread
 		std::vector<RobotTask*> tasks;
 		std::vector<RobotTask*> angSensorsToRaw;
 		std::vector<RobotTask*> horVelSensorsToRaw;
+		std::vector<RobotTask*> horPosSensorsToRaw;
 
 		RobotTask* rawAngFromFOG = NULL;
 		RobotTask* rawAngFromAHRS = NULL;
@@ -203,10 +204,17 @@ class Tasks:public RobotThread
 		RobotTask* actualHorVelFromRaw = NULL;
 		RobotTask* actualHorVelFromFilter = NULL;
 
-		/*
+		RobotTask* rawHorPosFromGPS = NULL;
+		RobotTask* rawHorPosFromUSBL = NULL;
 		RobotTask* horPosFilter = NULL;
 		RobotTask* actualHorPosFromRaw = NULL;
 		RobotTask* actualHorPosFromFilter = NULL;
+
+
+
+
+		/*
+		
 		
 		RobotTask* angVelControl = NULL;
 		RobotTask* angPosControl = NULL;
@@ -287,6 +295,7 @@ class Tasks:public RobotThread
 		virtual void execute();
 
 		void read_cmd();
+		void exec_cmd(std::vector<std::string>& cmd_msg);
 };
 
 void* start_tasks(void *arg);

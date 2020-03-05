@@ -121,9 +121,9 @@ void IO_europe::execute_sim()
 
 	while(running_sim)
 	{
-		//read_cmd();
+		read_cmd();
+
 		io_status = io_access->get();
-		
 		if (io_status.autoStartStop!=0) automaticStartStop();
 
 		send_sim_cmd();
@@ -151,7 +151,7 @@ void IO_europe::execute_act()
 
 	while(running_act)
 	{
-		//read_cmd();
+		read_cmd();
 
 		if (io_status.autoStartStop != 0) automaticStartStop();
 
@@ -194,49 +194,59 @@ void IO_europe::execute_act()
 
 void IO_europe::read_cmd()
 {
-	IO_europe_cmd_packet msg;
-	int ret;
+	std::vector<std::string> cmd_msg;
 
 	IO_europe_status io_status;
 	
+	do {
 
-	do{
-		ret=cmd->recv_message((char*)&msg);
-		if (ret>0)
+		io_status = io_access->get();
+
+		if (io_status.commands.size() > 0)
 		{
-			//printf("%d %d %lli\n",msg.cmd_type,msg.index,msg.value);
 
-			io_status = io_access->get();
-
-			switch(msg.cmd_type)
-			{
-				case SET_SIM:     set_mode(DEVICE_SIM);
-				                  break;
-
-				case SET_ACT:     set_mode(DEVICE_ACT);
-				                  break;
-
-				case SET_DIGITAL: if (msg.value!=0) msg.value=1;
-								  io_status.digitalOutput[msg.index]=msg.value;
-								  break;
-
-				case SET_ANALOG:  io_status.analogOutput[msg.index]=((double)msg.value)/IO_factor;
-								  break;
-/*
-				case AUTO_START:  autoStartStop=1;
-								  break;
-
-				case AUTO_STOP:   autoStartStop=2;
-								  break;*/
-			};
-			
-			
+			parse_cmd(cmd_msg, io_status.commands.front());
+			io_status.commands.erase(io_status.commands.begin());
 			io_access->set(io_status);
+			exec_cmd(cmd_msg);
+			
 		}
 
-	}while(ret>0);
-	
-	
+	} while (io_status.commands.size()>0);
+}
+
+
+void IO_europe::exec_cmd(std::vector<std::string>& cmd_msg)
+{
+	IO_cmd io_cmd;
+	int index, int_value;
+	double double_value;
+
+	sscanf(cmd_msg[1].c_str(), "%d", &io_cmd);
+
+	IO_europe_status io_status;
+	io_status = io_access->get();
+
+	switch (io_cmd)
+	{
+		case SET_DIGITAL: sscanf(cmd_msg[2].c_str(), "%d", &index);
+			              sscanf(cmd_msg[3].c_str(), "%d", &int_value);
+			              io_status.digitalOutput[index] = int_value;
+			              break;
+
+		case SET_ANALOG: sscanf(cmd_msg[2].c_str(), "%d", &index);
+			             sscanf(cmd_msg[3].c_str(), "%lf", &double_value);
+			             io_status.analogOutput[index] = double_value;
+			             break;
+
+		case AUTO_START: io_status.autoStartStop = 1;
+			             break;
+
+		case AUTO_STOP:  io_status.autoStartStop = 2;
+			             break;
+	}
+
+	io_access->set(io_status);
 }
 
 

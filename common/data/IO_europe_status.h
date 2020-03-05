@@ -12,6 +12,8 @@
 #include "../generic/custom_types.h"
 #include "../generic/Variable.h"
 #include "../drivers/europe/hardwareLib/definitions.h"
+#include <vector>
+#include <string>
 
 
 #define EUROPE_DIO_MAX_CHANNELS (48)
@@ -164,6 +166,8 @@ class IO_europe_status
 
 			autoStartStop = d.autoStartStop;
 
+			commands = d.commands;
+
 			compose_tlm_packet(tlm_packet);
 		}
 
@@ -181,6 +185,9 @@ class IO_europe_status
 		int autoStartStop;
 
 		IO_europe_tlm_packet tlm_packet;
+
+		std::vector<std::string> commands;
+
 
 		IO_europe_status()
 		{
@@ -208,6 +215,9 @@ class IO_europe_status
 			timeStamp=0;
 
 			autoStartStop = 0;
+			
+
+			commands.clear();
 		}
 
 

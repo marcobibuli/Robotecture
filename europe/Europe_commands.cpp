@@ -14,10 +14,16 @@ Europe_commands::Europe_commands(const char* name, NetworkManager& nm, Europe_st
 	networkManager = &nm;
 	status = s;
 
-	io_cmd = new CommLink("Telemetry", OVERRIDE);
+	io_cmd = new CommLink("IO_commands", OVERRIDE);
 	io_cmd->open(networkManager->ROBOT_IP, networkManager->IO_ROBOT_HMI_PORT_IN,
 		         networkManager->HMI_IP, networkManager->IO_HMI_PORT_OUT);
 	io_cmd->create();
+
+
+	task_cmd = new CommLink("Task_commnads", OVERRIDE);
+	task_cmd->open(networkManager->ROBOT_IP, networkManager->TASKS_ROBOT_HMI_PORT_IN,
+		           networkManager->HMI_IP, networkManager->TASKS_HMI_PORT_OUT);
+	task_cmd->create();
 }
 
 
@@ -25,6 +31,9 @@ Europe_commands::~Europe_commands()
 {
 	io_cmd->terminate();
 	delete io_cmd;
+
+	task_cmd->terminate();
+	delete task_cmd;
 }
 
 
@@ -35,43 +44,64 @@ void Europe_commands::execute()
 	tSleep.tv_nsec=CORE_SAMPLE_TIME_NSEC;
 
 	int ret;
-	char cmd_string[BUF_SIZE];
-
+	char cmd_buf[BUF_SIZE];
+	std::string cmd_string;
 	
 
 	Pinger_status pinger_status;
+	IO_europe_status io_status;
+
+	Command_status task_commands;
 	
 
 	while(true)
 	{
-		
-		pinger_status = status->pinger_status.get();
 
-		//printf("cmd size: %d\n", pinger_status.acoustic_cmd.size());
-		
-		for (int i = 0; i < pinger_status.acoustic_cmd.size(); i++)
-		{
-			printf("acoustic cmd: %s     cmd size: %d\n", pinger_status.acoustic_cmd[i],pinger_status.acoustic_cmd.size());
-			exec_cmd(pinger_status.acoustic_cmd[i]);
-			delete pinger_status.acoustic_cmd[i];
-		}
-		pinger_status.acoustic_cmd.clear();
-		status->pinger_status.set(pinger_status);
-		
+		do {
+
+			pinger_status = status->pinger_status.get();
+
+			if (pinger_status.acoustic_cmd.size() > 0)
+			{
+				read_cmd(pinger_status.acoustic_cmd.front());
+				pinger_status.acoustic_cmd.erase(pinger_status.acoustic_cmd.begin());
+				status->pinger_status.set(pinger_status);
+			}
+
+		} while (pinger_status.acoustic_cmd.size() > 0);
+
+
 
 
 		do {
-			ret = io_cmd->recv_message(cmd_string);
+			ret = io_cmd->recv_message(cmd_buf);
+
 			if (ret > 0)
 			{
-				char* cmd = new char[ret + 1];
-				for (int i = 0; i < ret; i++)
-					cmd[i] = cmd_string[i];
-				cmd[ret] = NULL;
-				
-				exec_cmd(cmd);
-				delete[]cmd;
+				cmd_buf[ret] = NULL;
+				cmd_string = cmd_buf;
+
+				io_status = status->io_status.get();
+				io_status.commands.push_back(cmd_string);
+				status->io_status.set(io_status);
 			}
+
+		} while (ret > 0);
+
+
+		do {
+			ret = task_cmd->recv_message(cmd_buf);
+
+			if (ret > 0)
+			{
+				cmd_buf[ret] = NULL;
+				cmd_string = cmd_buf;
+
+				task_commands = status->task_commands.get();
+				task_commands.commands.push_back(cmd_string);
+				status->task_commands.set(task_commands);
+			}
+
 		} while (ret > 0);
 
 
@@ -80,117 +110,65 @@ void Europe_commands::execute()
 }
 
 
-void Europe_commands::exec_cmd(char* cmd_string)
+void Europe_commands::read_cmd(std::string cmd_string)
 {
-	std::vector<char*> cmd_msg;
-
-	parse_cmd(cmd_msg, cmd_string);
-
-	dispatch_cmd(cmd_msg);
-
-	for (int i = 0; i < cmd_msg.size(); i++)
-		delete cmd_msg[i];
+	std::vector<std::string> cmd_msg;
+	
+	parse_cmd(cmd_msg , cmd_string);// , cmd_string);
+	
+	dispatch_cmd(cmd_msg , cmd_string);
 
 	cmd_msg.clear();
 }
 
 
-void Europe_commands::parse_cmd(std::vector<char*> &cmd_msg, char* cmd_string)
-{
-	int i = 0;
-	char* s = NULL;
-	int k = 0;
-	do
-	{
-		if (cmd_string[i] == ' ' || cmd_string[i] == NULL)
-		{
-			if (s != NULL)
-			{
-				s[k] = NULL;
-				cmd_msg.push_back(s);
-				s = NULL;
-			}
-		}
-		else
-		{
-			if (s == NULL)
-			{
-				s = new char[BUF_SIZE];
-				k = 0;
-			}
-
-			s[k] = cmd_string[i];
-			k++;
-		}
-	} while (cmd_string[i++] != NULL);
-}
 
 
-void Europe_commands::dispatch_cmd(std::vector<char*>& cmd_msg)
+
+void Europe_commands::dispatch_cmd(std::vector<std::string>& cmd_msg, std::string cmd_string)
 {
 	System system;
-	sscanf(cmd_msg[0], "%d", &system);
+	
+	sscanf(cmd_msg[0].c_str(), "%d", &system);
+
+	IO_europe_status io_status;
+	Command_status ngc_commands;
+	Command_status task_commands;
 
 	switch (system)
 	{
 		case ACOUSTIC_PING:  //printf("Acoustic ping\n");
 					         break;
 
-		case IO_SYSTEM:  io_command(cmd_msg);
+		case IO_SYSTEM:  io_status = status->io_status.get();
+			             io_status.commands.push_back(cmd_string);
+			             status->io_status.set(io_status);
 			             break;
 
-		case NGC_SYSTEM: ngc_command(cmd_msg);
+		case NGC_SYSTEM: ngc_commands = status->ngc_commands.get();
+						 ngc_commands.commands.push_back(cmd_string);
+			             status->ngc_commands.set(ngc_commands);
 			             break;
 
-		case TASK_SYSTEM: task_command(cmd_msg);
+		case TASK_SYSTEM: task_commands = status->task_commands.get();
+			              task_commands.commands.push_back(cmd_string);
+			              status->task_commands.set(task_commands);
 			              break;
 	}
 
 }
 
 
-void Europe_commands::io_command(std::vector<char*>& cmd_msg)
-{
-	IO_cmd io_cmd;
-	int index, int_value;
-	double double_value;
-
-	sscanf(cmd_msg[1], "%d", &io_cmd);
 
 
-	IO_europe_status io_status;
-	io_status = status->io_status.get();
 
-	switch (io_cmd)
-	{
-		case SET_DIGITAL: sscanf(cmd_msg[2], "%d", &index);
-						  sscanf(cmd_msg[3], "%d", &int_value);
-						  io_status.digitalOutput[index] = int_value;
-						  break;
-
-		case SET_ANALOG: sscanf(cmd_msg[2], "%d", &index);
-			             sscanf(cmd_msg[3], "%lf", &double_value);
-						 io_status.analogOutput[index] = double_value;
-						 break;
-
-		case AUTO_START: io_status.autoStartStop = 1;
-						 break;
-
-		case AUTO_STOP:  io_status.autoStartStop = 2;
-						 break;
-	}
-	
-	status->io_status.set(io_status);
-}
-
-
-void Europe_commands::ngc_command(std::vector<char*>& cmd_msg)
+void Europe_commands::ngc_command(std::vector<std::string>& cmd_msg)
 {
 
 }
 
 
-void Europe_commands::task_command(std::vector<char*>& cmd_msg)
+void Europe_commands::task_command(std::vector<std::string>& cmd_msg)
 {/*
 	Task_cmd task_cmd;
 	sscanf(cmd_msg[1], "%d", &task_cmd);

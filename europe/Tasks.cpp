@@ -14,12 +14,12 @@ Tasks::Tasks(const char *name,NetworkManager &nm, Europe_status* Status):RobotTh
 	networkManager=&nm;
 
 	status = Status;
-
+	/*
 	cmd=new CommLink( "Task_cmd" , OVERRIDE );
 	cmd->open( networkManager->ROBOT_IP , networkManager->TASKS_ROBOT_HMI_PORT_IN ,
 			   networkManager->HMI_IP   , networkManager->TASKS_HMI_PORT_OUT );
 	cmd->create();
-
+	*/
 
 	int i=0;
 
@@ -76,21 +76,29 @@ Tasks::Tasks(const char *name,NetworkManager &nm, Europe_status* Status):RobotTh
 
 
 
-	/*
+	
 
 	// Horizontal position tasks
-	horPosFilter = new HorPosFilter("HorPosFilter", status);
+	horPosFilter = new HorPosFilter("HorPosFilter", status->filter_HorPos_status, status->ngc_status, status->time_status);
 	tasks.push_back(horPosFilter);
 	taskMap[i][0] = INIT_HOR_POS_FILTER;  taskMap[i++][1] = tasks.size() - 1;
 
-	actualHorPosFromRaw = new ActualHorPosFromRaw("ActualHorPosFromRaw", status->ngc_status, status->task_status);
+	rawHorPosFromGPS = new RawHorPosFromGPS("RawHorPosFromGPS", status->raw_HorPos_From_GPS_status, status->gps_ahrs_status, status->ngc_status);
+	horPosSensorsToRaw.push_back(rawHorPosFromGPS);
+	tasks.push_back(rawHorPosFromGPS);
+
+	rawHorPosFromUSBL = new RawHorPosFromUSBL("RawHorPosFromUSBL", status->raw_HorPos_From_USBL_status, status->pinger_status, status->ngc_status);
+	horPosSensorsToRaw.push_back(rawHorPosFromUSBL);
+	tasks.push_back(rawHorPosFromUSBL);
+
+	actualHorPosFromRaw = new ActualHorPosFromRaw("ActualHorPosFromRaw", status->actual_HorPos_From_Raw_status, status->ngc_status);
 	actualHorPosFromRaw->setStatus(TASK_RUNNING);
 	tasks.push_back(actualHorPosFromRaw);
 
-	actualHorPosFromFilter = new ActualHorPosFromFilter("ActualHorPosFromFilter", status);
+	actualHorPosFromFilter = new ActualHorPosFromFilter("ActualHorPosFromFilter", status->actual_HorPos_From_Filter_status, status->ngc_status);
 	tasks.push_back(actualHorPosFromFilter);
 
-
+	/*
 
 	// Angular velocity control
 	angVelControl = new AngVelControl("AngVelControl", status);
@@ -303,64 +311,91 @@ void Tasks::execute()
 }
 
 
-
 void Tasks::read_cmd()
 {
-	Task_cmd_packet msg;
-	int ret;
+	std::vector<std::string> cmd_msg;
 
-	do{
-		ret=cmd->recv_message((char*)&msg);
-		if (ret>0)
+	Command_status task_commands;
+
+	do {
+
+		task_commands = status->task_commands.get();
+
+		if (task_commands.commands.size() > 0)
 		{
-			//printf("msg.cmd_type: %lli       msg.value: %lli\n", msg.cmd_type, msg.value);
-			switch(msg.cmd_type)
-			{
 
-				case SET_ANG_RAW_FILTER:		if (((TaskStatus)msg.value) == SENSOR_RAW)
-												{
-													actualAngFromFilter->setStatus(TASK_OFF);
-													actualAngFromRaw->setStatus(TASK_RUNNING);
-												}
-												else if (((TaskStatus)msg.value) == SENSOR_FILTER)
-												{
-													actualAngFromRaw->setStatus(TASK_OFF);
-													actualAngFromFilter->setStatus(TASK_RUNNING);
-												}
-												break;
+			parse_cmd(cmd_msg, task_commands.commands.front());
+			task_commands.commands.erase(task_commands.commands.begin());
+			status->task_commands.set(task_commands);
+			exec_cmd(cmd_msg);
 
-/*
-				case SET_HOR_VEL_RAW_FILTER:	if (msg.value == SENSOR_RAW)
-												{
-													actualHorVelFromFilter->setStatus(TASK_OFF);
-													actualHorVelFromRaw->setStatus(TASK_RUNNING);
-												}
-												else if (msg.value == SENSOR_FILTER)
-												{
-													actualHorVelFromRaw->setStatus(TASK_OFF);
-													actualHorVelFromFilter->setStatus(TASK_RUNNING);
-												}
-												break;
+		}
 
-				case SET_HOR_POS_RAW_FILTER:	if (msg.value == SENSOR_RAW)
-												{
-													actualHorPosFromFilter->setStatus(TASK_OFF);
-													actualHorPosFromRaw->setStatus(TASK_RUNNING);
-												}
-												else if (msg.value == SENSOR_FILTER)
-												{
-													actualHorPosFromRaw->setStatus(TASK_OFF);
-													actualHorPosFromFilter->setStatus(TASK_RUNNING);
-												}
-												break;
+	} while (task_commands.commands.size() > 0);
+}
+
+
+void Tasks::exec_cmd(std::vector<std::string>& cmd_msg)
+{
+	Task_cmd_packet task_cmd;
+
+	sscanf(cmd_msg[1].c_str(), "%d", &(task_cmd.cmd_type));
+
+	
+	Task_cmd_packet msg;
+	sscanf(cmd_msg[1].c_str(), "%lli", &(msg.cmd_type));
+	sscanf(cmd_msg[2].c_str(), "%lli", &(msg.value));
+	sscanf(cmd_msg[3].c_str(), "%lli", &(msg.task_code));
+	sscanf(cmd_msg[4].c_str(), "%lli", &(msg.param));
+
+	
+	switch(msg.cmd_type)
+	{
+
+		case SET_ANG_RAW_FILTER:		if (((TaskStatus)msg.value) == SENSOR_RAW)
+										{
+											actualAngFromFilter->setStatus(TASK_OFF);
+											actualAngFromRaw->setStatus(TASK_RUNNING);
+										}
+										else if (((TaskStatus)msg.value) == SENSOR_FILTER)
+										{
+											actualAngFromRaw->setStatus(TASK_OFF);
+											actualAngFromFilter->setStatus(TASK_RUNNING);
+										}
+										break;
+
+
+		case SET_HOR_VEL_RAW_FILTER:	if (msg.value == SENSOR_RAW)
+										{
+											actualHorVelFromFilter->setStatus(TASK_OFF);
+											actualHorVelFromRaw->setStatus(TASK_RUNNING);
+										}
+										else if (msg.value == SENSOR_FILTER)
+										{
+											actualHorVelFromRaw->setStatus(TASK_OFF);
+											actualHorVelFromFilter->setStatus(TASK_RUNNING);
+										}
+										break;
+										/*
+		case SET_HOR_POS_RAW_FILTER:	if (msg.value == SENSOR_RAW)
+										{
+											actualHorPosFromFilter->setStatus(TASK_OFF);
+											actualHorPosFromRaw->setStatus(TASK_RUNNING);
+										}
+										else if (msg.value == SENSOR_FILTER)
+										{
+											actualHorPosFromRaw->setStatus(TASK_OFF);
+											actualHorPosFromFilter->setStatus(TASK_RUNNING);
+										}
+										break;
 */
 
-				case INIT_ANG_FILTER:			angFilter->setStatus(TASK_INIT);
-												break;
-/*
-				case INIT_HOR_VEL_FILTER:		horVelFilter->setStatus(TASK_INIT);
-												break;
+		case INIT_ANG_FILTER:			angFilter->setStatus(TASK_INIT);
+										break;
 
+		case INIT_HOR_VEL_FILTER:		horVelFilter->setStatus(TASK_INIT);
+										break;
+												/*
 				case INIT_HOR_POS_FILTER:		horPosFilter->setStatus(TASK_INIT);
 												break;
 */
@@ -410,36 +445,36 @@ void Tasks::read_cmd()
 
 
 
-				case SET_ANG_SENSOR:     for(uint32 i=0;i<angSensorsToRaw.size();i++)
-					                     	 angSensorsToRaw[i]->setStatus(TASK_OFF);
+		case SET_ANG_SENSOR:     for(uint32 i=0;i<angSensorsToRaw.size();i++)
+					                     angSensorsToRaw[i]->setStatus(TASK_OFF);
 					
-										 switch(msg.value)
-									 	 {
-									 	 	 case SENSOR_FOG:      rawAngFromFOG->setStatus(TASK_RUNNING);
-									 	 	                       break;
+								 switch(msg.value)
+								 {
+									case SENSOR_FOG:	rawAngFromFOG->setStatus(TASK_RUNNING);
+									 	 				break;
 
-											 case SENSOR_GPS_AHRS: rawAngFromAHRS->setStatus(TASK_RUNNING);
-									 	 	                       break;
-									 	 };
+									case SENSOR_GPS_AHRS: rawAngFromAHRS->setStatus(TASK_RUNNING);
+									 	 	              break;
+								 };
+
+								 break;
+
+		case SET_HOR_VEL_SENSOR: for(uint32 i=0;i<horVelSensorsToRaw.size();i++)
+								 horVelSensorsToRaw[i]->setStatus(TASK_OFF);
+								 switch(msg.value)
+								 {
+									case SENSOR_DVL: rawHorVelFromDVL->setStatus(TASK_RUNNING);
+									break;
+
+									case SENSOR_GPS_AHRS: rawHorVelFromGPS->setStatus(TASK_RUNNING);
+									break;
+
+									case SENSOR_USBL: rawHorVelFromUSBL->setStatus(TASK_RUNNING);
+									break;
+								 };
 
 									 	 break;
-/*
-				case SET_HOR_VEL_SENSOR: for(uint32 i=0;i<horVelSensorsToRaw.size();i++)
-										 	 horVelSensorsToRaw[i]->setStatus(TASK_OFF);
-									 	 switch(msg.value)
-									 	 {
-									 	 	 case SENSOR_DVL: rawHorVelFromDVL->setStatus(TASK_RUNNING);
-									 	 	 break;
-
-									 	 	 case SENSOR_GPS_AHRS: rawHorVelFromGPS->setStatus(TASK_RUNNING);
-									 	 	 break;
-
-									 	 	 case SENSOR_USBL: rawHorVelFromUSBL->setStatus(TASK_RUNNING);
-									 	 	 break;
-									 	 };
-
-									 	 break;
-
+										 /*
 				case SET_HOR_POS_SENSOR: for(uint32 i=0;i<horPosSensorsToRaw.size();i++)
 					                     	 horPosSensorsToRaw[i]->setStatus(TASK_OFF);
 									 	 switch(msg.value)
@@ -567,25 +602,23 @@ void Tasks::read_cmd()
 				                          break;
 */
 
-				case SET_TASK_PARAM:      bool found=false;
-										  int i=0;
+		case SET_TASK_PARAM:	bool found=false;
+								int i=0;
 
-										  while(i<num_tasks && !found)
-											  if (msg.task_code==taskMap[i][0]) found=true;
-											  else i++;
+								while(i<num_tasks && !found)
+									if (msg.task_code==taskMap[i][0]) found=true;
+									else i++;
 
-										  if (found) tasks[taskMap[i][1]]->set_param(msg.param, ((double)(msg.value))/Task_factor );
-
-										  
-								          break;
-
+								if (found) tasks[taskMap[i][1]]->set_param(msg.param, ((double)(msg.value))/Task_factor );
+								
+								break;
 
 
-			};
 
-		}
+	};
 
-	}while(ret>0);
+
+	
 }
 
 

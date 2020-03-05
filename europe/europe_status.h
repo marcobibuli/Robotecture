@@ -14,6 +14,7 @@
 #include "../common/data/DataAccess.h"
 #include "../common/data/Status.h"
 
+#include "../common/data/Command_status.h"
 
 #include "../common/data/IO_europe_status.h"
 #include "../common/data/FOG_status.h"
@@ -29,6 +30,7 @@
 
 #include "../common/data/Filter_Ang_status.h"
 #include "../common/data/Filter_HorVel_status.h"
+#include "../common/data/Filter_HorPos_status.h"
 
 
 class Europe_status :public Status
@@ -39,6 +41,9 @@ class Europe_status :public Status
 	public:
 		Europe_status(const char* name):Status(name) {}
 		~Europe_status() {}
+
+		DataAccess<Command_status> ngc_commands;
+		DataAccess<Command_status> task_commands;
 
 
 		DataAccess<IO_europe_status> io_status;
@@ -63,6 +68,12 @@ class Europe_status :public Status
 		DataAccess<Task_status> actual_HorVel_From_Raw_status;
 		DataAccess<Task_status> actual_HorVel_From_Filter_status;
 		DataAccess<Filter_HorVel_status> filter_HorVel_status;
+
+		DataAccess<Task_status> raw_HorPos_From_GPS_status;
+		DataAccess<Task_status> raw_HorPos_From_USBL_status;
+		DataAccess<Task_status> actual_HorPos_From_Raw_status;
+		DataAccess<Task_status> actual_HorPos_From_Filter_status;
+		DataAccess<Filter_HorPos_status> filter_HorPos_status;
 
 };
 
