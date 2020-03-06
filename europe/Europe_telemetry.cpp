@@ -68,6 +68,28 @@ void Europe_telemetry::execute()
 	Task_status actual_HorPos_From_Filter_status;
 	Filter_HorPos_status filter_HorPos_status;
 
+	Task_status raw_VerVel_From_DVL_status;
+	Task_status raw_VerVel_From_CTD_status;
+	Task_status raw_VerVel_From_PA500_status;
+	Task_status raw_VerVel_From_ECHO_status;
+	Task_status raw_VerVel_From_USBL_status;
+	Task_status actual_VerVel_From_Raw_status;
+	Task_status actual_VerVel_From_Filter_status;
+	Filter_VerVel_status filter_VerVel_status;
+
+	Task_status raw_VerPos_From_CTD_status;
+	Task_status raw_VerPos_From_USBL_status;
+	Task_status actual_VerPos_From_Raw_status;
+	Task_status actual_VerPos_From_Filter_status;
+	Filter_VerPos_status filter_VerPos_status;
+
+	Task_status raw_Alt_From_PA500_status;
+	Task_status raw_Alt_From_ECHO_status;
+	Task_status raw_Alt_From_DVL_status;
+	Task_status actual_Alt_From_Raw_status;
+	Task_status actual_Alt_From_Filter_status;
+	Filter_Alt_status filter_Alt_status;
+
 
 	while(true)
 	{
@@ -105,6 +127,28 @@ void Europe_telemetry::execute()
 		actual_HorPos_From_Filter_status = status->actual_HorPos_From_Filter_status.get();
 		filter_HorPos_status = status->filter_HorPos_status.get();
 
+		raw_VerVel_From_DVL_status = status->raw_VerVel_From_DVL_status.get();
+		raw_VerVel_From_CTD_status = status->raw_VerVel_From_CTD_status.get();
+		raw_VerVel_From_PA500_status = status->raw_VerVel_From_PA500_status.get();
+		raw_VerVel_From_ECHO_status = status->raw_VerVel_From_ECHO_status.get();
+		raw_VerVel_From_USBL_status = status->raw_VerVel_From_USBL_status.get();
+		actual_VerVel_From_Raw_status = status->actual_VerVel_From_Raw_status.get();
+		actual_VerVel_From_Filter_status = status->actual_VerVel_From_Filter_status.get();
+		filter_VerVel_status = status->filter_VerVel_status.get();
+
+		raw_VerPos_From_CTD_status = status->raw_VerPos_From_CTD_status.get();
+		raw_VerPos_From_USBL_status = status->raw_VerPos_From_USBL_status.get();
+		actual_VerPos_From_Raw_status = status->actual_VerPos_From_Raw_status.get();
+		actual_VerPos_From_Filter_status = status->actual_VerPos_From_Filter_status.get();
+		filter_VerPos_status = status->filter_VerPos_status.get();
+
+		raw_Alt_From_PA500_status = status->raw_Alt_From_PA500_status.get();
+		raw_Alt_From_ECHO_status = status->raw_Alt_From_ECHO_status.get();
+		raw_Alt_From_DVL_status = status->raw_Alt_From_DVL_status.get();
+		actual_Alt_From_Raw_status = status->actual_Alt_From_Raw_status.get();
+		actual_Alt_From_Filter_status = status->actual_Alt_From_Filter_status.get();
+		filter_Alt_status = status->filter_Alt_status.get();
+
 		
 		if (connection_status.ethernet_active)
 		{
@@ -138,8 +182,29 @@ void Europe_telemetry::execute()
 			actual_HorPos_From_Filter_status.compose_tlm_packet(msg.actual_HorPos_From_Filter);
 			filter_HorPos_status.compose_tlm_packet(msg.filter_HorPos);
 			
-			tlm->send_message((char*)&msg, sizeof(msg));
+			raw_VerVel_From_DVL_status.compose_tlm_packet(msg.raw_VerVel_From_DVL);
+			raw_VerVel_From_CTD_status.compose_tlm_packet(msg.raw_VerVel_From_CTD);
+			raw_VerVel_From_PA500_status.compose_tlm_packet(msg.raw_VerVel_From_PA500);
+			raw_VerVel_From_ECHO_status.compose_tlm_packet(msg.raw_VerVel_From_ECHO);
+			raw_VerVel_From_USBL_status.compose_tlm_packet(msg.raw_VerVel_From_USBL);
+			actual_VerVel_From_Raw_status.compose_tlm_packet(msg.actual_VerVel_From_Raw);
+			actual_VerVel_From_Filter_status.compose_tlm_packet(msg.actual_VerVel_From_Filter);
+			filter_VerVel_status.compose_tlm_packet(msg.filter_VerVel);
+
+			raw_VerPos_From_CTD_status.compose_tlm_packet(msg.raw_VerPos_From_CTD);
+			raw_VerPos_From_USBL_status.compose_tlm_packet(msg.raw_VerPos_From_USBL);
+			actual_VerPos_From_Raw_status.compose_tlm_packet(msg.actual_VerPos_From_Raw);
+			actual_VerPos_From_Filter_status.compose_tlm_packet(msg.actual_VerPos_From_Filter);
+			filter_VerPos_status.compose_tlm_packet(msg.filter_VerPos);
+
+			raw_Alt_From_PA500_status.compose_tlm_packet(msg.raw_Alt_From_PA500);
+			raw_Alt_From_ECHO_status.compose_tlm_packet(msg.raw_Alt_From_ECHO);
+			raw_Alt_From_DVL_status.compose_tlm_packet(msg.raw_Alt_From_DVL);
+			actual_Alt_From_Raw_status.compose_tlm_packet(msg.actual_Alt_From_Raw);
+			actual_Alt_From_Filter_status.compose_tlm_packet(msg.actual_Alt_From_Filter);
+			filter_Alt_status.compose_tlm_packet(msg.filter_Alt);
 			
+			tlm->send_message((char*)&msg, sizeof(msg));
 		}
 
 		else if (!connection_status.ethernet_active && connection_status.acoustics_active)

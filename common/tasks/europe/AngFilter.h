@@ -46,14 +46,14 @@ class AngFilter:public RobotTask
 
 		virtual void execute()
 		{
-			Filter_Ang_status filter_Ang_status;
-			filter_Ang_status=filter_Ang_access->get();
+			Filter_Ang_status task_status;
+			task_status =filter_Ang_access->get();
 
-			if (filter_Ang_status.execution==TASK_INIT)
+			if (task_status.execution==TASK_INIT)
 			{
 				init();
 			}
-			if (filter_Ang_status.execution==TASK_RUNNING)
+			if (task_status.execution==TASK_RUNNING)
 			{
 				compute();
 			}
@@ -79,10 +79,10 @@ class AngFilter:public RobotTask
 
 			if (f<convergenceThr)
 			{
-				Filter_Ang_status filter_Ang_status;
-				filter_Ang_status = filter_Ang_access->get();
-				filter_Ang_status.execution=TASK_RUNNING;
-				filter_Ang_access->set(filter_Ang_status);
+				Filter_Ang_status task_status;
+				task_status = filter_Ang_access->get();
+				task_status.execution=TASK_RUNNING;
+				filter_Ang_access->set(task_status);
 
 				start=true;
 			}
@@ -95,10 +95,10 @@ class AngFilter:public RobotTask
 
 			if (f>=convergenceThr)
 			{
-				Filter_Ang_status filter_Ang_status;
-				filter_Ang_status = filter_Ang_access->get();
-				filter_Ang_status.execution=TASK_INIT;
-				filter_Ang_access->set(filter_Ang_status);
+				Filter_Ang_status task_status;
+				task_status = filter_Ang_access->get();
+				task_status.execution=TASK_INIT;
+				filter_Ang_access->set(task_status);
 
 				start=true;
 			}
@@ -108,14 +108,14 @@ class AngFilter:public RobotTask
 
 		double filter()
 		{
-			Filter_Ang_status filter_Ang_status;
-			filter_Ang_status = filter_Ang_access->get();
-			double q_psi=filter_Ang_status.q_psi;
-			double q_r=filter_Ang_status.q_r;
-			double r_psi=filter_Ang_status.r_psi;
-			double r_r=filter_Ang_status.r_r;
-			double Kr=filter_Ang_status.Kr;
-			double br=filter_Ang_status.br;
+			Filter_Ang_status task_status;
+			task_status = filter_Ang_access->get();
+			double q_psi= task_status.q_psi;
+			double q_r= task_status.q_r;
+			double r_psi= task_status.r_psi;
+			double r_r= task_status.r_r;
+			double Kr= task_status.Kr;
+			double br= task_status.br;
 
 			NGC_status ngc_status;
 			ngc_status = ngc_access->get();
@@ -194,37 +194,37 @@ class AngFilter:public RobotTask
 
 		virtual void setStatus(TaskStatus ts)
 		{
-			Filter_Ang_status filter_Ang_status;
-			filter_Ang_status = filter_Ang_access->get();
-			filter_Ang_status.execution=ts;
-			filter_Ang_access->set(filter_Ang_status);
+			Filter_Ang_status task_status;
+			task_status = filter_Ang_access->get();
+			task_status.execution=ts;
+			filter_Ang_access->set(task_status);
 		}
 
 
 		virtual TaskStatus getStatus()
 		{
-			Filter_Ang_status filter_Ang_status;
-			filter_Ang_status = filter_Ang_access->get();
-			return filter_Ang_status.execution;
+			Filter_Ang_status task_status;
+			task_status = filter_Ang_access->get();
+			return task_status.execution;
 		}
 
 
 		virtual void set_param(int param_code,double val)
 		{
-			Filter_Ang_status filter_Ang_status;
-			filter_Ang_status = filter_Ang_access->get();
+			Filter_Ang_status task_status;
+			task_status = filter_Ang_access->get();
 
 			switch (param_code)
 			{
-				case 0: filter_Ang_status.q_psi=val; break;
-				case 1: filter_Ang_status.q_r=val; break;
-				case 2: filter_Ang_status.r_psi=val; break;
-				case 3: filter_Ang_status.r_r=val; break;
-				case 4: filter_Ang_status.Kr=val; break;
-				case 5: filter_Ang_status.br=val; break;
+				case 0: task_status.q_psi=val; break;
+				case 1: task_status.q_r=val; break;
+				case 2: task_status.r_psi=val; break;
+				case 3: task_status.r_r=val; break;
+				case 4: task_status.Kr=val; break;
+				case 5: task_status.br=val; break;
 			};
 
-			filter_Ang_access->set(filter_Ang_status);
+			filter_Ang_access->set(task_status);
 
 			write_config();
 		}
@@ -238,8 +238,8 @@ class AngFilter:public RobotTask
 			char value[100],value2[100];
 			double val;
 
-			Filter_Ang_status filter_Ang_status;
-			filter_Ang_status = filter_Ang_access->get();
+			Filter_Ang_status task_status;
+			task_status = filter_Ang_access->get();
 			
 			sprintf(name_dir_file,"%s%s",CONFIGURATION_FILES_DIRECTORY,"AngFilter.cfg");
 			
@@ -249,18 +249,18 @@ class AngFilter:public RobotTask
 				{
 					fscanf(f,"%s %s %lf\n",value,value2,&val);
 
-					if (strcmp(value,"q_psi")==0) filter_Ang_status.q_psi=val;
-					if (strcmp(value,"q_r")==0) filter_Ang_status.q_r=val;
-					if (strcmp(value,"r_psi")==0) filter_Ang_status.r_psi=val;
-					if (strcmp(value,"r_r")==0) filter_Ang_status.r_r=val;
-					if (strcmp(value,"Kr")==0) filter_Ang_status.Kr=val;
-					if (strcmp(value,"br")==0) filter_Ang_status.br=val;
+					if (strcmp(value,"q_psi")==0) task_status.q_psi=val;
+					if (strcmp(value,"q_r")==0) task_status.q_r=val;
+					if (strcmp(value,"r_psi")==0) task_status.r_psi=val;
+					if (strcmp(value,"r_r")==0) task_status.r_r=val;
+					if (strcmp(value,"Kr")==0) task_status.Kr=val;
+					if (strcmp(value,"br")==0) task_status.br=val;
 
 				}
 
 				fclose(f);
 
-				filter_Ang_access->set(filter_Ang_status);
+				filter_Ang_access->set(task_status);
 
 				return 0;
 			}
@@ -279,19 +279,19 @@ class AngFilter:public RobotTask
 			FILE *f;
 			char name_dir_file[256];
 
-			Filter_Ang_status filter_Ang_status;
-			filter_Ang_status = filter_Ang_access->get();
+			Filter_Ang_status task_status;
+			task_status = filter_Ang_access->get();
 
 			sprintf(name_dir_file,"%s%s",CONFIGURATION_FILES_DIRECTORY,"AngFilter.cfg");
 
 			if((f=fopen(name_dir_file,"w"))!=NULL)
 			{
-				fprintf(f,"q_psi = %lf\n", filter_Ang_status.q_psi );
-				fprintf(f,"q_r = %lf\n", filter_Ang_status.q_r );
-				fprintf(f,"r_psi = %lf\n", filter_Ang_status.r_psi );
-				fprintf(f,"r_r = %lf\n", filter_Ang_status.r_r );
-				fprintf(f,"Kr = %lf\n", filter_Ang_status.Kr );
-				fprintf(f,"br = %lf\n", filter_Ang_status.br );
+				fprintf(f,"q_psi = %lf\n", task_status.q_psi );
+				fprintf(f,"q_r = %lf\n", task_status.q_r );
+				fprintf(f,"r_psi = %lf\n", task_status.r_psi );
+				fprintf(f,"r_r = %lf\n", task_status.r_r );
+				fprintf(f,"Kr = %lf\n", task_status.Kr );
+				fprintf(f,"br = %lf\n", task_status.br );
 
 
 				fclose(f);

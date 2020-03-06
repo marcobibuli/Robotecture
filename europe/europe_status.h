@@ -31,6 +31,9 @@
 #include "../common/data/Filter_Ang_status.h"
 #include "../common/data/Filter_HorVel_status.h"
 #include "../common/data/Filter_HorPos_status.h"
+#include "../common/data/Filter_VerVel_status.h"
+#include "../common/data/Filter_VerPos_status.h"
+#include "../common/data/Filter_Alt_status.h"
 
 
 class Europe_status :public Status
@@ -75,6 +78,27 @@ class Europe_status :public Status
 		DataAccess<Task_status> actual_HorPos_From_Filter_status;
 		DataAccess<Filter_HorPos_status> filter_HorPos_status;
 
+		DataAccess<Task_status> raw_VerVel_From_DVL_status;
+		DataAccess<Task_status> raw_VerVel_From_CTD_status;
+		DataAccess<Task_status> raw_VerVel_From_PA500_status;
+		DataAccess<Task_status> raw_VerVel_From_ECHO_status;
+		DataAccess<Task_status> raw_VerVel_From_USBL_status;
+		DataAccess<Task_status> actual_VerVel_From_Raw_status;
+		DataAccess<Task_status> actual_VerVel_From_Filter_status;
+		DataAccess<Filter_VerVel_status> filter_VerVel_status;
+
+		DataAccess<Task_status> raw_VerPos_From_CTD_status;
+		DataAccess<Task_status> raw_VerPos_From_USBL_status;
+		DataAccess<Task_status> actual_VerPos_From_Raw_status;
+		DataAccess<Task_status> actual_VerPos_From_Filter_status;
+		DataAccess<Filter_VerPos_status> filter_VerPos_status;
+
+		DataAccess<Task_status> raw_Alt_From_PA500_status;
+		DataAccess<Task_status> raw_Alt_From_ECHO_status;
+		DataAccess<Task_status> raw_Alt_From_DVL_status;
+		DataAccess<Task_status> actual_Alt_From_Raw_status;
+		DataAccess<Task_status> actual_Alt_From_Filter_status;
+		DataAccess<Filter_Alt_status> filter_Alt_status;
 };
 
 

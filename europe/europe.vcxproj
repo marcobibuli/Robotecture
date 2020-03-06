@@ -115,9 +115,12 @@
     <ClInclude Include="..\common\data\DataAccess.h" />
     <ClInclude Include="..\common\data\DVL_status.h" />
     <ClInclude Include="..\common\data\Echologger_status.h" />
+    <ClInclude Include="..\common\data\Filter_Alt_status.h" />
     <ClInclude Include="..\common\data\Filter_Ang_status.h" />
     <ClInclude Include="..\common\data\Filter_HorPos_status.h" />
     <ClInclude Include="..\common\data\Filter_HorVel_status.h" />
+    <ClInclude Include="..\common\data\Filter_VerPos_status.h" />
+    <ClInclude Include="..\common\data\Filter_VerVel_status.h" />
     <ClInclude Include="..\common\data\FOG_status.h" />
     <ClInclude Include="..\common\data\GPS_AHRS_status.h" />
     <ClInclude Include="..\common\data\IO_europe_status.h" />
@@ -154,15 +157,27 @@
     <ClInclude Include="..\common\network\Message.h" />
     <ClInclude Include="..\common\network\MessageNumberGenerator.h" />
     <ClInclude Include="..\common\network\NetworkManager.h" />
+    <ClInclude Include="..\common\tasks\ActualAltFromFilter.h" />
+    <ClInclude Include="..\common\tasks\ActualAltFromRaw.h" />
     <ClInclude Include="..\common\tasks\ActualAngFromFilter.h" />
     <ClInclude Include="..\common\tasks\ActualAngFromRaw.h" />
     <ClInclude Include="..\common\tasks\ActualHorPosFromFilter.h" />
     <ClInclude Include="..\common\tasks\ActualHorPosFromRaw.h" />
     <ClInclude Include="..\common\tasks\ActualHorVelFromFilter.h" />
     <ClInclude Include="..\common\tasks\ActualHorVelFromRaw.h" />
+    <ClInclude Include="..\common\tasks\ActualVerPosFromFilter.h" />
+    <ClInclude Include="..\common\tasks\ActualVerPosFromRaw.h" />
+    <ClInclude Include="..\common\tasks\ActualVerVelFromFilter.h" />
+    <ClInclude Include="..\common\tasks\ActualVerVelFromRaw.h" />
+    <ClInclude Include="..\common\tasks\europe\AltFilter.h" />
     <ClInclude Include="..\common\tasks\europe\AngFilter.h" />
     <ClInclude Include="..\common\tasks\europe\HorPosFilter.h" />
     <ClInclude Include="..\common\tasks\europe\HorVelFilter.h" />
+    <ClInclude Include="..\common\tasks\europe\VerPosFilter.h" />
+    <ClInclude Include="..\common\tasks\europe\VerVelFilter.h" />
+    <ClInclude Include="..\common\tasks\RawAltFromDVL.h" />
+    <ClInclude Include="..\common\tasks\RawAltFromECHO.h" />
+    <ClInclude Include="..\common\tasks\RawAltFromPA500.h" />
     <ClInclude Include="..\common\tasks\RawAngFromAHRS.h" />
     <ClInclude Include="..\common\tasks\RawAngFromFOG.h" />
     <ClInclude Include="..\common\tasks\RawHorPosFromGPS.h" />
@@ -170,6 +185,13 @@
     <ClInclude Include="..\common\tasks\RawHorVelFromDVL.h" />
     <ClInclude Include="..\common\tasks\RawHorVelFromGPS.h" />
     <ClInclude Include="..\common\tasks\RawHorVelFromUSBL.h" />
+    <ClInclude Include="..\common\tasks\RawVerPosFromCTD.h" />
+    <ClInclude Include="..\common\tasks\RawVerPosFromUSBL.h" />
+    <ClInclude Include="..\common\tasks\RawVerVelFromCTD.h" />
+    <ClInclude Include="..\common\tasks\RawVerVelFromDVL.h" />
+    <ClInclude Include="..\common\tasks\RawVerVelFromECHO.h" />
+    <ClInclude Include="..\common\tasks\RawVerVelFromPA500.h" />
+    <ClInclude Include="..\common\tasks\RawVerVelFromUSBL.h" />
     <ClInclude Include="..\common\tasks\RobotTask.h" />
     <ClInclude Include="Europe_commands.h" />
     <ClInclude Include="Europe_status.h" />
@@ -179,6 +201,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config\Actuator.cfg" />
+    <None Include="config\AltFilter.cfg" />
     <None Include="config\AngFilter.cfg" />
     <None Include="config\AngPosControl.cfg" />
     <None Include="config\AngVelControl.cfg" />
@@ -198,6 +221,8 @@
     <None Include="config\PathFollowing_FA.cfg" />
     <None Include="config\PathFollowing_UA.cfg" />
     <None Include="config\Pinger.cfg" />
+    <None Include="config\VerPosFilter.cfg" />
+    <None Include="config\VerVelFilter.cfg" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <ClCompile>

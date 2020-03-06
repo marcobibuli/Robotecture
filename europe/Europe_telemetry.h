@@ -60,6 +60,28 @@ struct TLM_packet
 	Task_tlm_packet actual_HorPos_From_Filter;
 	Filter_HorPos_tlm_packet filter_HorPos;
 	
+	Task_tlm_packet raw_VerVel_From_DVL;
+	Task_tlm_packet raw_VerVel_From_CTD;
+	Task_tlm_packet raw_VerVel_From_PA500;
+	Task_tlm_packet raw_VerVel_From_ECHO;
+	Task_tlm_packet raw_VerVel_From_USBL;
+	Task_tlm_packet actual_VerVel_From_Raw;
+	Task_tlm_packet actual_VerVel_From_Filter;
+	Filter_VerVel_tlm_packet filter_VerVel;
+
+	Task_tlm_packet raw_VerPos_From_CTD;
+	Task_tlm_packet raw_VerPos_From_USBL;
+	Task_tlm_packet actual_VerPos_From_Raw;
+	Task_tlm_packet actual_VerPos_From_Filter;
+	Filter_VerPos_tlm_packet filter_VerPos;
+
+	Task_tlm_packet raw_Alt_From_PA500;
+	Task_tlm_packet raw_Alt_From_ECHO;
+	Task_tlm_packet raw_Alt_From_DVL;
+	Task_tlm_packet actual_Alt_From_Raw;
+	Task_tlm_packet actual_Alt_From_Filter;
+	Filter_Alt_tlm_packet filter_Alt;
+	
 };
 # pragma pack (pop)
 

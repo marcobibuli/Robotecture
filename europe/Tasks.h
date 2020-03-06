@@ -22,6 +22,9 @@
 #include "../common/tasks/europe/AngFilter.h"
 #include "../common/tasks/europe/HorVelFilter.h"
 #include "../common/tasks/europe/HorPosFilter.h"
+#include "../common/tasks/europe/VerVelFilter.h"
+#include "../common/tasks/europe/VerPosFilter.h"
+#include "../common/tasks/europe/AltFilter.h"
 
 #include "../common/tasks/RawAngFromFOG.h"
 #include "../common/tasks/RawAngFromAHRS.h"
@@ -38,6 +41,25 @@
 #include "../common/tasks/RawHorPosFromUSBL.h"
 #include "../common/tasks/ActualHorPosFromRaw.h"
 #include "../common/tasks/ActualHorPosFromFilter.h"
+
+#include "../common/tasks/RawVerVelFromDVL.h"
+#include "../common/tasks/RawVerVelFromCTD.h"
+#include "../common/tasks/RawVerVelFromPA500.h"
+#include "../common/tasks/RawVerVelFromECHO.h"
+#include "../common/tasks/RawVerVelFromUSBL.h"
+#include "../common/tasks/ActualVerVelFromRaw.h"
+#include "../common/tasks/ActualVerVelFromFilter.h"
+
+#include "../common/tasks/RawVerPosFromCTD.h"
+#include "../common/tasks/RawVerPosFromUSBL.h"
+#include "../common/tasks/ActualVerPosFromRaw.h"
+#include "../common/tasks/ActualVerPosFromFilter.h"
+
+#include "../common/tasks/RawAltFromPA500.h"
+#include "../common/tasks/RawAltFromECHO.h"
+#include "../common/tasks/RawAltFromDVL.h"
+#include "../common/tasks/ActualAltFromRaw.h"
+#include "../common/tasks/ActualAltFromFilter.h"
 
 
 
@@ -190,6 +212,9 @@ class Tasks:public RobotThread
 		std::vector<RobotTask*> angSensorsToRaw;
 		std::vector<RobotTask*> horVelSensorsToRaw;
 		std::vector<RobotTask*> horPosSensorsToRaw;
+		std::vector<RobotTask*> verVelSensorsToRaw;
+		std::vector<RobotTask*> verPosSensorsToRaw;
+		std::vector<RobotTask*> altSensorsToRaw;
 
 		RobotTask* rawAngFromFOG = NULL;
 		RobotTask* rawAngFromAHRS = NULL;
@@ -210,8 +235,27 @@ class Tasks:public RobotThread
 		RobotTask* actualHorPosFromRaw = NULL;
 		RobotTask* actualHorPosFromFilter = NULL;
 
+		RobotTask* rawVerVelFromDVL = NULL;
+		RobotTask* rawVerVelFromCTD = NULL;
+		RobotTask* rawVerVelFromPA500 = NULL;
+		RobotTask* rawVerVelFromECHO = NULL;
+		RobotTask* rawVerVelFromUSBL = NULL;
+		RobotTask* verVelFilter = NULL;
+		RobotTask* actualVerVelFromRaw = NULL;
+		RobotTask* actualVerVelFromFilter = NULL;
 
+		RobotTask* rawVerPosFromCTD = NULL;
+		RobotTask* rawVerPosFromUSBL = NULL;
+		RobotTask* actualVerPosFromRaw = NULL;
+		RobotTask* actualVerPosFromFilter = NULL;
+		RobotTask* verPosFilter = NULL;
 
+		RobotTask* rawAltFromPA500 = NULL;
+		RobotTask* rawAltFromECHO = NULL;
+		RobotTask* rawAltFromDVL = NULL;
+		RobotTask* altFilter = NULL;
+		RobotTask* actualAltFromRaw = NULL;
+		RobotTask* actualAltFromFilter = NULL;
 
 		/*
 		
@@ -240,30 +284,9 @@ class Tasks:public RobotThread
 		
 
 
-		RobotTask *rawHorVelFromDVL=NULL;
-		RobotTask *rawHorVelFromGPS=NULL;
-		RobotTask *rawHorVelFromUSBL=NULL;
-		
-		
+	
 
-		RobotTask *rawHorPosFromGPS=NULL;
-		RobotTask *rawHorPosFromUSBL=NULL;
 		
-
-		RobotTask *rawVerVelFromDVL=NULL;
-		RobotTask *rawVerVelFromCTD=NULL;
-		RobotTask *rawVerVelFromPA500=NULL;
-		RobotTask *rawVerVelFromECHO=NULL;
-		RobotTask *rawVerVelFromUSBL=NULL;
-		RobotTask *actualVerVelFromRaw=NULL;
-		RobotTask *actualVerVelFromFilter=NULL;
-		RobotTask *verVelFilter=NULL;
-
-		RobotTask *rawVerPosFromCTD=NULL;
-		RobotTask *rawVerPosFromUSBL=NULL;
-		RobotTask *actualVerPosFromRaw=NULL;
-		RobotTask *actualVerPosFromFilter=NULL;
-		RobotTask *verPosFilter=NULL;
 
 		RobotTask *rawAltFromPA500=NULL;
 		RobotTask *rawAltFromECHO=NULL;
